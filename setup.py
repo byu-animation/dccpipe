@@ -3,7 +3,7 @@
 # going on.
 
 PACKAGE="byupipe"
-VERISON="0.1.0"
+VERSION="0.1.0"
 DESCRIPTION="BYU pipeline management tools"
 AUTHOR="BYU Center for Animation"
 AUTHOR_EMAIL="byupipe@gmail.com"
