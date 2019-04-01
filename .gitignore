@@ -1,6 +1,9 @@
 # Recommended Python .gitignore
 # https://github.com/kennethreitz/samplemod/blob/master/.gitignore
 
+# Ignore production folder so that the repo doesn't grow immense
+production/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
