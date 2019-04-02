@@ -32,14 +32,3 @@ def install(package, args):
         pip._internal.main(arguments)
 
 install('pipenv', ['--user'])
-
-for package in ui_packages:
-    #install packages
-    import subprocess
-    print("Installing: " + package[0])
-    if package[1] == 'pipenv':
-        subprocess.run([package[1], 'install', package[2]])
-    elif package[1] == 'git':
-        subprocess.run([package[1], 'clone', package[2]])
-    else:
-        print('Unexpected installation method:' + package[1])

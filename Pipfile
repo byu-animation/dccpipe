@@ -4,9 +4,16 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+termgraph = "*"
+black = "*"
+loguru = "*"
+pytest = "*"
+sphinx = "*"
+bowler = "*"
 
 [packages]
 pyqt5 = "*"
+qt-py = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

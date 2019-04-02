@@ -11,7 +11,9 @@ except ImportError:
     Runs after a publisher to export anything that needs exporting.
 '''
 
-class MayaExporter(Exporter, MayaPrompts):
+from tools.maya import Prompts
+
+class MayaExporter(Exporter, maya.prompts.Prompts):
     def __init__(self, gui=True, element=None, show_tagger=True):
         super(MayaExporter, self).__init__(gui=gui, element=element)
 

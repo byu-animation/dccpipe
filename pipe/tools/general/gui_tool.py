@@ -19,7 +19,7 @@ from prompts import Prompts
 '''
     Executes a series of methods prompting for user input where needed.
 '''
-class GUITool(object, GeneralPrompts):
+class GUITool(object, Prompts):
 
     def __init__(self, gui=True):
         super(GUITool, self).__init__()

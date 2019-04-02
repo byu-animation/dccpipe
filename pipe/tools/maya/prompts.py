@@ -7,7 +7,7 @@ from byuminigui.write_message import WriteMessage
 
 import maya_utils
 
-class MayaPrompts(object):
+class Prompts(object):
     def TaggedItemsDialog(self):
         title = "Tag or untag references here"
         items = {}
@@ -27,7 +27,7 @@ class MayaPrompts(object):
             elif is_already_tagged:
                 maya_utils.untag_node_with_flag(current_reference, ExportFlags.ANIMATED)
         self.do_next_gui_method()
-    
+
     def ScenePrepDialog(self):
 
         title = "Scene Cleanup Options"

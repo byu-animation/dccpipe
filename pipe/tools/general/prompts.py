@@ -5,7 +5,7 @@ from byuam import Environment, Project
 from byuminigui.select_from_list import SelectFromList, SelectFromMultipleLists
 from byuminigui.write_message import WriteMessage
 
-class GeneralPrompts(object):
+class Prompts(object):
     '''
         Here's a bunch of useful method/handler pairs you can instance as you build tools.
     '''

@@ -1,8 +1,5 @@
-#if [ -d "$HOME/.local/bin" ] && [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-#    echo 'export PATH=$HOME/.local/bin:$PATH' >> $HOME/.bashrc
-#		source $HOME/.bashrc
-#fi
+# Will install a virtual environment in the current folder.
 
-export PATH=$HOME/.local/bin:$PATH
-
-python3 install.py
+pipenv --rm
+export PIPENV_VENV_IN_PROJECT=true
+pipenv install --dev
