@@ -5,15 +5,14 @@ verify_ssl = true
 
 [dev-packages]
 termgraph = "*"
-black = "*"
 loguru = "*"
 pytest = "*"
 sphinx = "*"
-bowler = "*"
 
 [packages]
-pyqt5 = "*"
 qt-py = "*"
+c8eca12 = {file = "https://www.riverbankcomputing.com/static/Downloads/PyQt5/5.12.1/PyQt5_gpl-5.12.1.tar.gz"}
+cmake = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "2.7"

@@ -1,8 +1,10 @@
 # Recommended Python .gitignore
 # https://github.com/kennethreitz/samplemod/blob/master/.gitignore
 
-# Ignore production folder so that the repo doesn't grow immense
+# BYU-specific ignores
 production/
+bin/
+.pyside/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -76,6 +78,7 @@ target/
 .ipynb_checkpoints
 
 # pyenv
+.pyenv
 .python-version
 
 # celery beat schedule file
