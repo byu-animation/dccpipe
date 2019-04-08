@@ -1,4 +1,5 @@
-source .venv/bin/activate
-source init_media_env.sh
-source init_pyside_env.sh
-source init_pyenv_env.sh
+SOURCEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+source $SOURCEDIR/.venv/bin/activate
+source $SOURCEDIR/init_media_env.sh
+source $SOURCEDIR/init_pyside_env.sh

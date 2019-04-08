@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4f56439405d735f774d77722536ea7b45eec211d12b2b73025554f4bbb807f4e"
+            "sha256": "9e535579aac0568bc3c1d8a299c63068e15a736aac379ad283fdfb8a28a35b20"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,43 +16,6 @@
         ]
     },
     "default": {
-        "c8eca12": {
-            "file": "https://www.riverbankcomputing.com/static/Downloads/PyQt5/5.12.1/PyQt5_gpl-5.12.1.tar.gz"
-        },
-        "cmake": {
-            "hashes": [
-                "sha256:1bbdf0bb70721362ddac469d5239119ed4b94efa163cb595fb45b6e8c9e09c5e",
-                "sha256:213047a6762fb3ca5803292f150732cfbda53f0916474ab4cddfd0194f5e0e74",
-                "sha256:28917548277cc8741ea90f0fcdffc5fa2e069087a9b69e4a68f35906f8282012",
-                "sha256:29cd1ed3d8c0c3bec280d8372e090d617359aba40701a5c52bb4fa58e2518952",
-                "sha256:2f736ec9b5906461525cbef6cb605b429297fd78b79fa1c1ea4b9979b9083d4e",
-                "sha256:32f2be4d3c09f22877ea233e55fd467e319463f1cea0ff8a51c8c40be967a5b1",
-                "sha256:37643dae003d6e30a98c1cb2e65238eba7811077396c5500d24245fc96294c41",
-                "sha256:3a340d4302af74d4cc6ac9f8ac00f00b280de5d5eaa78b6f08d3602725c38520",
-                "sha256:3ec28c9da8b333f7745ca3caacd1d0280e11cae729398c9c618f699195259e05",
-                "sha256:3f31f00c0e0ac4a98b5c813f6de1cadcec2f72086fe61ba1c84ecbd7f97330c2",
-                "sha256:44af28e8bfd1dc5db18252de7a5a4fe3bbc53115602f54716c616ac853f6fbfa",
-                "sha256:49564f496cdcc1399734eea1583be09bd75f626779d786e1641f0038dc3b4035",
-                "sha256:5925479027e7816b0d4bf6b145bf41a544cc33adad41b0bcb1501ce5701b006b",
-                "sha256:59f732c48d7b7354385b2d27a948ae6a0b8636e91735986af90403509c4e1c36",
-                "sha256:5d1747c60245a2f741a644b6802ca6ce2bb66164cdc7efc40c0045507726a3a4",
-                "sha256:68b7782b7741688f52c1d691dc6aab0f9f8dfe9b85331e7a1b66f4eecdf2fe4c",
-                "sha256:812d8da36d1ab1d7a7ff48a273ebd6a6749b3d85ef659eb2f67402cda91e9fdb",
-                "sha256:868c9ca629f9ae9095cd72111ff78604c658787f87d5773885f2f2241937ccb5",
-                "sha256:c2f43812ed155f7e076a720196742fe0207188fe49922a0a87723e135db88d2c",
-                "sha256:c570c5e53df3aa09ca47f09a3328fee6fae0cb9f4d7cd1d514122c77599adc39",
-                "sha256:c8b257a26c680ffe4658987740f2dacf864dd83c2f4aa56f4ae3c417ec4b9729",
-                "sha256:cd543cf3fda4dc12b7ba1fbb83c0aa1326d219ca51091d560d92d99e961c8846",
-                "sha256:d0735cae509233f349bd5927328453e77100ce704fd50c78d074cc8cc3d6e8ee",
-                "sha256:d28d0f902105ec57643c830a9d816805f3f721220937feee9c8548230b38a0f2",
-                "sha256:dc9dec6facd8500d16ac7c7e4df42c10c5d3c2e6b47fb269d9099ced78567d33",
-                "sha256:de6e9e8f000e85b0e41e8d1e0ceeaac6a8ec741e1fa9f4171f8abd8f9c4fa5c0",
-                "sha256:e81b834879817f4d3ac759c86208867da88809bd24fb1d03e1c7c5e4346346a5",
-                "sha256:fb60931c20bb8653d5c9d0ccb0ad0028804ece1a0797cb49222ee0358c8250c4"
-            ],
-            "index": "pypi",
-            "version": "==3.13.3"
-        },
         "qt-py": {
             "hashes": [
                 "sha256:f2df0a8a71573b741ac0c6a6c99498261d85cfbd5552e8995da840da3240b73a"

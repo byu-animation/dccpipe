@@ -1,7 +1,7 @@
 import os
 
 # We're going to need asset management module
-from byuam import Environment, Project
+from pipe.am import Environment, Project
 
 try:
     from PySide.QtCore import Slot
