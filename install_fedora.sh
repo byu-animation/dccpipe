@@ -53,16 +53,14 @@ if [ $FAILED == 1 ]
 fi
 
 # https://askubuntu.com/questions/586938/undo-the-sudo-within-a-script
-sudo -u $USER pip install --user pipenv
+if [ $(id -u) -ne 0 ]
+  then
+    pip install --user pipenv
+  else
+    sudo -u $USER pip install --user pipenv
+fi
 
 source ./init_media_env.sh
-
-if [ INSTALLMISSINGPACKAGES == 1 ]
-then
-  source ./build_pyside_fedora.sh --installmissing
-else
-  source ./build_pyside_fedora.sh
-fi
 
 # Install a virtual environment in the current folder.
 export PIPENV_VENV_IN_PROJECT=true
@@ -73,4 +71,11 @@ then
     pipenv install --dev
 else
     pipenv install
+fi
+
+if [ INSTALLMISSINGPACKAGES == 1 ]
+then
+  source ./build_pyside_fedora.sh --installmissing
+else
+  source ./build_pyside_fedora.sh
 fi

@@ -56,34 +56,15 @@ if [ $FAILED == 1 ]
     exit 1
 fi
 
-source ./init_pyside_env.sh
-cd $PYSIDEPATH
+# https://askubuntu.com/questions/586938/undo-the-sudo-within-a-script
+if [ $(id -u) -ne 0 ]
+  then
+    pip install --user pyside2
+  else
+    sudo -u $USER pip install --user pyside2
+fi
 
-# set -DENABLE_ICECC=1 if you're using the icecream distributed compiler
-alias runcmake='cmake .. -DCMAKE_INSTALL_PREFIX=$PYSIDEPATH -DCMAKE_BUILD_TYPE=Debug -DENABLE_ICECC=0'
-
-#!/usr/bin/env bash
-
-allrepos="apiextractor generatorrunner shiboken pyside pyside-mobility"
-
-for repo in ${allrepos} ; do
- git clone git://github.com/pyside/$repo.git
-done
-
-#!/usr/bin/env bash
-
-dirs="apiextractor generatorrunner shiboken pyside pyside-mobility"
-
-for d in ${dirs} ; do
- (cd "$d"
- git pull origin master
- ) # exit from "$d"
-done
-
-for d in ${dirs} ; do
- rm -rf "$d/build"
- mkdir -p "$d/build"
- (cd "$d/build"
-  cmake .. -DCMAKE_INSTALL_PREFIX=$PYSIDEPATH -DCMAKE_BUILD_TYPE=Debug -DENABLE_ICECC=0 && make -j4 && make install || exit 1
- ) # exit from "$d/build"
-done
+shopt -s dotglob
+mv $HOME/.local/lib/python2.7/site-packages/*shiboken* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
+mv $HOME/.local/lib/python2.7/site-packages/*pyside2* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
+mv $HOME/.local/lib/python2.7/site-packages/*PySide2* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
