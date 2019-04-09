@@ -1,10 +1,10 @@
-# DCCPipe
+# dccpipe
 Open DCC Pipeline management tools
 
 ## Description
 DCC's (Digital Content Creation tools) have similar needs in a pipeline. They typically contain a Python API, allow for custom tools/plugins, and need to interact by passing data to eachother. These similar functions have been abstracted into a suite of tools in a virtual environment which can be deployed in film, game and VFX pipelines.
 
-DCCPipe was created with the intention of becoming cross-platform, compatible and easy for collaboration. We are attempting to adhere to style standards we have observed in other open-source repositories, and would appreciate feedback in that regard.
+We created dccpipe with the intention of being cross-platform, compatible and easy for collaboration. We are attempting to adhere to style standards we have observed in other open-source repositories, and would appreciate feedback in that regard.
 
 ## Install Instructions
 ### Basic install for developers
