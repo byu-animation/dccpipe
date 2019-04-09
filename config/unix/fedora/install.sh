@@ -1,5 +1,12 @@
+#!/bin/sh
+
 SOURCEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source $SOURCEDIR/init_media_env.sh
+CONFIGDIR=$SOURCEDIR
+while [ $(basename $CONFIGDIR) != "/" ] && [ $(basename $CONFIGDIR) != "config" ]
+do
+  CONFIGDIR="$(dirname "$CONFIGDIR")"
+done
+source $CONFIGDIR/unix/init_media_env.sh
 
 original_dir=$(pwd)
 cd $MEDIA_PROJECT_DIR
@@ -92,7 +99,7 @@ fi
 
 # https://askubuntu.com/questions/586938/undo-the-sudo-within-a-script
 
-source $SOURCEDIR/init_media_env.sh
+source $CONFIGDIR/unix/init_media_env.sh
 
 # Install a virtual environment in the current folder.
 export PIPENV_VENV_IN_PROJECT=true
@@ -107,9 +114,9 @@ fi
 
 if [ $INSTALLMISSINGPACKAGES == 1 ]
 then
-  source $SOURCEDIR/build_pyside_fedora.sh --installmissing
+  source $SOURCEDIR/install_pyside.sh --installmissing
 else
-  source $SOURCEDIR/build_pyside_fedora.sh
+  source $SOURCEDIR/install_pyside.sh
 fi
 
 if [ "$(id -u)" == "0" ]

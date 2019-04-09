@@ -1,5 +1,4 @@
-# This script is adapted from the PySide build guide:
-# https://wiki.qt.io/Building_PySide_on_Linux
+#!/bin/sh
 
 for arg in "$@"
 do
