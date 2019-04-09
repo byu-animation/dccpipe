@@ -13,7 +13,8 @@ done
 #https://unix.stackexchange.com/questions/122681/how-can-i-tell-whether-a-package-is-installed-via-yum-in-a-bash-script
 
 function isinstalled {
-  if rpm -q "$1" >/dev/null 2>&1; then
+  if rpm -q "$1" >/dev/null 2>&1
+  then
     true
   else
     false
@@ -27,10 +28,10 @@ FAILED=0
 for dependency in ${dependencies} ; do
   echo "checking if" $dependency "is installed"
   if isinstalled $dependency
-    then
+  then
       echo "requirement satisfied:" $dependency
-    elif [ $INSTALLMISSINGPACKAGES == 1 ]
-    then
+  elif [ "$INSTALLMISSINGPACKAGES" -eq "1" ]
+  then
       echo "installing " $dependency
       TMP=$(mktemp)
       yum install $dependency 2> "$TMP"
@@ -50,24 +51,24 @@ for dependency in ${dependencies} ; do
   fi
 done
 
-if [ $FAILED == 1 ]
+if [ "$FAILED" -eq "1" ]
   then
     echo "Build failed. Check your dependencies, and install with sudo if you can."
 fi
 
 # https://askubuntu.com/questions/586938/undo-the-sudo-within-a-script
-if [ $(id -u) -ne 0 ]
+if [ "$(id -u)" -ne "0" ]
   then
     pip install --user pyside2
   else
     sudo -u $USER pip install --user pyside2
 fi
 
-if [ $(id -u) -ne 0 ]
-then
-  USERHOME=$HOME
-else
-  USERHOME=$(eval echo ~${USER})
+if [ "$(id -u)" -ne "0" ]
+  then
+    USERHOME=$HOME
+  else
+    USERHOME=$(eval echo ~${USER})
 fi
 
 shopt -s dotglob
