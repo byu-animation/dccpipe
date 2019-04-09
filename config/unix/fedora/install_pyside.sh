@@ -21,7 +21,7 @@ function isinstalled {
 }
 
 # qt-webkit-devel python-devel
-dependencies="cmake qt-devel qt5-qtbase-devel libxml2-devel libxslt-devel rpmdevtools gcc gcc-c++ make"
+dependencies="cmake qt5-qtbase-devel libxml2-devel rpmdevtools gcc gcc-c++ make"
 
 FAILED=0
 for dependency in ${dependencies} ; do

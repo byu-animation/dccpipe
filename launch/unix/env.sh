@@ -7,9 +7,11 @@ do
   LAUNCHDIR="$(dirname "$LAUNCHDIR")"
 done
 
-INIT_SCRIPT="$(dirname "$LAUNCHDIR")/config/unix/init_all_env.sh"
-source $INIT_SCRIPT
+SHELL_SCRIPT="$(dirname "$LAUNCHDIR")/config/unix/shell.sh activate"
+ENV_SCRIPT="$(dirname "$LAUNCHDIR")/config/unix/env.sh"
+source $SHELL_SCRIPT
+source $ENV_SCRIPT
 
 export PYTHONPATH=${PYTHONPATH}:${MEDIA_PIPE_DIR}
 
-echo "Initialized BYUPipe environment."
+echo "Initialized byupipe environment."

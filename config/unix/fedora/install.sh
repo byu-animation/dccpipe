@@ -1,38 +1,73 @@
 #!/bin/sh
 
-SOURCEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-CONFIGDIR=$SOURCEDIR
+for arg in "$@"
+do
+  if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]
+  then
+    cat << EOF
+
+Fedora Install Script
+
+Usage:
+install.sh -d | --dev
+install.sh -c | --clean
+install.sh -im | --installmissing
+install.sh -h | --help
+
+Options:
+-d --dev              Install developer packages
+-c --clean            Clear virtualenv and reinstall
+-im --installmissing  Install missing pip/yum packages
+-h --help             Help and usage
+
+EOF
+  return 1
+  fi
+  if [ "$arg" == "--dev" ] || [ "$arg" == "-d" ]
+  then
+    DEV=1
+  else
+    DEV=0
+  fi
+  if [ "$arg" == "--clean" ] || [ "$arg" == "-c" ]
+  then
+    CLEAN=1
+  else
+    CLEAN=0
+  fi
+  if [ "$arg" == "--installmissing" ] || [ "$arg" == "-im" ]
+  then
+    INSTALLMISSINGPACKAGES=1
+  else
+    INSTALLMISSINGPACKAGES=0
+  fi
+done
+
+if [ $MEDIA_SUBSHELL_ACTIVE == 1 ]
+then
+  deactivate
+  export MEDIA_SUBSHELL_ACTIVE=0
+fi
+
+FEDORADIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo $FEDORADIR
+CONFIGDIR=$FEDORADIR
 while [ $(basename $CONFIGDIR) != "/" ] && [ $(basename $CONFIGDIR) != "config" ]
 do
   CONFIGDIR="$(dirname "$CONFIGDIR")"
 done
-source $CONFIGDIR/unix/init_media_env.sh
+source $CONFIGDIR/unix/env.sh
 
 original_dir=$(pwd)
 cd $MEDIA_PROJECT_DIR
 
-for arg in "$@"
-do
-    if [ "$arg" == "--dev" ] || [ "$arg" == "-d" ]
-    then
-        DEV=1
-    else
-        DEV=0
-    fi
-    if [ "$arg" == "--clean" ] || [ "$arg" == "-c" ]
-    then
-        rm -rf $MEDIA_PROJECT_DIR/.venv
-    fi
-    if [ "$arg" == "--installmissing" ] || [ "$arg" == "-im" ]
-    then
-        INSTALLMISSINGPACKAGES=1
-    else
-        INSTALLMISSINGPACKAGES=0
-    fi
-done
+if [ $CLEAN == 1 ]
+  then
+  rm -rf $MEDIA_PROJECT_DIR/.venv
+fi
 
 function isinstalled {
-  if [ ! "$(pip list | grep "$@")" ] || yum list installed "$@" >/dev/null 2>&1; then
+  if [ "$(pip list | grep "$@" 2>/dev/null)" ] || yum list installed "$@" >/dev/null 2>&1; then
     true
   else
     false
@@ -94,18 +129,18 @@ done
 if [ $FAILED == 1 ]
   then
     echo "Build failed. Check your dependencies, and install with sudo if you can."
-    exit 1
+    return 1
 fi
 
 # https://askubuntu.com/questions/586938/undo-the-sudo-within-a-script
 
-source $CONFIGDIR/unix/init_media_env.sh
+source $CONFIGDIR/unix/env.sh
 
 # Install a virtual environment in the current folder.
 export PIPENV_VENV_IN_PROJECT=true
 
 # Install dev tools if dev is true
-if [ DEV == 1 ]
+if [ $DEV == 1 ]
 then
     pipenv install --dev
 else
@@ -114,9 +149,9 @@ fi
 
 if [ $INSTALLMISSINGPACKAGES == 1 ]
 then
-  source $SOURCEDIR/install_pyside.sh --installmissing
+  source $FEDORADIR/install_pyside.sh --installmissing
 else
-  source $SOURCEDIR/install_pyside.sh
+  source $FEDORADIR/install_pyside.sh
 fi
 
 if [ "$(id -u)" == "0" ]
