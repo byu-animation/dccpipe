@@ -10,8 +10,8 @@ DCCPipe was created with the intention of becoming cross-platform, compatible an
 ### Basic install for developers
 To install all development packages, execute the following in a bash terminal:
 ```
-git clone https://github.com/htinney/byupipe
-cd byupipe
+git clone https://github.com/byu-animation/dccpipe
+cd dccpipe
 source config/unix/fedora/install.sh --dev
 ```
 To activate and test the virtual environment:
@@ -24,8 +24,8 @@ python
 
 ### Release/update in production directory
 ```
-git clone https://github.com/htinney/byupipe
-cd byupipe
+git clone https://github.com/byu-animation/dccpipe
+cd dccpipe
 source config/unix/fedora/install.sh --clean
 ```
 
