@@ -3,7 +3,7 @@
 original_dir="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $SCRIPT_DIR
-source ../init_all_env.sh
+source ../config/init_all_env.sh
 cd $original_dir
 
 echo $PYTHONPATH

@@ -21,7 +21,8 @@ function isinstalled {
   fi
 }
 
-dependencies="cmake qt-devel qt5-qtbase-devel qt-webkit-devel libxml2-devel libxslt-devel python-devel rpmdevtools gcc gcc-c++ make"
+# qt-webkit-devel python-devel
+dependencies="cmake qt-devel qt5-qtbase-devel libxml2-devel libxslt-devel rpmdevtools gcc gcc-c++ make"
 
 FAILED=0
 for dependency in ${dependencies} ; do
@@ -53,7 +54,6 @@ done
 if [ $FAILED == 1 ]
   then
     echo "Build failed. Check your dependencies, and install with sudo if you can."
-    exit 1
 fi
 
 # https://askubuntu.com/questions/586938/undo-the-sudo-within-a-script
@@ -64,7 +64,14 @@ if [ $(id -u) -ne 0 ]
     sudo -u $USER pip install --user pyside2
 fi
 
+if [ $(id -u) -ne 0 ]
+then
+  USERHOME=$HOME
+else
+  USERHOME=$(eval echo ~${USER})
+fi
+
 shopt -s dotglob
-mv $HOME/.local/lib/python2.7/site-packages/*shiboken* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
-mv $HOME/.local/lib/python2.7/site-packages/*pyside2* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
-mv $HOME/.local/lib/python2.7/site-packages/*PySide2* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
+cp -r $USERHOME/.local/lib/python2.7/site-packages/*shiboken* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
+cp -r $USERHOME/.local/lib/python2.7/site-packages/*pyside2* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
+cp -r $USERHOME/.local/lib/python2.7/site-packages/*PySide2* $MEDIA_PROJECT_DIR/.venv/lib/python2.7/site-packages
