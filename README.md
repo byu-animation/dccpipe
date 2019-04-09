@@ -2,7 +2,7 @@
 Open DCC Pipeline management tools
 
 ## Description
-DCC's (Digital Content Creation applications) have similar needs in a pipeline. They typically contain a Python API, allow for custom tools/plugins, and need to interact by passing data to eachother. These similar functions have been abstracted into a suite of tools in a virtual environment which can be deployed in film, game and VFX pipelines.
+DCC's (Digital Content Creation tools) have similar needs in a pipeline. They typically contain a Python API, allow for custom tools/plugins, and need to interact by passing data to eachother. These similar functions have been abstracted into a suite of tools in a virtual environment which can be deployed in film, game and VFX pipelines.
 
 DCCPipe was created with the intention of becoming cross-platform, compatible and easy for collaboration. We are attempting to adhere to style standards we have observed in other open-source repositories, and would appreciate feedback in that regard.
 
@@ -30,25 +30,23 @@ source config/unix/fedora/install.sh --clean
 ```
 
 ### Optional Arguments
-#### --dev
+#### --dev/-d
 Installs all development packages
 ```
 source config/unix/fedora/install.sh --dev
 ```
 
-#### --clean
+#### --clean/-c
 Cleans the previous installation by deleting .venv folder
 ```
 source config/unix/fedora/install.sh --clean
 ```
 
-#### --installmissing
+#### --installmissing/-im
 Installs missing packages with pip/yum. Note: if you are missing an rpm, you must run this as root. If you are only missing pip packages, you can run this as a normal user.
 ```
 sudo config/unix/fedora/install.sh --installmissing
 ```
-
-
 
 ## Compatibility
 This project was inspired by previous BYU Animation pipeline repositories, such as [BYU Animation Tools](https://github.com/byu-animation/byu-animation-tools) and [BYU Pipeline Tools](https://github.com/byu-animation/byu-pipeline-tools). Therefore, it is created with a very specific use case. However, the pipeline is built in such a way that other distros/operating systems could be supported in a future release.
@@ -75,17 +73,17 @@ This project was inspired by previous BYU Animation pipeline repositories, such 
 | Foundry Nuke                    | 11.3    | pipe.tools.nuke |
 | Allegorithmic Substance Painter | 2018.3  | pipe.tools.sbs  |
 
-### Packages Installed by Pipenv
+### Packages Managed by Pipenv
 Note: All packages will be installed in the project's directory in the .venv folder.
 
 | Pipenv Package | `--dev` only |
 |:---------------|:----------:|
-| [pyside2]()*    | no |
-| [shiboken2]()*  | no |
-| [qt-py]()      | no |
-| [termgraph]()  | yes |
-| [loguru]()     | yes |
-| [pytest]()     | yes |
-| [sphinx]()     | yes |
+| [pyside2](https://pypi.org/project/PySide2/)*      | no |
+| [shiboken2](https://pypi.org/project/shiboken2/)*  | no |
+| [qt-py](https://github.com/mottosso/Qt.py)         | no |
+| [termgraph](https://github.com/mkaz/termgraph)     | yes |
+| [loguru](https://github.com/Delgan/loguru)         | yes |
+| [pytest](https://github.com/pytest-dev/pytest)     | yes |
+| [sphinx](https://github.com/sphinx-doc/sphinx)     | yes |
 
-\* Due to a virtualenv limitation, pyside2 and shiboken2 will be installed to user, and then moved into the project directory.
+\* Due to a virtualenv limitation, pyside2 and shiboken2 will be installed to user, and then copied into the project directory. The script that handles this is `config/unix/fedora/install_pyside.sh`
