@@ -9,7 +9,10 @@ We created dccpipe with the intention of being cross-platform, compatible and ea
 ## Install Instructions
 Before starting, you'll need to make sure that your $PATH environment variable is set to be able to read local modules. Do this:
 1. Open terminal in your home directory
-2. vim .bashrc
+2. Type:
+```
+vim .bashrc
+```
 3. Insert the following in the file:
 ```
 export PATH=~/.local/bin:$PATH
