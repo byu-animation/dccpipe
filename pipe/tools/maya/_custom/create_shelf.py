@@ -60,8 +60,9 @@ def BYU_load_shelf():
 		if shelfItem['itemType'] == 'button':
 			icon = os.path.join(ICON_DIR, shelfItem['icon'])
 			annotation = shelfItem['annotation']
-			pythonFile = shelfItem['pythonFile'][:-3]
-			pm.shelfButton(command="import %s; %s"%(pythonFile, shelfItem['function']),annotation=annotation, image=icon, label=annotation)
+			module = "pipe." + shelfItem['guiTool']
+			function = shelfItem['function'] + "()"
+			pm.shelfButton(command="import %s; %s"%(module, function),annotation=annotation, image=icon, label=annotation)
 		else:
 			pm.separator(horizontal=False, style='none', enable=True, width=7)
 			pm.separator(horizontal=False, style='none', enable=True, width=2, backgroundColor=(0.5,0.5,0.5))

@@ -17,7 +17,7 @@
 			"icon":"publish.svg",
 			"annotation":"Publish a model, rig or animation",
 			"guiTool":"maya.publishers.publisher.Publisher",
-			"function":"publisher"
+			"function":"publish"
 		}, {
 			"itemType":"button",
 			"icon":"rollback.svg",
