@@ -122,7 +122,7 @@ for dependency in ${dependencies} ; do
   fi
 done
 
-if [ $FAILED ] [ $FAILED -eq 1 ]
+if [ $FAILED ] && [ $FAILED -eq 1 ]
   then
     echo "Build failed. Check your dependencies, and install with sudo if you can."
     return 1
@@ -138,6 +138,7 @@ export PIPENV_VENV_IN_PROJECT=true
 # Install dev tools if dev is true
 if [ $DEV ] && [ $DEV -eq 1 ]
 then
+    echo "got to pipenv install"
     pipenv install --dev
 else
     pipenv install
