@@ -1,0 +1,2 @@
+python("import pipe.tools.maya as maya");
+python("import maya.custom.shelf as maya_custom_shelf");

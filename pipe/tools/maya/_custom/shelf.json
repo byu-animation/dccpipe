@@ -1,0 +1,94 @@
+{
+	"shelfItems":[
+		{
+			"itemType":"button",
+			"icon":"new-body.svg",
+			"annotation":"Create a new body",
+			"guiTool":"general.manager.Manager",
+			"function":"createBody"
+		}, {
+			"itemType":"button",
+			"icon":"checkout.svg",
+			"annotation":"Checkout a model, rig or animation",
+			"guiTool":"maya.cloners.cloner.Cloner",
+			"function":"clone"
+		}, {
+			"itemType":"button",
+			"icon":"publish.svg",
+			"annotation":"Publish a model, rig or animation",
+			"guiTool":"maya.publishers.publisher.Publisher",
+			"function":"publisher"
+		}, {
+			"itemType":"button",
+			"icon":"rollback.svg",
+			"annotation":"Rollback body to previous version",
+			"guiTool":"maya.cloners.cloner.Cloner",
+			"function":"rollback"
+		}, {
+			"itemType":"button",
+			"icon":"playblast.svg",
+			"annotation":"Playblast this shot",
+			"guiTool":"maya.submitters.playblaster.Playblaster",
+			"function":"playblast"
+		}, {
+			"itemType":"button",
+			"icon":"alembic-export.svg",
+			"annotation":"Export as Alembic",
+			"guiTool":"maya.exporters.alembic_exporter.AlembicExporter",
+			"function":"export"
+		}, {
+			"itemType":"button",
+			"icon":"tag.svg",
+			"annotation":"Tag Selected Objects for Export",
+			"guiTool":"maya.exporters.tagger.Tagger",
+			"function":"tag"
+		}, {
+			"itemType":"button",
+			"icon":"reference.svg",
+			"annotation":"Reference a model or rig",
+			"guiTool":"maya.importers.referencer.Referencer",
+			"function":"reference"
+		}, {
+			"itemType":"separator"
+		}, {
+			"itemType":"button",
+			"icon":"ik-fk.svg",
+			"annotation":"FK IK Matching Tool",
+			"guiTool":"fk_ik_snapping.py",
+			"function":"fk_ik_snapping.go()"
+		}, {
+			"itemType":"button",
+			"icon":"interpolate.svg",
+			"annotation":"Cluster Interpolate",
+			"guiTool":"cluster_interpolate.py",
+			"function":"cluster_interpolate.go()"
+		}, {
+			"itemType":"button",
+			"icon":"education.svg",
+			"annotation":"Change the licence to education",
+			"guiTool":"education.py",
+			"function":"education.go()"
+		}, {
+			"itemType": "separator"
+		}, {
+			"itemType":"button",
+			"icon":"2_set.png",
+			"annotation":"Export JSON Set File",
+			"guiTool":"maya.exporters.json_exporter.JSONExporter",
+			"function":"export"
+		}, {
+			"itemType":"button",
+			"icon":"2_shot.png",
+			"annotation":"Export JSON Shot File",
+			"guiTool":"maya.exporters.json_exporter.JSONExporter",
+			"function":"export"
+		}, {
+			"itemType":"button",
+			"icon":"2_prop.png",
+			"annotation":"Export JSON Prop File",
+			"guiTool":"maya.exporters.json_exporter.JSONExporter",
+			"function":"export"
+		}
+
+	]
+}
