@@ -7,6 +7,18 @@ DCC's (Digital Content Creation tools) have similar needs in a pipeline. They ty
 We created dccpipe with the intention of being cross-platform, compatible and easy for collaboration. We are attempting to adhere to style standards we have observed in other open-source repositories, and would appreciate feedback in that regard.
 
 ## Install Instructions
+Before starting, you'll need to make sure that your $PATH environment variable is set to be able to read local modules. Do this:
+1. Open terminal in your home directory
+2. vim .bashrc
+3. Insert the following in the file:
+```
+export PATH=~/.local/bin:$PATH
+```
+4. Type Esc, followed by :wq to save the changes
+5. Back in the terminal, enter the following command and proceed with the instructions below.
+```
+source .bashrc
+```
 ### Basic install for developers
 To install all development packages, execute the following in a bash terminal:
 ```
