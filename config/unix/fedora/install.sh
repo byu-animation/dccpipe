@@ -136,6 +136,9 @@ source $CONFIGDIR/unix/env.sh
 export PIPENV_VENV_IN_PROJECT=true
 
 # Install dev tools if dev is true
+# make sure the PATH is correct
+export PATH=~/.local/bin:$PATH
+
 if [ $DEV ] && [ $DEV -eq 1 ]
 then
     echo "got to pipenv install"
