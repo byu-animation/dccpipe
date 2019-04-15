@@ -1,2 +1,3 @@
 python("import pipe.tools.maya as maya");
-python("import maya.custom.shelf as maya_custom_shelf");
+python("import maya._custom.shelf as maya_custom_shelf");
+python("maya_custom_shelf.BYU_load_shelf()")
