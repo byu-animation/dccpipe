@@ -1,3 +1,7 @@
 python("import pipe.tools.maya as maya");
-python("import maya._custom.shelf as maya_custom_shelf");
-python("maya_custom_shelf.BYU_load_shelf()")
+print "successfully imported tools.maya\n"
+python("import maya._custom.create_shelf as maya_custom_shelf");
+print "successfully imported shelf\n"
+python("maya_custom_shelf.load_shelf()")
+print "successfully loaded shelf\n"
+# we have an error on this line. FIXME

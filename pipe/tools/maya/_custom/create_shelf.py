@@ -24,25 +24,30 @@ import pymel.core as pm
 import os
 import sys
 import json
-from byuam.environment import Environment
+from pipe.am.environment import Environment
 
-byuEnv = Environment()
+environment = Environment()
 
 #### CONSTANTS, Edit these for customization.
-PROJ = byuEnv.get_project_name()
+PROJ = environment.get_project_name()
+# making temp environment name for testing TODO: REMOVE
+PROJ = "test_shelf"
+
 SHELF_DIR = os.environ.get('MAYA_SHELF_DIR')
-ICON_DIR = os.path.join(SHELF_DIR, "icons")
-ICON_DIR = os.path.join(os.environ.get('BYU_TOOLS_DIR'), "assets", "images", "icons", "tool-icons")
-SCRIPT_DIR = os.path.join(SHELF_DIR, "scripts")
+ICON_DIR = os.environ.get('MAYA_ICONS_DIR')
+# ICON_DIR = os.path.join(os.environ.get('BYU_TOOLS_DIR'), "assets", "images", "icons", "tool-icons")
+# SCRIPT_DIR = os.path.join(SHELF_DIR, "scripts")  # FIXME: currently not doing anything
 ####
 
 #### Shelf building code. You shouldn't have to edit anything
 #### below these lines. If you want to add a new shelf item,
 #### follow the instructions in shelf.json.
-sys.path.append(SCRIPT_DIR)
 
-def BYU_load_shelf():
-	BYU_delete_shelf()
+# FIXME: This line below is deprecated
+# sys.path.append(SCRIPT_DIR)
+
+def load_shelf():
+	delete_shelf()
 
 	gShelfTopLevel = pm.mel.eval('global string $gShelfTopLevel; string $temp=$gShelfTopLevel')
 	pm.shelfLayout(PROJ, cellWidth=33, cellHeight=33, p=gShelfTopLevel)
@@ -56,23 +61,24 @@ def BYU_load_shelf():
 	#### Load in the buttons
 	json_file = file(os.path.join(SHELF_DIR, "shelf.json"))
 	data = json.loads(json_file.read())
-	for shelfItem in data['shelfItems']:
-		if shelfItem['itemType'] == 'button':
-			icon = os.path.join(ICON_DIR, shelfItem['icon'])
-			annotation = shelfItem['annotation']
-			module = "pipe." + shelfItem['guiTool']
-			function = shelfItem['function'] + "()"
+	for shelf_item in data['shelf_items']:
+		if shelf_item['itemType'] == 'button':
+			icon = os.path.join(ICON_DIR, shelf_item['icon'])
+			annotation = shelf_item['annotation']
+			module = "pipe." + shelf_item['guiTool']
+			function = shelf_item['function'] + "()"
 			pm.shelfButton(command="import %s; %s"%(module, function),annotation=annotation, image=icon, label=annotation)
 		else:
-			pm.separator(horizontal=False, style='none', enable=True, width=7)
-			pm.separator(horizontal=False, style='none', enable=True, width=2, backgroundColor=(0.5,0.5,0.5))
-			pm.separator(horizontal=False, style='none', enable=True, width=7)
+			pm.separator(horizontal='0', style='shelf', enable='1', width=35, height=35, visible=1, backgroundColor=(0.5,0.5,0.5), highlightColor=(0.321569, 0.521569, 0.65098))
+			# pm.separator(horizontal=False, style='none', enable=True, width=7)
+			# pm.separator(horizontal=False, style='shelf', enable=True, width=2, backgroundColor=(0.5,0.5,0.5))
+			# pm.separator(horizontal=False, style='none', enable=True, width=7)
 
 
 	#setUpSoup(gShelfTopLevel)
 	# Set default preferences
 	pm.env.optionVars['generateUVTilePreviewsOnSceneLoad'] = 1
 
-def BYU_delete_shelf():
+def delete_shelf():
 	if pm.shelfLayout(PROJ, exists=True):
 		pm.deleteUI(PROJ)
