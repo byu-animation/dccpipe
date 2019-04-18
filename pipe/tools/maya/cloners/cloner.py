@@ -1,5 +1,5 @@
-from byuam import Department
-from byugui.checkout_gui import CheckoutWindow
+from pipe.am import Department
+from pipe.gui.checkout_gui import CheckoutWindow
 from PySide2 import QtWidgets
 import maya.cmds as cmds
 import maya.OpenMayaUI as omu

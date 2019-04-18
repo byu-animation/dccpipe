@@ -1,10 +1,12 @@
 import os
 
 # from .department import Department
-from .element import Element
-from .environment import Department, Environment
-from . import pipeline_io
-from .registry import Registry
+from pipe.am.element import Element
+
+
+from pipe.am.environment import Department, Environment
+from pipe.am import pipeline_io
+from pipe.am.registry import Registry
 
 '''
 body module

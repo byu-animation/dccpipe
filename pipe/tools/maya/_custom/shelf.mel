@@ -1,7 +1,18 @@
-python("import pipe.tools.maya as maya");
-print "successfully imported tools.maya\n"
-python("import maya._custom.create_shelf as maya_custom_shelf");
-print "successfully imported shelf\n"
-python("maya_custom_shelf.load_shelf()")
-print "successfully loaded shelf\n"
-# we have an error on this line. FIXME
+python("import sys; import os");
+python("SHELF_DIR = os.environ.get('MAYA_SHELF_DIR')");
+python("sys.path.append(SHELF_DIR)");
+python("print(SHELF_DIR)");
+python("import create_shelf");
+python("create_shelf.load_shelf()")
+print "success!\n";
+
+// python("import pipe.tools.maya._custom as maya_custom");
+// print "successfully imported tools.maya._custom\n";
+// python("import pipe");
+// python("pipe.tools.maya._custom.create_shelf.load_shelf()");
+// print "success on the function call\n";
+// python("import maya_custom.create_shelf as maya_custom_shelf");
+// print "successfully imported shelf\n";
+// python("maya_custom_shelf.load_shelf()")
+// print "successfully loaded shelf\n";
+// error is now with import on line 3 FIXME

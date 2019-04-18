@@ -2,11 +2,11 @@ import getpass
 import os
 import pwd
 
-from . import pipeline_io
+import pipeline_io
 
 class Environment:
 
-	PROJECT_ENV = 'BYU_PROJECT_DIR'
+	PROJECT_ENV = 'MEDIA_PROJECT_DIR'
 	PIPELINE_FILENAME = '.project'
 
 	PROJECT_NAME = 'name'
@@ -43,7 +43,19 @@ class Environment:
 		if it doesn't already exist.
 		'''
 		self._project_dir = os.getenv(Environment.PROJECT_ENV)
-		if self._project_dir is None:
+			PROJECT_ENV = 'MEDIA_PROJECT_DIR'
+	PIPELINE_FILENAME = '.project'
+
+	PROJECT_NAME = 'name'
+	PRODUCTION_DIR = 'production_dir'
+	ASSETS_DIR = 'assets_dir'
+	SHOTS_DIR = 'shots_dir'
+	TOOLS_DIR = 'tools_dir'
+	CROWDS_DIR = 'crowds_dir'
+	USERS_DIR = 'users_dir'
+	HDA_DIR = 'hda_dir'
+	EMAIL_ADDRESS = 'email_address'
+	EMAIL_PASSWORD = 'email_password'if self._project_dir is None:
 			raise EnvironmentError(Environment.PROJECT_ENV + ' is not defined')
 
 		project_file = os.path.join(self._project_dir, Environment.PIPELINE_FILENAME)

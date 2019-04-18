@@ -1,8 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import os
 import shutil
 
-from .environment import Environment, Status
-from . import pipeline_io
+
+import environment
+from environment import Status
+from environment import Environment
+import pipeline_io
 
 """
 element module

@@ -5,7 +5,7 @@
 			"icon":"new-body.svg",
 			"annotation":"Create a new body",
 			"guiTool":"general.manager.Manager",
-			"function":"createBody"
+			"function":"create_body"
 		}, {
 			"itemType":"button",
 			"icon":"checkout.svg",
