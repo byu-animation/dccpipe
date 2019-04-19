@@ -1,7 +1,3 @@
-#### Shelf code written for the BYU Animation Program by
-#### Murphy Randle (murphyspublic@gmail.com). Inspiration and some code
-#### snippets taken from http://etoia.free.fr/?p=1771
-
 #### Welcome to the shelf script!
 ####
 #### If you'd like to add a shelf button, you can add it to
@@ -55,9 +51,14 @@ def load_shelf():
 		if shelf_item['itemType'] == 'button':
 			icon = os.path.join(ICON_DIR, shelf_item['icon'])
 			annotation = shelf_item['annotation']
-			module = "pipe.tools." + shelf_item['guiTool']
+
+			path = "pipe.tools." + shelf_item['guiTool']
 			function = shelf_item['function'] + "()"
-			pm.shelfButton(command="import %s; %s"%(module, function),annotation=annotation, image=icon, label=annotation)
+			class_with_method = function.split(".")
+			module = class_with_method[0]
+			method = class_with_method[1]
+
+			pm.shelfButton(command="from %s import %s; shelf_item = %s(); shelf_item.%s"%(path, module, module, method),annotation=annotation, image=icon, label=annotation)
 			# pm.shelfButton(command="%s.%s"%(module, function),annotation=annotation, image=icon, label=annotation)
 		else:
 			pm.separator(horizontal=False, style='shelf', enable=True, width=35, height=35, visible=1, enableBackground=0, backgroundColor=(0.2,0.2,0.2), highlightColor=(0.321569, 0.521569, 0.65098))
