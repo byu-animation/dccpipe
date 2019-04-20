@@ -76,7 +76,7 @@ for dependency in ${dependencies} ; do
   then
     echo "requirement satisfied:" $dependency
 
-  elif [ $INSTALLMISSINGPACKAGES -eq 1 ]
+  elif [ $INSTALLMISSINGPACKAGES ] && [ $INSTALLMISSINGPACKAGES -eq 1 ]
   then
     echo "installing " $dependency
     PIPFAILED=0
