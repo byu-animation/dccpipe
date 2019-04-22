@@ -1,11 +1,11 @@
 import os
 import shutil
 
-from .body import Body, Asset, Shot, Tool, CrowdCycle, AssetType
-from .element import Checkout, Element
-from .environment import Department, Environment, User
-from . import pipeline_io
-from .registry import Registry
+from am.body import Body, Asset, Shot, Tool, CrowdCycle, AssetType
+from am.element import Checkout, Element
+from am.environment import Department, Environment, User
+from am import pipeline_io
+from am.registry import Registry
 
 
 

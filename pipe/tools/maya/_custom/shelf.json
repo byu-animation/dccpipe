@@ -9,15 +9,15 @@
 		}, {
 			"itemType":"button",
 			"icon":"checkout.svg",
-			"annotation":"Checkout a model, rig or animation",
+			"annotation":"Check-out/clone an asset",
 			"guiTool":"maya.cloners.cloner",
-			"function":"Cloner.clone"
+			"function":"MayaCloner.clone"
 		}, {
 			"itemType":"button",
 			"icon":"publish.svg",
 			"annotation":"Publish a model, rig or animation",
 			"guiTool":"maya.publishers.publisher",
-			"function":"Publisher.publish"
+			"function":"MayaPublisher.publish"
 		}, {
 			"itemType":"button",
 			"icon":"rollback.svg",
