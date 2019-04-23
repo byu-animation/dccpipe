@@ -23,7 +23,7 @@
 			"icon":"rollback.svg",
 			"annotation":"Rollback body to previous version",
 			"tool":"maya.cloners.cloner",
-			"function":"Cloner.rollback"
+			"function":"MayaCloner.rollback"
 		}, {
 			"itemType":"button",
 			"icon":"playblast.svg",

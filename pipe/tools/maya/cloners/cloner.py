@@ -12,6 +12,9 @@ class MayaCloner:
 		self.maya_checkout_dialog = None
 		pass
 
+	def rollback(self):
+		print("Rollin' Rollin' Rollin' (Back)")
+
 	def clone(self, gui=True, file_path=None, asset_name='Temp'):
 		if gui:
 			self.go()
