@@ -1,7 +1,7 @@
 import os
 
 # Other export scripts
-import maya.utils as maya_utils
+import pipe.tools.maya.utils.utils as maya_utils
 from pipe.tools.maya.exporters.alembic_exporter import AlembicExporter
 from pipe.tools.maya.exporters.json_exporter import JSONExporter
 

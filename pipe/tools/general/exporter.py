@@ -5,7 +5,7 @@ try:
 except ImportError:
     from PySide2.QtCore import Slot
 
-# from pipe.tools.general.gui_tool import GUITool
+from pipe.tools.general.gui_tool import GUITool
 from pipe.tools.general.gui_method import GUIMethod
 
 '''

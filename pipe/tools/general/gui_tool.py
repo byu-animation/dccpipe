@@ -19,7 +19,7 @@ from prompts import Prompts
 '''
     Executes a series of methods prompting for user input where needed.
 '''
-class GUITool(object, Prompts):
+class GUITool(Prompts):
 
     def __init__(self, gui=True):
         super(GUITool, self).__init__()
@@ -127,7 +127,7 @@ class GUITool(object, Prompts):
             raise TriedMethodFromNonGUI("next_gui_method()")
 
         if self.gui_method_number > len(self.gui_methods):
-            raise GUIMethodOutsideBounds(self.gui_method_number, next_method, self.str_gui_methods()))
+            raise GUIMethodOutsideBounds(self.gui_method_number, next_method, self.str_gui_methods())
             return
 
         location = -1
@@ -137,7 +137,7 @@ class GUITool(object, Prompts):
                 break
 
         if location == -1 or location > len(self.gui_methods):
-            raise GUIMethodOutsideBounds(self.gui_method_number, next_method, self.str_gui_methods()))
+            raise GUIMethodOutsideBounds(self.gui_method_number, next_method, self.str_gui_methods())
 
         self.gui_method_number = i
 

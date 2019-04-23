@@ -1,6 +1,7 @@
 from am import *
 from pipe.gui import quick_dialogs
 from pipe.tools.general.exporter import Exporter
+from pipe.tools.maya.prompts import Prompts
 
 try:
     from PySide.QtCore import Slot
@@ -11,9 +12,7 @@ except ImportError:
     Runs after a publisher to export anything that needs exporting.
 '''
 
-from tools.maya import Prompts
-
-class MayaExporter(Exporter, maya.prompts.Prompts):
+class MayaExporter(Exporter, Prompts):
     def __init__(self, gui=True, element=None, show_tagger=True):
         super(MayaExporter, self).__init__(gui=gui, element=element)
 

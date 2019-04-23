@@ -1,12 +1,12 @@
-from byuam import *
-from byuminigui import quick_dialogs
+from pipe.am import *
+from pipe.gui import quick_dialogs
 import pymel.core as pm
 
 import json
 
-from maya_exporter import MayaExporter
+from pipe.tools.maya.exporters.exporter import MayaExporter
 
-import maya_utils
+import maya.utils as maya_utils
 
 class JSONExporter(MayaExporter, object):
     def __init__(self, gui=True, element=None, show_tagger=False):

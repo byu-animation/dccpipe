@@ -1,11 +1,16 @@
 # We're going to need asset management module
-from byuam import Environment, Project
+from pipe.am import Environment, Project
 
 # Minimal UI
-from byuminigui.select_from_list import SelectFromList, SelectFromMultipleLists
-from byuminigui.write_message import WriteMessage
+from pipe.gui.select_from_list import SelectFromList, SelectFromMultipleLists
+from pipe.gui.write_message import WriteMessage
 
-import maya_utils
+import maya.utils as maya_utils
+try:
+    from PySide.QtCore import Slot
+except ImportError:
+    from PySide2.QtCore import Slot
+
 
 class Prompts(object):
     def TaggedItemsDialog(self):

@@ -1,9 +1,19 @@
 # We're going to need asset management module
-from byuam import Environment, Project
+from pipe.am import Environment, Project
 
 # Minimal UI
-from byuminigui.select_from_list import SelectFromList, SelectFromMultipleLists
-from byuminigui.write_message import WriteMessage
+from pipe.gui.select_from_list import SelectFromList, SelectFromMultipleLists
+from pipe.gui.write_message import WriteMessage
+
+try:
+    from PySide import QtGui as QtWidgets
+    from PySide import QtGui as QtGui
+    from PySide import QtCore
+    from PySide.QtCore import Slot
+except ImportError:
+    from PySide2 import QtWidgets, QtGui, QtCore
+    from PySide2.QtCore import Slot
+
 
 class Prompts(object):
     '''

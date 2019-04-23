@@ -2,7 +2,7 @@
 import pymel.core as pm
 import os
 from PySide2 import QtWidgets
-from byuam import *
+from pipe.am import *
 
 def maya_main_window():
     for obj in QtWidgets.qApp.topLevelWidgets():

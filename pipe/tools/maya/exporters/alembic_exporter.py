@@ -5,8 +5,8 @@ import pymel.core as pm
 
 from exporter import MayaExporter
 
-import maya.utils as maya_utils
-from maya_utils import ExportFlags
+# import maya.utils as maya_utils
+from pipe.tools.maya.utils.utils import ExportFlags
 
 
 class AlembicExporter(MayaExporter, object):

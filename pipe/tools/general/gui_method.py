@@ -1,6 +1,8 @@
 '''
     A method that includes a GUI
 '''
+from PySide2.QtCore import Signal
+
 
 class GUIMethod(object):
     finished = Signal()
