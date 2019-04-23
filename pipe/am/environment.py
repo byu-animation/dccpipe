@@ -22,31 +22,29 @@ class Environment:
     EMAIL_ADDRESS = 'email_address'
     EMAIL_PASSWORD = 'email_password'
 
-    @staticmethod
-    def create_new_dict(name, assets_dir, shots_dir, tools_dir, crowds_dir, users_dir, hda_dir, email_address=None, email_password=None):
-        datadict = {}
-        datadict[Environment.PROJECT_NAME] = name
-        datadict[Environment.ASSETS_DIR] = assets_dir
-        datadict[Environment.SHOTS_DIR] = shots_dir
-        datadict[Environment.TOOLS_DIR] = tools_dir
-        datadict[Environment.CROWDS_DIR] = crowds_dir
-        datadict[Environment.USERS_DIR] = users_dir
-        datadict[Environment.HDA_DIR] = hda_dir
-        if(email_address is not None and email_password is not None):
-            datadict[Environment.EMAIL_ADDRESS] = email_address
-            datadict[Environment.EMAIL_PASSWORD] = email_password
-        return datadict
+    # @staticmethod
+    # def create_new_dict(name, assets_dir, shots_dir, tools_dir, crowds_dir, users_dir, hda_dir, email_address=None, email_password=None):
+    #     datadict = {}
+    #     datadict[Environment.PROJECT_NAME] = name
+    #     datadict[Environment.ASSETS_DIR] = assets_dir
+    #     datadict[Environment.SHOTS_DIR] = shots_dir
+    #     datadict[Environment.TOOLS_DIR] = tools_dir
+    #     datadict[Environment.CROWDS_DIR] = crowds_dir
+    #     datadict[Environment.USERS_DIR] = users_dir
+    #     datadict[Environment.HDA_DIR] = hda_dir
+    #     if(email_address is not None and email_password is not None):
+    #         datadict[Environment.EMAIL_ADDRESS] = email_address
+    #         datadict[Environment.EMAIL_PASSWORD] = email_password
+    #     return datadict
 
     def __init__(self):
         '''
         Creates an Environment instance from data in the .project file in the directory defined by the
-        environment variable $BYU_PROJECT_DIR. If this variable is not defined or the .project file does
+        environment variable $MEDIA_PROJECT_DIR. If this variable is not defined or the .project file does
         not exist inside it, an EnvironmentError is raised. Creates the workspace for the current user
         if it doesn't already exist.
         '''
         self._project_dir = os.getenv(Environment.PROJECT_ENV)
-        print(self._project_dir)
-        print("here")
 
         if self._project_dir is None:
             raise EnvironmentError(Environment.PROJECT_ENV + ' is not defined')
@@ -56,6 +54,8 @@ class Environment:
             raise EnvironmentError(project_file + ' does not exist')
         self._datadict = pipeline_io.readfile(project_file)
         self._current_username = getpass.getuser()
+        # print(self._datadict)
+        # print(self._current_username)
         self._current_user_workspace = os.path.join(self.get_users_dir(), self._current_username)
         self._create_user(self._current_username)
 
@@ -103,9 +103,11 @@ class Environment:
         return os.path.abspath(self._datadict[Environment.HDA_DIR])
 
     def _create_user(self, username):
-        workspace = os.path.join(self.get_users_dir(), username)
+        workspace = os.path.join(self._project_dir, os.path.join(self.get_users_dir(), username))
         if not os.path.exists(workspace):
-            pipeline_io.mkdir(workspace)
+            if not pipeline_io.mkdir(workspace):
+                print("failed to create workspace")
+
         user_pipeline_file = os.path.join(workspace, User.PIPELINE_FILENAME)
         if not os.path.exists(user_pipeline_file):
             datadict = User.create_new_dict(username)
