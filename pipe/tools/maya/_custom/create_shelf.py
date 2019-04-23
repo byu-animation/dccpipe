@@ -13,8 +13,6 @@ import json
 # print("before import Environment")
 # from pipe.am.environment import Environment
 
-print("imports successful")
-
 # FIXME: I've commented out all references to Environment (importing, calling, etc) until it is working properly
 # environment = Environment()
 
@@ -26,7 +24,6 @@ PROJ = "test_shelf"
 
 SHELF_DIR = os.environ.get('MAYA_SHELF_DIR')
 ICON_DIR = os.environ.get('MAYA_ICONS_DIR')
-# ICON_DIR = os.path.join(os.environ.get('BYU_TOOLS_DIR'), "assets", "images", "icons", "tool-icons")
 ####
 
 #### Shelf building code. You shouldn't have to edit anything

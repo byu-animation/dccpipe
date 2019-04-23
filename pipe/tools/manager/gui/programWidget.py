@@ -15,7 +15,7 @@ class ProgramImageButton(QtWidgets.QAbstractButton):
 	def __init__(self, program, size, singleClick, doubleClick, selected, warning, shortcut, parent):
 		super(ProgramImageButton, self).__init__(parent)
 
-		pipelionLoc = os.environ["BYU_TOOLS_DIR"] + "/pipelion"
+		pipelionLoc = os.environ["MEDIA_PROJECT_DIR"] + "pipe/tools/manager"
 		self.program = program
 		self.pixmap = QtGui.QPixmap(pipelionLoc + "/" + self.program.icon)
 		self.warningImage = QtGui.QPixmap(pipelionLoc + "/icons/warning-icon.png")
