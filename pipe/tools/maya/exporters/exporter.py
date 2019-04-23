@@ -1,6 +1,6 @@
-from byuam import *
-from byuminigui import quick_dialogs
-from byutools.exporter import Exporter
+from am import *
+from pipe.gui import quick_dialogs
+from pipe.tools.general.exporter import Exporter
 
 try:
     from PySide.QtCore import Slot

@@ -1,7 +1,7 @@
 import os
 
 # We're going to need asset management module
-from byuam import Environment, Project
+from am import Environment, Project
 
 global non_gui_override
 non_gui_override = False

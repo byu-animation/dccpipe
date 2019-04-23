@@ -1,12 +1,12 @@
-from byuam import Environment, Project
+from am import Environment, Project
 
 try:
     from PySide.QtCore import Slot
 except ImportError:
     from PySide2.QtCore import Slot
 
-from gui_tool import GUITool
-from gui_method import GUIMethod
+# from pipe.tools.general.gui_tool import GUITool
+from pipe.tools.general.gui_method import GUIMethod
 
 '''
     Executes a series of methods to prompt the user for input about

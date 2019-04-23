@@ -1,11 +1,11 @@
-from byuam import *
-from byugui import message_gui
+from am import *
+from gui import quick_dialogs
 import os
 import pymel.core as pm
 
-from maya_exporter import MayaExporter
+from exporter import MayaExporter
 
-import maya_utils
+import maya.utils as maya_utils
 from maya_utils import ExportFlags
 
 
@@ -24,7 +24,7 @@ class AlembicExporter(MayaExporter, object):
 
     def export_char(self):
         pass
-        #abc_file_path = self.abc_file_path(name)
+        #abc_file_path = self.abc_file_path(name)message_gui
 
     def export_set(self):
         pass

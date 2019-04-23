@@ -1,19 +1,19 @@
 import os
 
 # Other export scripts
-import maya_utils
-from alembic_exporter_v2 import AlembicExporter
-from json_exporter_v2 import JSONExporter
+import maya.utils as maya_utils
+from pipe.tools.maya.exporters.alembic_exporter import AlembicExporter
+from pipe.tools.maya.exporters.json_exporter import JSONExporter
 
 # We're going to need asset management module
-from byuam import Environment, Project
+from pipe.am import Environment, Project
 
 # Minimal UI
-from byuminigui.checkbox_options import CheckBoxOptions
-from byuminigui.select_from_list import SelectFromList
+from pipe.gui.checkbox_options import CheckBoxOptions
+from pipe.gui.select_from_list import SelectFromList
 
-# Import BYU Tools
-from byutools.publisher import Publisher
+# Import Tools
+from pipe.tools.general.publisher import Publisher
 
 try:
     from PySide.QtCore import Slot
@@ -29,6 +29,12 @@ class MayaPublisher(Publisher):
 
     def __init__(self, gui=True, src=None):
         super(MayaPublisher, self).__init__(gui, src)
+
+    def publish(self):
+        self.insert_gui_methods_first()
+        self.insert_gui_methods_middle()
+        self.insert_gui_methods_last()
+        pass
 
     def get_src_file(self):
         filename, untitled = maya_utils.get_scene_file()
