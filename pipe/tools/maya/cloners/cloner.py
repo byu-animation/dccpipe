@@ -58,6 +58,6 @@ class MayaCloner:
 	def go(self):
 		parent = self.maya_main_window()
 		self.maya_checkout_dialog = CheckoutWindow(parent, ["temp_dept_1", "temp_dept_2"])
-		self.maya_checkout_dialog.finished.connect(open_file)
+		self.maya_checkout_dialog.finished.connect(self.open_file)
 		# if dialog.exec_():
 		#	 print self.result
