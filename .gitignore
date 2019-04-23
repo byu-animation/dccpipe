@@ -1,6 +1,9 @@
 # Recommended Python .gitignore
 # https://github.com/kennethreitz/samplemod/blob/master/.gitignore
 
+# Project file ignores
+.project.json
+
 # BYU-specific ignores
 production/
 bin/

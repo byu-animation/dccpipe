@@ -6,8 +6,6 @@ from pipe.am.environment import Status
 from pipe.am.environment import Environment
 import pipeline_io
 
-print("here 1")
-
 
 class Checkout:
     """

@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-print("in environment.py")
 import getpass
 import os
 import pwd
@@ -46,20 +45,9 @@ class Environment:
         if it doesn't already exist.
         '''
         self._project_dir = os.getenv(Environment.PROJECT_ENV)
-        PROJECT_ENV = 'MEDIA_PROJECT_DIR'
-        PIPELINE_FILENAME = '.project'
+        print(self._project_dir)
+        print("here")
 
-        PROJECT_NAME = 'name'
-        PRODUCTION_DIR = 'production_dir'
-        ASSETS_DIR = 'assets_dir'
-        SHOTS_DIR = 'shots_dir'
-        TOOLS_DIR = 'tools_dir'
-        CROWDS_DIR = 'crowds_dir'
-        USERS_DIR = 'users_dir'
-        HDA_DIR = 'hda_dir'
-        EMAIL_ADDRESS = 'email_address'
-        EMAIL_PASSWORD = 'email_password'
-        
         if self._project_dir is None:
             raise EnvironmentError(Environment.PROJECT_ENV + ' is not defined')
 

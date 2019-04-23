@@ -1,14 +1,9 @@
 # TODO: removing the next line to be able to load departments from a config file down the line. Once config is ready, load depts from there.
 # from pipe.am.environment import Department
-print("2")
 from pipe.gui.checkout_gui import CheckoutWindow
-print("3")
 from PySide2 import QtWidgets
-print("4")
 import maya.cmds as mc
-print("5")
 import maya.OpenMayaUI as omu
-print("6")
 import os
 
 
