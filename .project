@@ -1,0 +1,13 @@
+{
+  "name":"Test Project",
+  "nickname":"test",
+  "production_dir":"production/",
+  "assets_dir":"production/assets/",
+  "shots_dir":"production/shots/",
+  "tools_dir":"production/tools/",
+  "crowds_dir":"production/crowds/",
+  "users_dir":"production/users/",
+  "hda_dir":"production/hdas/",
+  "email_address":"none@a.com",
+  "email_password":"password"
+}
