@@ -1,7 +1,7 @@
-from byugui.reference_gui import ReferenceWindow
-from byugui import message_gui
-from byuam.environment import Department
-from byuam import byuutil
+from pipe.gui.reference_gui import ReferenceWindow  # FIXME: gui needs to be swapped
+from pipe.gui.quick_dialogs import message as message_gui
+from pipe.am.environment import Department
+from pipe.am import pipeline_io
 import pymel.core as pm
 from PySide2 import QtWidgets
 import maya.OpenMayaUI as omu
@@ -39,7 +39,7 @@ def reference(filePaths, isReferenced=True, useNamespace=False):
 				#TODO do we want to add multiple references in with different namespaces? You know to get rid of conflicts? Or is our current system for handling that good enough?
 				# pm.system.createReference(path, namespace="HelloWorld1")
 				basename = os.path.basename(path)
-				millis = byuutil.timestampThisYear()
+				millis = pipeline_io.timestamp()
 				refNamespace = basename + str(millis)
 				print basename
 				print str(millis)
@@ -82,7 +82,7 @@ def referenceCrowdCycle(paths):
 
 		for i in range(refCount):
 			time.sleep(1) # sleep for a bit to make sure out namespace is unique
-			millis = byuutil.timestampThisYear()
+			millis = pipeline_io.timestamp()
 			namespace = cycleName + str(millis)
 
 			cycleRefGroup = namespace + 'RNgroup'
