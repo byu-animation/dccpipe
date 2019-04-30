@@ -1,6 +1,6 @@
-#Author: Ben DeMann
-
 import maya.cmds as cmds
+
+# FIXME: numpy needs to be pip installed in venv
 import numpy as np
 
 def ik_to_fk_match(name, limb, side):
