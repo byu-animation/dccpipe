@@ -54,20 +54,20 @@
 			"itemType":"button",
 			"icon":"ik-fk.svg",
 			"annotation":"FK IK Matching Tool",
-			"tool":"fk_ik_snapping.py",
-			"function":"fk_ik_snapping.go()"
+			"tool":"maya.utils.fk_ik_snapping",
+			"function":"fk_ik_snapping.go"
 		}, {
 			"itemType":"button",
 			"icon":"interpolate.svg",
 			"annotation":"Cluster Interpolate",
-			"tool":"cluster_interpolate.py",
-			"function":"cluster_interpolate.go()"
+			"tool":"maya.utils.cluster_interpolate",
+			"function":"cluster_interpolate.go"
 		}, {
 			"itemType":"button",
 			"icon":"education.svg",
 			"annotation":"Change the licence to education",
-			"tool":"education.py",
-			"function":"education.go()"
+			"tool":"maya.utils.education",
+			"function":"education.go"
 		}, {
 			"itemType": "separator"
 		}, {
