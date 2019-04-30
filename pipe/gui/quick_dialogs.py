@@ -6,16 +6,29 @@ except ImportError:
 	from PySide2 import QtWidgets, QtGui, QtCore
 
 def error(errMsg, details=None, title='Error'):
+	'''
+	Reports a critical error
+	'''
 	message(errMsg, details=details, title=title)
 
 def warning(warnMsg, details=None, title='Warning'):
+	'''
+	Reports a non-critical warning
+	'''
 	message(warnMsg, details=details, title=title)
 
-def message(msg, details=None, title='Message'):
+def message(msg=' ', details=None, title='Message'):
 	'''Reports a message'''
+	print(msg)
+
 	msgBox = QtWidgets.QMessageBox()
 	msgBox.setText(msgBox.tr(msg))
-	msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+	if title == 'Warning':
+		msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+	elif title == 'Error':
+		msgBox.setIcon(QtWidgets.QMessageBox.Critical)
+	else:
+		msgBox.setIcon(QtWidgets.QMessageBox.Information)
 	msgBox.setWindowTitle(title)
 	msgBox.addButton(QtWidgets.QMessageBox.Ok)
 
@@ -25,39 +38,24 @@ def message(msg, details=None, title='Message'):
 	msgBox.exec_()
 
 def info(infoMsg, title='Info'):
-	'''Reports an message'''
-	msgBox = QtWidgets.QMessageBox()
-	msgBox.setText(msgBox.tr(infoMsg))
-	msgBox.setIcon(QtWidgets.QMessageBox.Information)
-	msgBox.setWindowTitle(title)
-	msgBox.addButton(QtWidgets.QMessageBox.Ok)
-
-	msgBox.exec_()
+	'''Reports an informational message'''
+	message(msg=infoMsg, title=title)
 
 def light_error(errMsg, title='Warning'):
 	'''Reports an error that can be resolved with a yes or no'''
 	'''returns True if yes, otherwise False'''
-	msgBox = QtWidgets.QMessageBox()
-	msgBox.setText(msgBox.tr(errMsg))
-	msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-	msgBox.setWindowTitle(title)
-	noButton = msgBox.addButton(QtWidgets.QMessageBox.No)
-	yesButton = msgBox.addButton(QtWidgets.QMessageBox.Yes)
-
-	msgBox.exec_()
-
-	if msgBox.clickedButton() == yesButton:
-		return True
-	elif msgBox.clickedButton() == noButton:
-		return False
+	return yes_or_no(errMsg, title=title)
 
 def yes_or_no(question, details=None, title='Question'):
-	'''Reports an error that can be resolved with a yes or no'''
+	'''Asks a question that can be resolved with a yes or no'''
 	'''returns True if yes, otherwise False'''
 	msgBox = QtWidgets.QMessageBox()
 	msgBox.setText(msgBox.tr(question))
 	msgBox.setWindowTitle(title)
-	msgBox.setIcon(QtWidgets.QMessageBox.Question)
+	if title == 'Question':
+		msgBox.setIcon(QtWidgets.QMessageBox.Question)
+	else:
+		msgBox.setIcon(QtWidgets.QMessageBox.Warning)
 	noButton = msgBox.addButton(QtWidgets.QMessageBox.No)
 	yesButton = msgBox.addButton(QtWidgets.QMessageBox.Yes)
 
@@ -72,8 +70,10 @@ def yes_or_no(question, details=None, title='Question'):
 		return False
 
 def input(label, title='Input', text=None):
-	'''Allows the user to respond with a text input'''
-	'''If the okay button is pressed it returns the inputed text, otherwise None'''
+	'''
+	Allows the user to respond with a text input
+	If the okay button is pressed it returns the inputed text, otherwise None
+	'''
 	text = QtWidgets.QInputDialog.getText(None, title, label, text=text)
 
 	if text[1]:
