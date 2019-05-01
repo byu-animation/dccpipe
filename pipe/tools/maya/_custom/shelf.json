@@ -69,6 +69,12 @@
 			"tool":"maya.utils.education",
 			"function":"education.go"
 		}, {
+			"itemType":"button",
+			"icon":"reload-scripts.svg",
+			"annotation":"Reload python scripts",
+			"tool":"maya.utils.reload_scripts",
+			"function":"ReloadScripts.go"
+		}, {
 			"itemType": "separator"
 		}, {
 			"itemType":"button",
