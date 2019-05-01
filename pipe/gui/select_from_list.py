@@ -6,6 +6,9 @@ except ImportError:
     from PySide2 import QtWidgets, QtGui, QtCore
 
 
+def select_from_list(list, parent):  # TODO: finish this.
+    window = QtWidgets.QWidget()
+    pass
 
 class ItemList(QtWidgets.QListWidget):
     all_items = []
@@ -27,16 +30,18 @@ class ItemList(QtWidgets.QListWidget):
             self.addItem(item)
 
 class SelectFromList(QtWidgets.QWidget):
-    submitted = QtCore.Signal(list)
-    values = []
 
     def __init__(self, parent=None, title="Select", l=[], multiple_selection=False):
         QtWidgets.QWidget.__init__(self)
         if parent:
             self.parent = parent
+        self.list = l
+        self.submitted = QtCore.Signal(list)
+        self.values = []
+        self.multiple_selection = multiple_selection
+
         self.setWindowTitle(title)
         self.setObjectName('SelectFromList')
-        self.multiple_selection = multiple_selection
         self.resize(600,600)
         self.initializeVBox()
         self.setLayout(self.vbox)

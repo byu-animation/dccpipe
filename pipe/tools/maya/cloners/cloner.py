@@ -1,6 +1,10 @@
 # TODO: removing the next line to be able to load departments from a config file down the line. Once config is ready, load depts from there.
 # from pipe.am.environment import Department
 from pipe.gui.checkout_gui import CheckoutWindow
+import pipe.gui.select_from_list as select_gui
+import pipe.tools.maya.utils.utils as maya_utils
+from pipe.am.project import Project
+
 from PySide2 import QtWidgets
 import maya.cmds as mc
 import maya.OpenMayaUI as omu
@@ -21,16 +25,6 @@ class MayaCloner:
 		else:
 			# TODO: make this method work
 			self.non_gui_open(file_path, asset_name)
-
-	'''
-	:return: Maya's main window
-	'''
-	def maya_main_window(self):
-		for widget in QtWidgets.qApp.topLevelWidgets():
-			if widget.objectName() == 'MayaWindow':
-				return widget
-
-		raise RuntimeError('Could not find MayaWindow instance')
 
 	def open_file(self):
 		filepath = self.maya_checkout_dialog.result
@@ -59,9 +53,22 @@ class MayaCloner:
 			print 'Does not Exist: '+assetName
 
 	def go(self):
-		parent = self.maya_main_window()
-		# TODO: replace temp depts with actual options for departments (loaded from config file)
-		self.maya_checkout_dialog = CheckoutWindow(parent, ["temp_dept_1", "temp_dept_2"])
-		self.maya_checkout_dialog.finished.connect(self.open_file)
-		# if dialog.exec_():
-		#	 print self.result
+		project = Project()
+		asset_list = project.list_assets()
+		asset_list = ['one', 'two']
+		item_gui = select_gui.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window())
+		# item_gui = select_gui.SelectFromList(l=asset_list)
+		print("here")
+		item_gui.show()
+		import time
+		time.sleep(15)  # FIXME: I think I need to set the parent correctly. It's not working currently.
+		print(asset_list)
+		print(item_gui)
+
+	# def go(self):
+	# 	parent = maya_utils.maya_main_window()
+	# 	# TODO: replace temp depts with actual options for departments (loaded from config file)
+	# 	self.maya_checkout_dialog = CheckoutWindow(parent, ["temp_dept_1", "temp_dept_2"])
+	# 	self.maya_checkout_dialog.finished.connect(self.open_file)
+	# 	# if dialog.exec_():
+	# 	#	 print self.result
