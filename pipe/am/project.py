@@ -19,6 +19,7 @@ class Project:
 		creates a Project instance for the currently defined project from the environment
 		'''
 		self._env = Environment()
+
 	def get_name(self):
 		'''
 		return the name of the this project

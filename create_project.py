@@ -30,7 +30,7 @@ def create_project():
     pipeline_io.mkdir(pipe_dict["users_dir"])
     pipeline_io.mkdir(pipe_dict["hda_dir"])
 
-    print("Production project creation success!")
+    print("Production project successfully created!")
 
 def modify_project_config(name, nickname):
         with open(".project", "r") as jsonFile:
@@ -44,3 +44,5 @@ def modify_project_config(name, nickname):
             json.dump(data, jsonFile)
 
 create_project()
+
+# TODO: create the maya and houdini shortcuts using the icons, the maya and houdini launch scripts, and the nickname as the prefix.
