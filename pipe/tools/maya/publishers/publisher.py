@@ -44,19 +44,19 @@ class MayaPublisher(Publisher):
             return maya_utils.get_scene_file()[0]
 
     def insert_gui_methods_first(self):
-        super(JSONExporter, self).insert_gui_methods_first()
+        super(MayaPublisher, self).insert_gui_methods_first()
         self.gui_methods = [
             (self.ScenePrepDialog, self.submitted_scene_prep)
         ] + self.gui_methods
 
     def insert_gui_methods_middle(self):
-        super(JSONExporter, self).insert_gui_methods_middle()
+        super(MayaPublisher, self).insert_gui_methods_middle()
 
     def insert_gui_methods_last(self):
-        super(JSONExporter, self).insert_gui_methods_last()
+        super(MayaPublisher, self).insert_gui_methods_last()
 
     def append_gui_methods_after(self):
-        super(JSONExporter, self).append_gui_methods_after()
+        super(MayaPublisher, self).append_gui_methods_after()
 
     '''
         Step 0: A non-gui way of doing this.
