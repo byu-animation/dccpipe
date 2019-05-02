@@ -56,14 +56,9 @@ class MayaCloner:
 		project = Project()
 		asset_list = project.list_assets()
 		asset_list = ['one', 'two']
-		item_gui = select_gui.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window())
-		# item_gui = select_gui.SelectFromList(l=asset_list)
-		print("here")
-		item_gui.show()
-		import time
-		time.sleep(15)  # FIXME: I think I need to set the parent correctly. It's not working currently.
+		self.item_gui = select_gui.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window())
 		print(asset_list)
-		print(item_gui)
+		# print(item_gui.list)
 
 	# def go(self):
 	# 	parent = maya_utils.maya_main_window()
