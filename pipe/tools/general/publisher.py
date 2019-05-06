@@ -18,9 +18,9 @@ from gui_method import GUIMethod
 
 class Publisher(GUITool):
 
-    def __init__(self, gui=True, src=None):
+    def __init__(self, gui_bool=True, src=None):
 
-        super(Publisher, self).__init__(gui=gui)
+        super(Publisher, self).__init__(gui=gui_bool)
 
         if not src:
             src = self.get_src_file()

@@ -4,6 +4,7 @@ import os
 import pipe.tools.maya.utils.utils as maya_utils
 from pipe.tools.maya.exporters.alembic_exporter import AlembicExporter
 from pipe.tools.maya.exporters.json_exporter import JSONExporter
+from pipe.tools.maya.prompts import Prompts
 
 # We're going to need asset management module
 from pipe.am import Environment, Project
@@ -45,8 +46,9 @@ class MayaPublisher(Publisher):
 
     def insert_gui_methods_first(self):
         super(MayaPublisher, self).insert_gui_methods_first()
+        self.prompt_dialog = Prompts()
         self.gui_methods = [
-            (self.ScenePrepDialog, self.submitted_scene_prep)
+            (self.prompt_dialog.ScenePrepDialog, self.prompt_dialog.submitted_scene_prep)
         ] + self.gui_methods
 
     def insert_gui_methods_middle(self):
@@ -104,19 +106,19 @@ class MayaPublisher(Publisher):
     '''
         Step 3: Select an element.
         SelectElementDialog() -> submitted_element()
-        (defined in byutools.GUITool)
+        (defined in tools.general.GUITool)
     '''
 
     '''
         Step 4: Write a commit message.
         CommitMessageDialog() -> submitted_commit_message()
-        (defined in byutools.Publisher)
+        (defined in tools.general.Publisher)
     '''
 
     '''
         Step 5: Publish element
         publish_element()
-        (defined in byutools.Publisher)
+        (defined in tools.general.Publisher)
     '''
 
     '''

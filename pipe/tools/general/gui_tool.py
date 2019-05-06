@@ -56,13 +56,13 @@ class GUITool(Prompts):
         self.gui_methods.append(GUIMethod(self.after_gui_methods))
 
     def insert_gui_methods_first(self):
-        raise NotImplementedError("insert_gui_methods_first() is not implemented.")
+        return
 
     def insert_gui_methods_middle(self):
-        raise NotImplementedError("insert_gui_methods_middle() is not implemented.")
+        return
 
     def insert_gui_methods_last(self):
-        raise NotImplementedError("insert_gui_methods_last() is not implemented.")
+        return
 
     '''
         Do not override
