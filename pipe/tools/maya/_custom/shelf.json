@@ -52,12 +52,6 @@
 			"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"ik-fk.svg",
-			"annotation":"FK IK Matching Tool",
-			"tool":"maya.utils.fk_ik_snapping",
-			"function":"fk_ik_snapping.go"
-		}, {
-			"itemType":"button",
 			"icon":"interpolate.svg",
 			"annotation":"Cluster Interpolate",
 			"tool":"maya.utils.cluster_interpolate",
