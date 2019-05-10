@@ -1,0 +1,46 @@
+tool create_body:
+  data: name,
+        type,
+        ;
+  order:
+    NameInput provides=name
+    TypeInput provides=type
+    create_body needs=name, type
+    ;
+
+tool delete_body:
+  data: body
+        ;
+  order:
+    SelectBody provides=body
+    delete_body needs=body
+    ;
+;
+
+tool rename_body:
+  data: body
+        ;
+
+  order:
+    SelectBody provides=body
+    NewNameInput provides=name
+    rename_body needs=body, name
+    ;
+;
+
+tool add_department:
+  data: name
+        ;
+  order:
+    NameInput provides=name
+    add_department needs=name
+;
+
+tool delete_department:
+  data: department
+        ;
+  order:
+    SelectDepartment provides=department
+    DeletionWarning provides=verification
+    delete_department needs=department, verification
+    ;
