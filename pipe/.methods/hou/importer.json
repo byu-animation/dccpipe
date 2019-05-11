@@ -1,0 +1,23 @@
+{
+  "name": "importer",
+  "fields":
+  {
+    "scenefile" : null,
+    "is_loaded" : null,
+    "body" : null
+  },
+  "methods":
+  [
+    {
+      "name" : "SelectBody",
+      "prompt" : true,
+      "module" : "general.prompts",
+      "provides" : ["body"]
+    },
+    { 
+      "name" : "import",
+      "module" : "hou.importer",
+      "needs" : ["body"]
+    }
+  ]
+}

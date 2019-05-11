@@ -1,0 +1,33 @@
+{
+  "name": "shot_publisher",
+  "fields":
+  {
+    "scenefile" : null,
+    "element" : null,
+    "commit_message" : null
+  },
+  "methods":
+  [
+    {
+      "name" : "pre_shot_publish",
+      "module" : "hou.publish"
+    },
+    {
+      "name" : "SelectElement",
+      "module" : "general.prompts",
+      "prompt" : true,
+      "provides" : ["element"]
+    },
+    {
+      "name" : "WriteCommitMessage",
+      "module" : "general.prompts",
+      "prompt" : true,
+      "provides" : ["commit_message"]
+    },
+    {
+      "name" : "shot_publish",
+      "module" : "hou.publisher",
+      "needs" : ["element", "commit_message"]
+    }
+  ]
+}

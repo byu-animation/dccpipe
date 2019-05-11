@@ -1,0 +1,30 @@
+{
+  "name": "assembler",
+  "fields":
+  {
+    "body" : null,
+    "node" : null
+  },
+  "methods":
+  [
+    {
+      "name" : "SelectBody",
+      "prompt" : true,
+      "module" : "hou.prompts",
+      "provides" : ["body"]
+    },
+    {
+      "name" : "SelectElementFromBody",
+      "prompt" : true,
+      "module" : "hou.prompts",
+      "provides" : ["element"],
+      "needs" : ["body"],
+    },
+    {
+      "name" : "assemble",
+      "module" : "hou.assembler",
+      "needs" : ["element"],
+      "optional" : ["node"]
+    }
+  ]
+}

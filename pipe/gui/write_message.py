@@ -7,6 +7,7 @@ except ImportError:
 
 class WriteMessage(QtWidgets.QWidget):
     submitted = QtCore.Signal(str)
+    cancelled = QtCore.Signal()
 
     def __init__(self, parent=None, title="Write Message"):
         super(WriteMessage, self).__init__()
@@ -39,3 +40,7 @@ class WriteMessage(QtWidgets.QWidget):
     def submit(self):
         self.submitted.emit(self.message.toPlainText())
         self.close()
+
+    def closeEvent(self, event):
+        self.cancelled.emit()
+        event.accept()

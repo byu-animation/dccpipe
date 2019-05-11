@@ -1,0 +1,21 @@
+{
+  "name": "message_displayer",
+  "fields":
+  {
+    "message" : null,
+  },
+  "methods":
+  [
+    {
+      "name" : "TestInput",
+      "prompt" : true,
+      "module" : "test.prompts",
+      "provides" : ["message"]
+    },
+    {
+      "name" : "display_message",
+      "module" : "test.message_displayer",
+      "needs" : ["message", "non_gui"]
+    }
+  ]
+}
