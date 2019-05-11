@@ -1,7 +1,7 @@
 import pipe.gui.quick_dialogs as quick_dialogs
 
-def display_message(message, non_gui):
-    if non_gui:
-        print message
-    else:
+def display_message(message, gui):
+    if gui:
         quick_dialogs.message(message)
+    else:
+        print message

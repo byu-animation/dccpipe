@@ -15,7 +15,7 @@
     {
       "name" : "display_message",
       "module" : "test.message_displayer",
-      "needs" : ["message", "non_gui"]
+      "needs" : ["message", "gui"]
     }
   ]
 }

@@ -7,7 +7,7 @@ fields
 methods
   The order in which methods on the tool will be called.
 
-  module (list)
+  module (list) REQUIRED
     If this method must be run and cannot be skipped, and this module is
     not available, error.
 

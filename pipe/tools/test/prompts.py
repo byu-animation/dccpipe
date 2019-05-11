@@ -1,14 +1,20 @@
-import pipe.gui as gui
+try:
+    from PySide import QtGui as QtWidgets
+except ImportError:
+    from PySide2 import QtWidgets
 
-def TestInput(tool, finished):
-    tool.TestInputDialog = gui.write_message.WriteMessage(
+import pipe.gui as gui
+from pipe.gui.write_message import WriteMessage
+
+def TestInput(tool):
+
+    TestInputDialog = WriteMessage(
         title="Please enter a string:"
     )
-    tool.TestInputDialog.submitted.connect(submitted)
-    tool.TestInputDialog.cancelled.connect(cancelled)
 
-    def submitted(message):
-        finished(message=message)
+    TestInputDialog.exec_()
 
-    def cancelled():
-        finished(cancelled=True)
+    if TestInputDialog.result() == QtWidgets.QDialog.Accepted:
+        tool.finished(message=TestInputDialog.submitted)
+    else:
+        tool.finished(cancelled=True)

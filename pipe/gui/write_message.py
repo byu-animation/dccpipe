@@ -5,16 +5,13 @@ try:
 except ImportError:
     from PySide2 import QtWidgets, QtGui, QtCore
 
-class WriteMessage(QtWidgets.QWidget):
-    submitted = QtCore.Signal(str)
-    cancelled = QtCore.Signal()
+class WriteMessage(QtWidgets.QDialog):
 
     def __init__(self, parent=None, title="Write Message"):
         super(WriteMessage, self).__init__()
         self.setWindowTitle(title)
         self.initializeVBox()
         self.setLayout(self.vbox)
-        self.show()
 
     def initializeVBox(self):
         self.vbox = QtWidgets.QVBoxLayout()
@@ -38,9 +35,5 @@ class WriteMessage(QtWidgets.QWidget):
         self.button.setEnabled(len(self.message.toPlainText()) > 0)
 
     def submit(self):
-        self.submitted.emit(self.message.toPlainText())
-        self.close()
-
-    def closeEvent(self, event):
-        self.cancelled.emit()
-        event.accept()
+        self.submitted = self.message.toPlainText()
+        self.accept()
