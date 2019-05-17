@@ -1,60 +1,91 @@
-# We're going to need asset management module
-from pipe.am import Environment, Project
+import pipe.gui as gui
+import pipe.am as am
 
-# Minimal UI
-from pipe.gui.select_from_list import SelectFromList, SelectFromMultipleLists
-from pipe.gui.write_message import WriteMessage
+def SelectBody(tool, finished, filter, select_multiple=False):
+    body_list = am.filter_bodies(filter)
+    tool.SelectBodyDialog = gui.SelectFromList(
+        labels=body_list,
+        values=body_list
+        )
 
-try:
-    from PySide import QtGui as QtWidgets
-    from PySide import QtGui as QtGui
-    from PySide import QtCore
-    from PySide.QtCore import Slot
-except ImportError:
-    from PySide2 import QtWidgets, QtGui, QtCore
-    from PySide2.QtCore import Slot
+    tool.SelectBodyDialog.submitted.connect(selected)
+    tool.SelectBodyDialog.cancelled.connect(cancelled)
 
-
-class Prompts(object):
-    '''
-        Here's a bunch of useful method/handler pairs you can instance as you build tools.
-    '''
-    def SelectElementDialog(self, parent=None, filter=None):
-        title = "Select element:"
-
-        if filter:
-            lists = Project().list_bodies_by_departments(filter)
+    def selected(selection):
+        if len(selection) == 1:
+            finished(
+                body=am.get_body(selection[0])
+                )
+        elif len(selection) > 1:
+            finished(
+                bodies=[am.get_body(x) for x in selection]
+                )
         else:
-            lists = Project().list_bodies_by_departments()
+            finished(
+                body=None,
+                bodies=None
+                )
 
-        self.selectFromMultipleLists = SelectFromMultipleLists(parent, title, lists)
-        return self.selectFromMultipleLists
+    def cancelled():
+        finished(
+            cancelled=True
+            )
 
-    def submitted_element(self, results):
-        department, bodies = results
-        body = Project().get_body(bodies[0])
-        element = body.get_element(department)
+def SelectElement(tool, finished, filter):
+    element_list = am.filter_bodies()
 
-        self.data.update({
-            "body": body,
-            "element" : element
-        })
+def SelectElementFromBody(tool, finished, body):
+    tool.SelectElementFromBodyDialog = gui.SelectFromSeveralButtons(
+        labels=[ x.title for x in body.get_departments() ]
+        values=body.get_departments()
+        )
 
-    def CommitMessageDialog(self):
-        self.writeMessage = WriteMessage(title="Write commit message:")
-        return self.writeMessage
+    tool.SelectElementFromBodyDialog.submitted.connect(selected)
+    tool.SelectElementFromBodyDialog.cancelled.connect(cancelled)
 
-    @Slot(str)
-    def submitted_commit_message(self, message):
-        self.data.update({"message" : message})
-        self.do_next_gui_method()
+    def selected(selection):
+        element = body.get_element(selection)
+        finished(
+            element=element
+            )
 
-    '''
-        Display a gui or non-gui safe error message
-    '''
-    def display_message(self, message, details="", gui=True):
-        if not gui:
-            byuminigui.quick_dialogs.info(message, details)
+    def cancelled():
+        finished(
+            cancelled=True
+            )
+
+def SelectElementOrCommit(tool, finished, filter):
+    # Make sure the GUI is tied to an object in memory or else
+    # it will be garbage collected in programs like Maya
+    departments = am.filter_departments(filter)
+    body_filter = { "departments" : departments }
+    body_filter.update(filter)
+    tool.SelectElementDialog = gui.SelectFromMultipleListsWithOptions(
+        category_labels=am.filter_departments(filter),
+        lists=am.filter_bodies(filter, separate_lists=True),
+        options=[
+            ("Clone a previous version", False)
+            ]
+        )
+    tool.SelectElementDialog.submitted.connect(selectedElement)
+    tool.SelectElementDialog.cancelled.connect(cancelled)
+
+    def selected(selection):
+        if len(selection) > 0:
+            finished({"element" : am.get_element(selection[0][0], selection[0][1])})
         else:
-            print message
-            print "Details:\n\t{0}".format(details)
+            finished({"element" : None})
+
+    def cancelled():
+        finished({"cancelled" : True})
+
+def SelectCommit(tool, finished, element):
+    tool.SelectCommitDialog = SelectCommit(element)
+    tool.SelectCommitDialog.submitted.connect(selectedCommit)
+    tool.SelectCommitDialog.cancelled.connect(cancelled)
+
+    def selectedCommit(version_number):
+        finished({"version_number" : version_number})
+
+    def cancelled():
+        finished({"cancelled" : True})

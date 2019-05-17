@@ -7,7 +7,6 @@ import sys
 import json
 import importlib
 import tools
-import jsonpickle
 import traceback
 
 class ToolError(Exception):

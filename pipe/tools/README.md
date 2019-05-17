@@ -28,3 +28,11 @@ methods
 
   optional (list)
     The method can take in these inputs, but does not need them.
+
+
+Basic usage:
+
+python
+>>> from pipe.tools.tool import Tool
+>>> T = Tool("test.message_displayer.tool")
+>>> T.run()

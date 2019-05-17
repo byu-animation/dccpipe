@@ -1,0 +1,21 @@
+{
+  "name": "message_displayer",
+  "fields":
+  {
+    "message" : null
+  },
+  "methods":
+  [
+    {
+      "name" : "TestInput",
+      "prompt" : true,
+      "module" : "houtools.prompts",
+      "provides" : ["message"]
+    },
+    {
+      "name" : "display_message",
+      "module" : "houtools.message_displayer.tool",
+      "needs" : ["message", "gui"]
+    }
+  ]
+}

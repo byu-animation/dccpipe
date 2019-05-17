@@ -1,13 +1,7 @@
-
 #!/bin/sh
-
-# project_nuke.sh: opens nuke  with the project environment
-
-# source project environment
-DIR=`dirname $0`
-source ${DIR}/project_env.sh
-
-export CURRENT_PROG='Nuke'
+SOURCEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $SOURCEDIR/env.sh
+export CURRENT_PROGRAM='nuke'
 
 # Change directories so current directory is not in the tools folder
 cd ${USER_DIR}

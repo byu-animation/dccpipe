@@ -1,6 +1,8 @@
 # Recommended Python .gitignore
 # https://github.com/kennethreitz/samplemod/blob/master/.gitignore
 
+pipe/tools/houtools/_custom/otls/backup/
+
 # Project file ignores
 # .project
 

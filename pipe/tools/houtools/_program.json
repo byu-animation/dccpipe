@@ -1,0 +1,16 @@
+{
+"comment":
+  "
+  This file serves as a definitive list of the tools in this class. You can
+  iterate over this list and instantiate tool objects.
+  ",
+"tools":
+[
+  "houtools.cloner",
+  "houtools.importer",
+  "houtools.assembler",
+  "houtools.shot_publisher",
+  "houtools.hda_publisher",
+  "houtools.renderer"
+]
+}

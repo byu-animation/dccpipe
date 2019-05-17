@@ -1,0 +1,32 @@
+<mainMenu>
+	<menuBar>
+		<!-- ============================ BYU Tools Menu =========================== -->
+		<subMenu id="tools_menu">
+			<label>DCCPipe</label>
+
+			<scriptItem id="h.createBody">
+					<label>Message Displayer</label>
+						<scriptCode scriptType="python">
+							<![CDATA[
+from pipe.tools.tool import Tool
+T = Tool("houtools.message_displayer.tool", gui=True)
+T.run()
+						]]>
+							</scriptCode>
+			</scriptItem>
+
+			<subMenu id="import_menu">
+				<label>Import</label>
+				<scriptItem id="h.import_shot">
+					<label>Shot</label>
+					<scriptCode scriptType="python">
+						<![CDATA[
+print "Shot importer goes here."
+						]]>
+					</scriptCode>
+				</scriptItem>
+			</subMenu>
+    </subMenu>
+
+  </menuBar>
+</mainMenu>
