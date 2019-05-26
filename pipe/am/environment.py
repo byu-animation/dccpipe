@@ -237,30 +237,3 @@ class Department:
     CROWD_DEPTS = [CYCLES]
     ALL = [DESIGN, MODEL, RIG, TEXTURE, MATERIAL, ASSEMBLY, LAYOUT, ANIM, CFX, FX, LIGHTING, RENDER, COMP, HDA, RIB_ARCHIVE, MODIFY, HAIR, CLOTH]
 
-
-class Status:
-    '''
-    Class describing status levels for elements.
-    '''
-
-    WAIT = 'wait'
-    READY = 'ready'
-    STARTED = 'started'
-    DONE = 'done'
-    ALL = [WAIT, READY, STARTED, DONE]
-
-    def get_level(name):
-        '''
-        given a status name return the equivalent level
-        e.g. WAIT    -> 0
-             READY   -> 1
-             STARTED -> 2
-             DONE    -> 3
-        '''
-        return Status.ALL.index(name)
-
-    def get_name(level):
-        '''
-        given a status level return the equivalent name
-        '''
-        return Status.ALL[level]
