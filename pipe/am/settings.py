@@ -43,5 +43,3 @@ def update_department(projectfile, updated_department):
     if len(match) < 1:
         print "Department does not exist"
         return False
-
-
