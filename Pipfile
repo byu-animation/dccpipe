@@ -12,6 +12,7 @@ sphinx = "*"
 [packages]
 qt-py = "*"
 jsonpickle = "*"
+pygments = "*"
 
 [requires]
 python_version = "2.7"
