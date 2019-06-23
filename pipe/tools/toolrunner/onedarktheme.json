@@ -1,0 +1,18 @@
+{
+    "scheme" : "One Dark Theme",
+    "src" : "https://github.com/yurtaev/idea-one-dark-theme/blob/master/One%20Dark.icls",
+    "fg" : "#abb2bf",
+    "bg" : "#282c34",
+    "BUILTIN_NAME" : ["#57b6c2"],
+    "CLASS_DEFINITION" : ["#e5c17c"],
+    "DECORATOR" : ["#61afef"],
+    "DOC_COMMENT" : ["#98c476"],
+    "FUNC_DEFINITION" : ["#61afef"],
+    "KEYWORD" : ["#c679dd"],
+    "LINE_COMMENT" : ["#59626f", "italic"],
+    "NUMBER" : ["#d2945d"],
+    "PARAMETER" : ["#d19a66"],
+    "SELF_PARAMETER" : ["#e06c75"],
+    "STRING" : ["#98c379"],
+    "VALID_STRING_ESCAPE" : ["#57b6c2"]
+}
