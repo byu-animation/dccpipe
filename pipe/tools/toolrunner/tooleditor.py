@@ -8,11 +8,15 @@ https://github.com/pyside/Examples/blob/master/examples/richtext/syntaxhighlight
 """
 
 from Qt import QtCore, QtGui, QtWidgets
-
+from pygments import lexers
+from pygments.formatters import HtmlFormatter
+from pygments import highlight
+import re
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+
 
         self.setupFileMenu()
         self.setupHelpMenu()
@@ -56,10 +60,33 @@ class MainWindow(QtWidgets.QMainWindow):
         font.setFixedPitch(True)
         font.setPointSize(10)
 
+        #https://stackoverflow.com/questions/15730224/qt-ignores-css-in-qtextdocument
+        self.document = QtGui.QTextDocument()
         self.editor = QtWidgets.QTextEdit()
         self.editor.setFont(font)
+        self.editor.textChanged.connect(self.highlight)
 
-        self.highlighter = Highlighter(self.editor.document())
+        self.lexer = lexers.get_lexer_by_name("python")
+        self.formatter = HtmlFormatter(full=False, noclasses=False, style='monokai', stripall=True, nowrap=False)
+        self.document.setDefaultStyleSheet(self.formatter.get_style_defs())
+        self.editor.setDocument(self.document)
+
+    # https://stackoverflow.com/questions/42779349/runtimeerror-maximum-recursion-depth-exceeded-while-calling-a-python-object-e
+    def highlight(self):
+        text = self.editor.toPlainText()
+        result = highlight(text, self.lexer, self.formatter)
+        match = re.search(".[\n]*$", text)
+        newLineCount = 0
+        if match:
+            newLineCount = len(match.group(0)) - 1
+        result = result.replace("\n</pre></div>\n", ("\n" * newLineCount) + "\r\n</pre></div>")
+        self.editor.blockSignals(True)
+        pos = self.editor.textCursor().position()
+        self.editor.setHtml(result)
+        cursor = self.editor.textCursor()
+        cursor.setPosition(min(pos, len(self.editor.toPlainText())))
+        self.editor.setTextCursor(cursor)
+        self.editor.blockSignals(False)
 
     def setupFileMenu(self):
         fileMenu = QtWidgets.QMenu("&File", self)
