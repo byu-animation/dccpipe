@@ -1,3 +1,4 @@
 {
-    "PYSTYLESHEET" : "onedarktheme.json"
+    "PYSTYLESHEET" : "onedarktheme.json",
+    "TOOL_DIR_VAR" : "MEDIA_TOOLS_DIR"
 }

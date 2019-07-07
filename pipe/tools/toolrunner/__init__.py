@@ -1,1 +1,6 @@
-all = [ "tool" ]
+all = [
+        "editor",
+        "python_highlighter",
+        "settings",
+        "toolrunner"
+    ]

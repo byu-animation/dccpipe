@@ -2,13 +2,9 @@
 # Adapted from code here:
 # https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
 # and here:
-# https://bitbucket.org/birkenfeld/pygments-main/src/default/pygments/lexers/python.py
-import sys
-import os.path as path
-
+# https://bitbucket.org/birkenfeld/pygments-main/src/default/pygments/lexers/python.p
 from Qt.QtCore import QRegExp
-from Qt.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter, QFontDatabase
-from Qt.QtWidgets import QApplication, QPlainTextEdit
+from Qt.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 import json
 
@@ -37,8 +33,8 @@ def textCharFormat(style):
     return _format
 
 class PyStyle:
-    def __init__(self, path):
-        with open(path, 'r') as f:
+    def __init__(self, stylesheetpath):
+        with open(stylesheetpath, 'r') as f:
             stylesheet = json.load(f)
             for style in stylesheet:
                 self.__dict__.update({
@@ -230,58 +226,3 @@ class PythonHighlighter (QSyntaxHighlighter):
             return True
         else:
             return False
-
-class ToolEditorSettingNotFoundError(Exception):
-    '''
-    Raised when there is not a setting associated with a given key
-    '''
-    pass
-
-class ToolEditorSettings:
-    def __init__(self, directory):
-        pwd = path.dirname(path.abspath(__file__))
-
-        self.settings = {}
-        with open(path.join(directory, "settings.json"), "r") as f:
-            self.settings = json.load(f)
-
-        self.preferences = {}
-        try:
-            with open(path.join(directory, "preferences.json"), "r") as f:
-                self.preferences = json.load(f)
-        except:
-            print("No user preferences found.")
-
-    def get(self, key):
-        '''
-        User settings override application defaults.
-        '''
-        if key in self.preferences and key in self.settings:
-            return self.preferences[key]
-
-        elif key in self.settings:
-            return self.settings[key]
-
-        else:
-            raise ToolEditorSettingNotFoundError()
-
-if __name__ == "__main__":
-    app = QApplication([])
-    directory = path.dirname(path.abspath(__file__))
-    settings = ToolEditorSettings(directory)
-
-    pystylesheet = path.join(directory, settings.get("PYSTYLESHEET"))
-    pystyle = PyStyle(pystylesheet)
-
-    editor = QPlainTextEdit()
-    document = editor.document()
-    document.setDefaultFont(QFontDatabase.systemFont(QFontDatabase.FixedFont))
-    document.setDocumentMargin(10)
-    highlight = PythonHighlighter(editor.document(), pystyle)
-    editor.show()
-
-    # Load syntax.py into the editor for demo purposes
-    #infile = open('tooleditor.py', 'r')
-    #editor.setPlainText(infile.read())
-
-    app.exec_()
