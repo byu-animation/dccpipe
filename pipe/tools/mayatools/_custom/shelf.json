@@ -4,49 +4,49 @@
 			"itemType":"button",
 			"icon":"new-body.svg",
 			"annotation":"Create a new body",
-			"tool":"general.manager",
-			"function":"Manager.create_body"
+			"tool":"mayatools.creators.creator",
+			"function":"Creator.create_body"
 		}, {
 			"itemType":"button",
 			"icon":"checkout.svg",
 			"annotation":"Check-out/clone an asset",
-			"tool":"maya.cloners.cloner",
+			"tool":"mayatools.cloners.cloner",
 			"function":"MayaCloner.clone"
 		}, {
 			"itemType":"button",
 			"icon":"publish.svg",
 			"annotation":"Publish a model, rig or animation",
-			"tool":"maya.publishers.publisher",
+			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.publish"
 		}, {
 			"itemType":"button",
 			"icon":"rollback.svg",
 			"annotation":"Rollback body to previous version",
-			"tool":"maya.cloners.cloner",
+			"tool":"mayatools.cloners.cloner",
 			"function":"MayaCloner.rollback"
 		}, {
 			"itemType":"button",
 			"icon":"playblast.svg",
 			"annotation":"Playblast this shot",
-			"tool":"maya.submitters.playblaster",
+			"tool":"mayatools.submitters.playblaster",
 			"function":"Playblaster.playblast"
 		}, {
 			"itemType":"button",
 			"icon":"alembic-export.svg",
 			"annotation":"Export as Alembic",
-			"tool":"maya.exporters.alembic_exporter",
+			"tool":"mayatools.exporters.alembic_exporter",
 			"function":"AlembicExporter.export"
 		}, {
 			"itemType":"button",
 			"icon":"tag.svg",
 			"annotation":"Tag Selected Objects for Export",
-			"tool":"maya.exporters.tagger",
+			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.tag"
 		}, {
 			"itemType":"button",
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
-			"tool":"maya.importers.referencer",
+			"tool":"mayatools.importers.referencer",
 			"function":"Referencer.reference"
 		}, {
 			"itemType":"separator"
@@ -54,19 +54,19 @@
 			"itemType":"button",
 			"icon":"interpolate.svg",
 			"annotation":"Cluster Interpolate",
-			"tool":"maya.utils.cluster_interpolate",
+			"tool":"mayatools.utils.cluster_interpolate",
 			"function":"cluster_interpolate.go"
 		}, {
 			"itemType":"button",
 			"icon":"education.svg",
 			"annotation":"Change the licence to education",
-			"tool":"maya.utils.education",
+			"tool":"mayatools.utils.education",
 			"function":"education.go"
 		}, {
 			"itemType":"button",
 			"icon":"reload-scripts.svg",
 			"annotation":"Reload python scripts",
-			"tool":"maya.utils.reload_scripts",
+			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go"
 		}, {
 			"itemType": "separator"
@@ -74,19 +74,19 @@
 			"itemType":"button",
 			"icon":"2_set.png",
 			"annotation":"Export JSON Set File",
-			"tool":"maya.exporters.json_exporter",
+			"tool":"mayatools.exporters.json_exporter",
 			"function":"JSONExporter.export"
 		}, {
 			"itemType":"button",
 			"icon":"2_shot.png",
 			"annotation":"Export JSON Shot File",
-			"tool":"maya.exporters.json_exporter",
+			"tool":"mayatools.exporters.json_exporter",
 			"function":"JSONExporter.export"
 		}, {
 			"itemType":"button",
 			"icon":"2_prop.png",
 			"annotation":"Export JSON Prop File",
-			"tool":"maya.exporters.json_exporter",
+			"tool":"mayatools.exporters.json_exporter",
 			"function":"JSONExporter.export"
 		}
 

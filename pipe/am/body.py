@@ -5,7 +5,7 @@ from pipe.am.element import Element
 
 
 from pipe.am.environment import Department, Environment
-from pipe.am import pipeline_io
+from pipe.am.pipeline_io import *
 from pipe.am.registry import Registry
 
 '''

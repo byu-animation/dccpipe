@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
-from pipe.am.environment import Status
 from pipe.am.environment import Environment
 import pipeline_io
 
@@ -95,7 +94,6 @@ class Element:
     NAME = "name"
     PARENT = "parent"
     DEPARTMENT = "department"
-    STATUS = "status"
     LATEST_VERSION = "latest_version"
     ASSIGNED_USER = "assigned_user"
     PUBLISHES = "publishes"
@@ -116,7 +114,6 @@ class Element:
         datadict[Element.NAME] = name
         datadict[Element.PARENT] = parent_name
         datadict[Element.DEPARTMENT] = department
-        datadict[Element.STATUS] = Status.WAIT
         datadict[Element.LATEST_VERSION] = -1
         datadict[Element.ASSIGNED_USER] = ""
         datadict[Element.PUBLISHES] = []
@@ -192,10 +189,6 @@ class Element:
         consider it the name for all parts of the asset
         """
         return self.get_parent()+"_"+self.get_name()
-
-    def get_status(self):
-
-        return self._datadict[self.STATUS]
 
     def get_assigned_user(self):
         """
@@ -293,11 +286,6 @@ class Element:
         return a list of the usernames of all users who have checked out this element
         """
         return self._datadict[self.CHECKOUT_USERS]
-
-    def update_status(self, status):
-
-        self._datadict[self.STATUS] = status
-        self._update_pipeline_file()
 
     def update_assigned_user(self, username):
         """
@@ -398,7 +386,6 @@ class Element:
         username -- the username of the user performing this action
         src -- the file to be placed in the new version
         comment -- description of changes made in this publish
-        status -- new status for this element, defaults to None in which case no change will be made
         """
         if not os.path.exists(src):
             raise EnvironmentError("file does not exist: "+src)
@@ -415,7 +402,7 @@ class Element:
         shutil.copy(src, new_version_dir)
 
         if status is not None:
-            self._datadict[self.STATUS] = status
+            pass
 
         self._update_pipeline_file()
 
