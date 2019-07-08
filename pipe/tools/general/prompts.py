@@ -4,7 +4,7 @@ import pipe.gui.quick_dialogs as qd
 from pipe.tools.tool import Tool
 
 
-def CreateBodyDialog(Tool):
+def CreateBodyDialog(tool):
         name = qd.input("What's the name of this asset?")
 
         # determine if asset was created or not.
@@ -19,10 +19,11 @@ def CreateBodyDialog(Tool):
         if type is None:
             qd.error("Asset creation failed.")
             created = False
-        
+
         if created:
             # qd.info("Asset created successfully (but not really, yet).", "Success")
             tool.finished(message="Asset created successfully (but not really, yet).")
+            return name, type
         else:
             tool.finished(cancelled=True)
 
