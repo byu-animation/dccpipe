@@ -1,0 +1,40 @@
+{
+  "name": "cloner",
+  "fields":
+  {
+    "element" : null,
+    "version_number" : null,
+    "is_loaded" : null,
+    "dest_file" : null
+  },
+  "methods":
+  [
+    {"FIXME"},
+    {
+      "name" : "SelectElementWithOrWithoutCommit",
+      "module" : "general.prompts",
+      "prompt" : true,
+      "provides" : ["element"],
+      "conditional": ["version_number"]
+    },
+    {
+      "name" : "SelectCommit",
+      "module" : "general.prompts",
+      "prompt" : true,
+      "provides" : ["version_number"],
+      "needs" : ["element"],
+    },
+    {
+      "name" : "load_houdini",
+      "module" : "general.utils",
+      "provides" : ["is_loaded"],
+      "needs" : ["non_gui"]
+    },
+    {
+      "name" : "clone",
+      "module" : "hou.cloner",
+      "needs" : ["is_loaded", "element", "version_number"],
+      "optional" : ["dest_file"]
+    }
+  ]
+}
