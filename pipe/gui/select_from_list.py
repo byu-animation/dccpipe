@@ -32,11 +32,11 @@ class ItemList(QtWidgets.QListWidget):
 class SelectFromList(QtWidgets.QWidget):
 
     def __init__(self, parent=None, title="Select", l=[], multiple_selection=False):
-        QtWidgets.QWidget.__init__(self)
+        super(SelectFromList, self).__init__()
         if parent:
             self.parent = parent
         self.list = l
-        self.submitted = QtCore.Signal(list)
+        self.submitted = QtCore.Signal(str)
         self.values = []
         self.multiple_selection = multiple_selection
 
@@ -68,9 +68,10 @@ class SelectFromList(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
     def initializeListWidget(self):
-        self.listWidget = ItemList(list, self.multiple_selection)
+        self.listWidget = ItemList(self.list, self.multiple_selection)
         self.listWidget.itemSelectionChanged.connect(self.select)
         self.vbox.addWidget(self.listWidget)
+        self.listWidget.shown_items = self.list
 
     def initializeSubmitButton(self):
         # Create the button widget
@@ -100,8 +101,14 @@ class SelectFromList(QtWidgets.QWidget):
         self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
     def submit(self):
-        self.submitted.emit(self.values)
+        # self.submitted.emit(self.values)
+        print("values: ")
+        print(self.values)
         self.close()
+
+    def getValues(self):
+        return self.values
+
 
 class SelectFromMultipleLists(SelectFromList):
 
