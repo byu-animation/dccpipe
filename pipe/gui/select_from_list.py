@@ -29,6 +29,7 @@ class ItemList(QtWidgets.QListWidget):
         for item in l:
             self.addItem(item)
 
+
 class SelectFromList(QtWidgets.QWidget):
 
     def __init__(self, parent=None, title="Select", l=[], multiple_selection=False):
@@ -104,6 +105,7 @@ class SelectFromList(QtWidgets.QWidget):
         # self.submitted.emit(self.values)
         print("values: ")
         print(self.values)
+        self.submitted.emit("test")
         self.close()
 
     def getValues(self):
