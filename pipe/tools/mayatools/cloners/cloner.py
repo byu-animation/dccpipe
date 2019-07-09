@@ -57,8 +57,12 @@ class MayaCloner:
 		asset_list = project.list_assets()
 		asset_list = ['one', 'two']
 		self.item_gui = select_gui.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window())
-		print(asset_list)
-		# print(item_gui.list)
+		self.item_gui.submitted.connect(self.results)
+		self.item_gui.show()
+
+	def results(self, value):
+		print("Final value: ", value[0])
+		# TODO do something with the selected value
 
 	# def go(self):
 	# 	parent = maya_utils.maya_main_window()

@@ -32,12 +32,13 @@ class ItemList(QtWidgets.QListWidget):
 
 class SelectFromList(QtWidgets.QWidget):
 
+    submitted = QtCore.Signal(list)
+
     def __init__(self, parent=None, title="Select", l=[], multiple_selection=False):
         super(SelectFromList, self).__init__()
         if parent:
             self.parent = parent
         self.list = l
-        self.submitted = QtCore.Signal(str)
         self.values = []
         self.multiple_selection = multiple_selection
 
@@ -102,14 +103,8 @@ class SelectFromList(QtWidgets.QWidget):
         self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
     def submit(self):
-        # self.submitted.emit(self.values)
-        print("values: ")
-        print(self.values)
-        self.submitted.emit("test")
+        self.submitted.emit(self.values)
         self.close()
-
-    def getValues(self):
-        return self.values
 
 
 class SelectFromMultipleLists(SelectFromList):
