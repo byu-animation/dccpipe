@@ -1,8 +1,8 @@
 # from .department import Department
 from .element import Element, AssetElement, ShotElement
 from .environment import Department
-from .maya import MayaElement
-from .houdini import HDAElement, SimElement
+# from .maya import MayaElement
+# from .houdini import HDAElement, SimElement
 
 class Registry:
 	"""
