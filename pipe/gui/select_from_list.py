@@ -32,6 +32,10 @@ class ItemList(QtWidgets.QListWidget):
 
 class SelectFromList(QtWidgets.QWidget):
 
+    '''
+    submitted is a class variable that must be instantiated outside of __init__
+    in order for the Signal to be created correctly.
+    '''
     submitted = QtCore.Signal(list)
 
     def __init__(self, parent=None, title="Select", l=[], multiple_selection=False):
@@ -60,7 +64,7 @@ class SelectFromList(QtWidgets.QWidget):
         if self.multiple_selection:
             return
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Refine Search: ")
+        label = QtWidgets.QLabel("Search: ")
         hbox.addWidget(label)
         self.searchBox = QtWidgets.QLineEdit()
         self.searchBox.textEdited.connect(self.textEdited)
@@ -74,10 +78,11 @@ class SelectFromList(QtWidgets.QWidget):
         self.listWidget.itemSelectionChanged.connect(self.select)
         self.vbox.addWidget(self.listWidget)
         self.listWidget.shown_items = self.list
+        self.listWidget.set_list(self.listWidget.shown_items)
 
     def initializeSubmitButton(self):
         # Create the button widget
-        self.button = QtWidgets.QPushButton("choose")
+        self.button = QtWidgets.QPushButton("Confirm Selection")
         self.button.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
         self.button.clicked.connect(self.submit)
         self.button.setEnabled(False)
@@ -88,12 +93,15 @@ class SelectFromList(QtWidgets.QWidget):
         self.button.setEnabled(len(self.values) > 0)
 
     def select(self):
-        print "selected items: {0}".format(self.listWidget.selectedItems())
+        # print "selected items: {0}".format(self.listWidget.selectedItems())
         if len(self.listWidget.selectedItems()) == 0:
             self.set_values([])
         else:
             self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
+    '''
+    Update the shown list items when a user types in the search bar
+    '''
     def textEdited(self, newText):
         self.listWidget.shown_items = []
         for item in self.listWidget.all_items:
@@ -102,6 +110,10 @@ class SelectFromList(QtWidgets.QWidget):
         self.listWidget.set_list(self.listWidget.shown_items)
         self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
+    '''
+    Send the selected values to a function set up in the calling class and
+    close the window. Use connect() on submitted to set up the receiving func.
+    '''
     def submit(self):
         self.submitted.emit(self.values)
         self.close()
