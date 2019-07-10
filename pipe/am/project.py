@@ -144,18 +144,25 @@ class Project:
 		The bodyobj is the class name for the body that will be created.
 		'''
 		name = pipeline_io.alphanumeric(name)
+		print("name: ", name)
 		filepath = os.path.join(bodyobj.get_parent_dir(), name)
+		print("filepath: ", filepath)
+
 		if name in self.list_bodies():
-			raise EnvironmentError('body already exists: '+filepath)
+			# raise EnvironmentError('body already exists: '+filepath)
+			return None  # body already exists
+			
 		if not pipeline_io.mkdir(filepath):
 			raise OSError('couldn\'t create body directory: '+filepath)
+			# some issue
+
+		print("got this far")
 		datadict = bodyobj.create_new_dict(name)
 		pipeline_io.writefile(os.path.join(filepath, bodyobj.PIPELINE_FILENAME), datadict)
 		new_body = bodyobj(filepath)
 		for dept in bodyobj.default_departments():
 			pipeline_io.mkdir(os.path.join(filepath, dept))
 			new_body.create_element(dept, Element.DEFAULT_NAME)
-
 
 		return new_body
 
@@ -191,13 +198,23 @@ class Project:
 		return self._create_body(name, Tool)
 
 	def _list_bodies_in_dir(self, filepath, filter=None):
+		print("filepath: ", filepath)
 		dirlist = os.listdir(filepath)
+		print("dirlist: ", dirlist)
+
 		bodylist = []
 		for bodydir in dirlist:
+			print("bodydir: ", bodydir)
 			abspath = os.path.join(filepath, bodydir)
+			print("abspath: ", abspath)
+			print("pipeline filename: ", Body.PIPELINE_FILENAME)
 			if os.path.exists(os.path.join(abspath, Body.PIPELINE_FILENAME)):
 				bodylist.append(bodydir)
+			else:
+				print("path doesn't exist?")
 		bodylist.sort()
+		print("bodylist: ", bodylist)
+
 		if filter is not None and len(filter)==3:
 			filtered_bodylist = []
 			for body in bodylist:
@@ -205,6 +222,8 @@ class Project:
 				if bodyobj.has_relation(filter[0], filter[1], filter[2]):
 					filtered_bodylist.append(body)
 			bodylist = filtered_bodylist
+		print("bodylist after filter: ", bodylist)
+
 		return bodylist
 
 	def list_assets(self, filter=None):
