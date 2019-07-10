@@ -1,8 +1,7 @@
 # from .department import Department
-from .element import Element, AssetElement, ShotElement
+from .element import Element
 from .environment import Department
-# from .maya import MayaElement
-# from .houdini import HDAElement, SimElement
+
 
 class Registry:
 	"""
@@ -38,19 +37,26 @@ class Registry:
 		return Element(filepath)
 
 	def maya_element_factory(self, filepath):
-		return MayaElement(filepath)
+		element = Element(filepath)
+		element.set_app_ext(".mb")
+		return element
 
 	def hda_element_factory(self, filepath):
-		return HDAElement(filepath)
+		element = Element(filepath)
+		element.set_app_ext(".hdanc")
+		return element
 
+	'''
+	FIXME: THESE ARE UNNECESSARY
+	'''
 	def asset_element_factory(self, filepath):
-		return AssetElement(filepath)
+		return Element(filepath)
 
 	def shot_element_factory(self, filepath):
-		return ShotElement(filepath)
+		return Element(filepath)
 
 	def sim_element_factory(self, filepath):
-		return SimElement(filepath)
+		return Element(filepath)
 
 	# TODO: add factories for subclasses
 
