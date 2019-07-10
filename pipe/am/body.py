@@ -5,7 +5,7 @@ from pipe.am.element import Element
 
 
 from pipe.am.environment import Department, Environment
-from pipe.am.pipeline_io import *
+from pipe.am import pipeline_io
 from pipe.am.registry import Registry
 
 '''
@@ -62,6 +62,9 @@ class Body:
 	def get_name(self):
 
 		return self._datadict[Body.NAME]
+
+	def get_filepath(self):
+		return self._filepath
 
 	def is_shot(self):
 

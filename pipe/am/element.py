@@ -105,8 +105,8 @@ class Element:
     CHECKOUT_USERS = "checkout_users"
     NOTES = "notes"
 
-    @staticmethod
-    def create_new_dict(name, department, parent_name):
+    # @staticmethod
+    def create_new_dict(self, name, department, parent_name):
         """
         populate a dictionary with defaults for all the fields needed to create a new element
         """
@@ -119,7 +119,7 @@ class Element:
         datadict[Element.PUBLISHES] = []
         datadict[Element.START_DATE] = ""
         datadict[Element.END_DATE] = ""
-        datadict[Element.APP_EXT] = ""
+        datadict[Element.APP_EXT] = self.app_ext
         datadict[Element.CACHE_EXT] = ""
         datadict[Element.CACHE_FILEPATH] = ""
         datadict[Element.CHECKOUT_USERS] = []
@@ -132,6 +132,8 @@ class Element:
         if none given, creates an empty instance.
         """
         self._env = Environment()
+        self.app_ext = None
+
         if filepath is not None:
             self.load_pipeline_file(filepath)
             cache_dir = self.get_cache_dir()
@@ -141,6 +143,9 @@ class Element:
             self._filepath = None
             self._pipeline_file = None
             self._datadict = None
+
+    def set_app_ext(self, extension):
+        self.app_ext = extension
 
     def load_pipeline_file(self, filepath):
         """
@@ -458,16 +463,3 @@ class Element:
         """
         cache_list = os.listdir(self.get_cache_dir())
         return cache_list
-
-
-# TODO : do we need shot vs asset elements?
-class ShotElement(Element):
-    """
-    Abstract class describing elements that make up a shot.
-    """
-
-
-class AssetElement(Element):
-    """
-    Abstract class describing elements that make up an asset.
-    """
