@@ -1,8 +1,17 @@
 # Interfacing with maya through pymel commands
 import pymel.core as pm
 import os
+import glob
+import re
 from PySide2 import QtWidgets
+
 from pipe.am import *
+from pipe.am.environment import Environment
+from pipe.am.project import Project
+from pipe.am.element import Element
+
+import maya.cmds as mc
+
 
 def maya_main_window():
     for obj in QtWidgets.qApp.topLevelWidgets():
@@ -18,6 +27,88 @@ def get_scene_file():
         return filename, True
     else:
         return filename, False
+
+def prepare_scene_file():
+    filePath = mc.file(q=True, sceneName=True)
+
+	if not filePath:
+		filePath = Environment().get_user_workspace()
+		filePath = os.path.join(filePath, 'untitled.mb')
+		filePath = version_file(filePath)
+		mc.file(rename=filePath)
+		mc.file(save=True)
+
+def version_file(filepath):
+	"""
+	versions up the given file based on other files in the same directory. The given filepath
+	should not have a version at the end. e.g. given "/tmp/file.txt" this function will return
+	"/tmp/file000.txt" unless there is already a file000.txt in /tmp, in which case it will
+	return "/tmp/file001.txt". zero_pad specifies how many digits to include in the version
+	number
+	"""
+
+	zero_pad = 4
+	dirpath, filename = os.path.split(filepath)
+	base, ext = os.path.splitext(filename)
+	searchpath = os.path.join(dirpath, "*")
+
+	files = glob.glob(searchpath)
+	versions = []
+	for file in files:
+		filename_to_match = os.path.basename(file)
+		if re.match(base+"[0-9]{%d}"%zero_pad+ext, filename_to_match):
+			versions.append(filename_to_match)
+
+	versions.sort()
+	version_num = 0
+	if len(versions) > 0:
+		latest = versions[-1]
+		latest_name = os.path.splitext(latest)[0]
+		idx = len(latest_name) - zero_pad
+		num_str = latest_name[idx:]
+		version_num = int(num_str) + 1
+
+	return os.path.join(dirpath, base+str(version_num).zfill(zero_pad)+ext)
+
+def post_publish(element, user, published=True, comment="No comment."):
+    scene_file, created_new_file = get_scene_file()
+    
+	if published:
+		if not mc.file(q=True, sceneName=True) == '':
+			mc.file(save=True, force=True) #save file
+
+    	dst = element.publish(user, scene_file, comment)
+
+    	#Ensure file has correct permissions
+    	try:
+    		os.chmod(dst, 0660)
+    	except:
+    		print("Setting file permissions failed badly.")
+
+    	#freeze transformations and clear history
+		clear_construction_history()
+		try:
+			freeze_transformations()
+		except:
+			cmds.confirmDialog(title="Freeze Transformations Error", message=freeze_error_msg)
+			print("Freeze transform failed. There may be 1+ keyframed values in object. Remove all keyframed values and expressions from object.")
+
+    	# TODO: Export a playblast
+
+    	# Export Alembics
+    	print('Publish Complete. Begin Exporting Alembic, or JSON if set')
+    	body = Project().get_body(element.get_parent())
+
+    	try:
+    		alembic_exporter.go(element=element)
+    	except:
+    		print("alembic export failed.")
+
+    	if body and body.is_asset():
+    		json_exporter.go(body, body.get_type())
+    	else:
+    		json_exporter.go(body, type="shot")
+    	convert_to_education()
 
 def save_scene_file():
     filename, untitled = get_scene_file()
@@ -40,6 +131,9 @@ def freeze_transformations():
 
 def convert_to_education():
     pm.FileInfo()['license'] = 'education'
+	fileName = pm.sceneName()
+	pm.saveFile()
+	# qd.info('This Maya file has been converted to an education licence')
 
 def get_top_level_nodes():
     assemblies = pm.ls(assemblies=True)

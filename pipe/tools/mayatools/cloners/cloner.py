@@ -65,11 +65,9 @@ class MayaCloner:
 		print("Final value: ", value[0])
 		filename = value[0]
 
-		# TODO: convert the filename into the full file path
 		project = Project()
 		body = project.get_body(filename)
 
-		# TODO: get the element for the model dept, and using that get the commit. Use these to clone the object
 		element = body.get_element("model")
 
 		filepath = body.get_filepath()
