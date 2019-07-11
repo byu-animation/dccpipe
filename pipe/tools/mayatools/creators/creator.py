@@ -14,7 +14,7 @@ Parent class for managing assets
 class Creator:
 
     def __init__(self):
-        self.item_gui = None
+        pass
 
     '''
     This will bring up the create new body UI
@@ -42,22 +42,14 @@ class Creator:
                 # show the gui, get the element. To list elements, get the body and get the department
                 department = "model"  # hard-coding model for now since this is Maya
                 asset_list = body.list_elements(department)
-                self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
-                self.item_gui.submitted.connect(self.results)
+
+                # get the element for the model dept and the user, and using that publish
+                selected_element = body.get_element("model")
+
+                user = Environment().get_user()
+                post_publish(selected_element, user, published=True, comment="First commit.")
+
+                qd.info("Asset created successfully (but not really, yet).", "Success")
+
         else:
             qd.error("Asset creation failed.")
-
-    def results(self, value):
-        print("Final value: ", value[0])
-        filename = value[0]
-
-        project = Project()
-        body = project.get_body(filename)
-
-        # get the element for the model dept and the user, and using that publish
-        selected_element = body.get_element("model")
-
-        user = Environment().get_user()
-        post_publish(selected_element, user, published=True, comment="No comment.")
-
-        qd.info("Asset created successfully (but not really, yet).", "Success")

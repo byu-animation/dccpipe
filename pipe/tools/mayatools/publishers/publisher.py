@@ -130,4 +130,40 @@ def non_gui_publish(element, user, src, comment):
 	except:
 		pass
 	print 'TODO: export playblast'
-	print element.get_name()
+    print element.get_name()
+
+
+        #
+        #
+        #     if created:
+        #         project = Project()
+        #         body = project.create_asset(name, asset_type=type)
+        #         if body == None:
+        #             # print a message about failure/duplicate
+        #             qd.error("Body not found, publish failed.")
+        #         else:
+        #             # correct so far
+        #             # TODO: publish
+        #             prepare_scene_file()
+        #             # show the gui, get the element. To list elements, get the body and get the department
+        #             department = "model"  # hard-coding model for now since this is Maya
+        #             asset_list = body.list_elements(department)
+        #             self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
+        #             self.item_gui.submitted.connect(self.results)
+        #     else:
+        #         qd.error("Asset creation failed.")
+        #
+        # def results(self, value):
+        #     print("Final value: ", value[0])
+        #     filename = value[0]
+        #
+        #     project = Project()
+        #     body = project.get_body(filename)
+        #
+        #     # get the element for the model dept and the user, and using that publish
+        #     selected_element = body.get_element("model")
+        #
+        #     user = Environment().get_user()
+        #     post_publish(selected_element, user, published=True, comment="No comment.")
+        #
+        #     qd.info("Asset created successfully (but not really, yet).", "Success")
