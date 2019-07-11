@@ -33,6 +33,7 @@ class Creator():
             body = project.create_asset(name, asset_type=type)
             if body == None:
                 # print a message about failure/duplicate
+                qd.error("Body not found, publish failed.")
             else:
                 # correct so far
                 # TODO: publish
@@ -42,9 +43,6 @@ class Creator():
                 asset_list = body.list_elements(department)
         		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
         		self.item_gui.submitted.connect(self.results)
-
-
-            qd.info("Asset created successfully (but not really, yet).", "Success")
         else:
             qd.error("Asset creation failed.")
 
@@ -56,8 +54,10 @@ class Creator():
 		project = Project()
 		body = project.get_body(filename)
 
-		# TODO: get the element for the model dept, and using that get the commit. Use these to clone the object
+		# get the element for the model dept and the user, and using that publish
 		selected_element = body.get_element("model")
 
         user = Environment().get_user()
         post_publish(selected_element, user, published=True, comment="No comment.")
+
+        qd.info("Asset created successfully (but not really, yet).", "Success")
