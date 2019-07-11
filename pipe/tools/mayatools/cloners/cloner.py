@@ -16,7 +16,6 @@ import os
 class MayaCloner:
 	def __init__(self):
 		self.maya_checkout_dialog = None
-		pass
 
 	def rollback(self):
 		print("Rollin' Rollin' Rollin' (Back)")

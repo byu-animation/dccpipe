@@ -11,10 +11,10 @@ from PySide2 import QtWidgets
 Parent class for managing assets
 '''
 
-class Creator():
+class Creator:
 
     def __init__(self):
-        pass
+        self.item_gui = None
 
     '''
     This will bring up the create new body UI
@@ -47,16 +47,15 @@ class Creator():
         else:
             qd.error("Asset creation failed.")
 
+    def results(self, value):
+        print("Final value: ", value[0])
+        filename = value[0]
 
-	def results(self, value):
-		print("Final value: ", value[0])
-		filename = value[0]
+        project = Project()
+        body = project.get_body(filename)
 
-		project = Project()
-		body = project.get_body(filename)
-
-		# get the element for the model dept and the user, and using that publish
-		selected_element = body.get_element("model")
+        # get the element for the model dept and the user, and using that publish
+        selected_element = body.get_element("model")
 
         user = Environment().get_user()
         post_publish(selected_element, user, published=True, comment="No comment.")
