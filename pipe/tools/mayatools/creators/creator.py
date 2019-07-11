@@ -41,8 +41,8 @@ class Creator():
                 # show the gui, get the element. To list elements, get the body and get the department
                 department = "model"  # hard-coding model for now since this is Maya
                 asset_list = body.list_elements(department)
-        		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
-        		self.item_gui.submitted.connect(self.results)
+                self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
+                self.item_gui.submitted.connect(self.results)
         else:
             qd.error("Asset creation failed.")
 
