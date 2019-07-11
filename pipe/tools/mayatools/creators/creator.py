@@ -4,6 +4,7 @@ from pipe.am.project import Project
 from pipe.am.environment import Environment
 from pipe.am.body import Body
 from pipe.tools.mayatools.utils.utils import *
+from PySide2 import QtWidgets
 
 
 '''
