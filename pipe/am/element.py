@@ -392,8 +392,10 @@ class Element:
         src -- the file to be placed in the new version
         comment -- description of changes made in this publish
         """
+
         if not os.path.exists(src):
-            raise EnvironmentError("file does not exist: "+src)
+            raise EnvironmentError("file does not exist: " + src)
+
         self._datadict[self.APP_EXT] = os.path.splitext(src)[1]
         dst = self.get_app_filepath()
         timestamp = pipeline_io.timestamp()

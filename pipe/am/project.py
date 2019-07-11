@@ -151,7 +151,7 @@ class Project:
 		if name in self.list_bodies():
 			# raise EnvironmentError('body already exists: '+filepath)
 			return None  # body already exists
-			
+
 		if not pipeline_io.mkdir(filepath):
 			raise OSError('couldn\'t create body directory: '+filepath)
 			# some issue
@@ -198,22 +198,16 @@ class Project:
 		return self._create_body(name, Tool)
 
 	def _list_bodies_in_dir(self, filepath, filter=None):
-		print("filepath: ", filepath)
 		dirlist = os.listdir(filepath)
-		print("dirlist: ", dirlist)
 
 		bodylist = []
 		for bodydir in dirlist:
-			print("bodydir: ", bodydir)
 			abspath = os.path.join(filepath, bodydir)
-			print("abspath: ", abspath)
-			print("pipeline filename: ", Body.PIPELINE_FILENAME)
 			if os.path.exists(os.path.join(abspath, Body.PIPELINE_FILENAME)):
 				bodylist.append(bodydir)
 			else:
 				print("path doesn't exist?")
 		bodylist.sort()
-		print("bodylist: ", bodylist)
 
 		if filter is not None and len(filter)==3:
 			filtered_bodylist = []
@@ -222,7 +216,6 @@ class Project:
 				if bodyobj.has_relation(filter[0], filter[1], filter[2]):
 					filtered_bodylist.append(body)
 			bodylist = filtered_bodylist
-		print("bodylist after filter: ", bodylist)
 
 		return bodylist
 
