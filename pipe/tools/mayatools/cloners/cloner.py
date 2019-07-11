@@ -70,6 +70,9 @@ class MayaCloner:
 		element = body.get_element("model")
 
 		filepath = body.get_filepath()
+
+		lastPublish = element.get_last_publish();
+		print("lastPublish: ",lastPublish)
 		print("path: ", filepath)
 
 		if filepath is not None:
@@ -84,5 +87,4 @@ class MayaCloner:
 			else:
 				mc.file(filepath, open=True, force=True)
 				print "File opened: " + filepath
-
 		# TODO do something with the selected value: Get the alembic or .mb file and open in Maya
