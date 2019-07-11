@@ -3,7 +3,7 @@ import pipe.gui.select_from_list as sfl
 from pipe.am.project import Project
 from pipe.am.environment import Environment
 from pipe.am.body import Body
-from pipe.am.tools.mayatools.utils.utils import *
+from pipe.tools.mayatools.utils.utils import *
 
 
 '''
