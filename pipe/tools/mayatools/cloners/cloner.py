@@ -71,9 +71,26 @@ class MayaCloner:
 
 		filepath = body.get_filepath()
 
-		lastPublish = element.get_last_publish();
-		print("lastPublish: ",lastPublish)
+		publishes = element.list_publishes();
+		print("publishes: ",publishes)
 		print("path: ", filepath)
+
+		# make the list a list of strings, not tuples
+		sanitized_publish_list = []
+		for publish in publishes:
+			label = publish[0] + " " + publish[1] + " " + publish[2]
+			sanitized_publish_list.append(label)
+
+		self.item_gui = select_gui.SelectFromList(l=sanitized_publish_list, parent=maya_utils.maya_main_window(), title="Select publish to clone")
+		self.item_gui.submitted.connect(self.publish_selection_results)
+
+	def publish_selection_results(self, value):
+		print("Final value after publish selection: ", value[0])
+
+		# TODO: what needs to happen now is to turn the selected publish into the filepath for the actual publish and get the scene file
+		# TODO: Currently, the returned value is the string of username, timestamp, and comment.
+		# TODO: What I'm thinking is of adding another value to the publish tuple, which would be an ID. This isn't necessary since we
+		# TODO: could just compare timestamps. But, we still need a way of associating the selected publish with the correct commit directory.
 
 		if filepath is not None:
 			if not mc.file(q=True, sceneName=True) == '':

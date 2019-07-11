@@ -77,7 +77,9 @@ def post_publish(element, user, published=True, comment="No comment."):
         if not mc.file(q=True, sceneName=True) == '':
             mc.file(save=True, force=True) #save file
 
-        dst = element.publish(user, scene_file, comment)
+        username = user.get_username()
+
+        dst = element.publish(username, scene_file, comment)
 
         #Ensure file has correct permissions
         try:
