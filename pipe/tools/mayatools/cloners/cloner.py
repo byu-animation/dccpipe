@@ -109,16 +109,16 @@ class MayaCloner:
 		# TODO: What I'm thinking is of adding another value to the publish tuple, which would be an ID. This isn't necessary since we
 		# TODO: could just compare timestamps. But, we still need a way of associating the selected publish with the correct commit directory.
 
-		if filepath is not None:
+		if selected_scene_file is not None:
 			if not mc.file(q=True, sceneName=True) == '':
 				mc.file(save=True, force=True) #save file
 
-			if not os.path.exists(filepath):
+			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)
-				mc.file(rename=filepath)
+				mc.file(rename=selected_scene_file)
 				mc.file(save=True, force=True)
-				print "New file: " + filepath
+				print "New file: " + selected_scene_file
 			else:
-				mc.file(filepath, open=True, force=True)
-				print "File opened: " + filepath
+				mc.file(selected_scene_file, open=True, force=True)
+				print "File opened: " + selected_scene_file
 		# TODO do something with the selected value: Get the alembic or .mb file and open in Maya
