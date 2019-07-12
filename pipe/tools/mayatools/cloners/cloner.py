@@ -71,21 +71,38 @@ class MayaCloner:
 
 		filepath = body.get_filepath()
 
-		publishes = element.list_publishes();
-		print("publishes: ",publishes)
+		self.publishes = element.list_publishes();
+		print("publishes: ", self.publishes)
 		print("path: ", filepath)
 
 		# make the list a list of strings, not tuples
-		sanitized_publish_list = []
-		for publish in publishes:
+		self.sanitized_publish_list = []
+		for publish in self.publishes:
 			label = publish[0] + " " + publish[1] + " " + publish[2]
-			sanitized_publish_list.append(label)
+			self.sanitized_publish_list.append(label)
 
-		self.item_gui = select_gui.SelectFromList(l=sanitized_publish_list, parent=maya_utils.maya_main_window(), title="Select publish to clone")
+		self.item_gui = select_gui.SelectFromList(l=self.sanitized_publish_list, parent=maya_utils.maya_main_window(), title="Select publish to clone")
 		self.item_gui.submitted.connect(self.publish_selection_results)
 
 	def publish_selection_results(self, value):
 		print("Final value after publish selection: ", value[0])
+
+		selected_publish = None
+		for item in self.sanitized_publish_list:
+			print("value[0]: ", value[0])
+			print("item: ", item)
+			if value[0] == item:
+				selected_publish = item
+
+		selected_scene_file = None
+		for publish in self.publishes:
+			label = publish[0] + " " + publish[1] + " " + publish[2]
+			if label == selected_publish:
+				selected_scene_file = publish[3]
+
+		# selected_scene_file is the one that contains the scene file for the selected commit
+
+		print("selected scene: ", selected_scene_file)
 
 		# TODO: what needs to happen now is to turn the selected publish into the filepath for the actual publish and get the scene file
 		# TODO: Currently, the returned value is the string of username, timestamp, and comment.

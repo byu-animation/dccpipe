@@ -204,7 +204,7 @@ class Element:
 
     def get_last_publish(self):
         """
-        return a tuple describing the latest publish: (username, timestamp, comment)
+        return a tuple describing the latest publish: (username, timestamp, comment, filepath)
         """
         latest_version = self._datadict[self.LATEST_VERSION]
         if(latest_version<0):
@@ -214,7 +214,7 @@ class Element:
     def list_publishes(self):
         """
         return a list of tuples describing all publishes for this element.
-        each tuple contains the following: (username, timestamp, comment)
+        each tuple contains the following: (username, timestamp, comment, filepath)
         """
         return self._datadict[self.PUBLISHES]
 
@@ -265,7 +265,7 @@ class Element:
         """
         return the path to the directory of the given version
         """
-        return os.path.join(self._filepath, ".v%03d" % version)
+        return os.path.join(self._filepath, ".v%04d" % version)
 
     def get_cache_ext(self):
         """
@@ -399,7 +399,6 @@ class Element:
         self._datadict[self.APP_EXT] = os.path.splitext(src)[1]
         dst = self.get_app_filepath()
         timestamp = pipeline_io.timestamp()
-        self._datadict[self.PUBLISHES].append((username, timestamp, comment))
         shutil.copyfile(src, dst)
 
         new_version = self._datadict[self.LATEST_VERSION] + 1
@@ -407,6 +406,11 @@ class Element:
         new_version_dir = self.get_version_dir(new_version)
         pipeline_io.mkdir(new_version_dir)
         shutil.copy(src, new_version_dir)
+
+        # get the filepath for this publish and add it to list of publishes
+        old_filepath, new_filename = os.path.split(src)
+        new_publish = os.path.join(new_version_dir, new_filename)
+        self._datadict[self.PUBLISHES].append((username, timestamp, comment, new_publish))
 
         if status is not None:
             pass

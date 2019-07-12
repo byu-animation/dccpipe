@@ -35,13 +35,13 @@ def mkdir(dirpath):
 		return False # file already exists
 	return True
 
-def version_file(filepath, zero_pad=3):
+def version_file(filepath, zero_pad=4):
 	"""
 	versions up the given file based on other files in the same directory. The given filepath
 	should not have a version at the end. e.g. given "/tmp/file.txt" this function will return
 	"/tmp/file000.txt" unless there is already a file000.txt in /tmp, in which case it will
 	return "/tmp/file001.txt". zero_pad specifies how many digits to include in the version
-	number--the default is 3.
+	number--the default is 4.
 	"""
 	if zero_pad < 1:
 		zero_pad = 1
@@ -94,4 +94,3 @@ def timestamp():
 	return a string containing the current time
 	"""
 	return time.strftime("%a, %d %b %Y %I:%M:%S %p", time.localtime())
-
