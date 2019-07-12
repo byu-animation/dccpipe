@@ -1,5 +1,6 @@
 # We're going to need asset management module
-from pipe.am import Environment, Project
+from pipe.am.environment import Environment
+from pipe.am.project import Project
 
 # Minimal UI
 from pipe.gui.select_from_list import SelectFromList, SelectFromMultipleLists
