@@ -172,6 +172,10 @@ class Project:
 		name -- the name of the new asset to create
 		'''
 		asset = self._create_body(name, Asset)
+		
+		if asset is None:
+			return None  # asset already exists.
+
 		asset.update_type(asset_type)
 
 		return asset
