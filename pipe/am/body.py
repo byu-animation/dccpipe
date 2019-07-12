@@ -224,13 +224,13 @@ class AssetType:
 	PROP = 'prop'
 	TOOL = 'tool'
 	SHOT = 'shot'
-	ALL = [CHARACTER, SET, PROP]
+	ALL = [CHARACTER, PROP, SET, SHOT, TOOL]
 
 	def __init__(self):
 		pass
 
 	def list_asset_types(self):
-		return self.ALL.sorted()
+		return self.ALL
 
 class Asset(Body):
 	'''
