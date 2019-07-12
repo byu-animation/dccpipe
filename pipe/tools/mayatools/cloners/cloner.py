@@ -85,12 +85,9 @@ class MayaCloner:
 		self.item_gui.submitted.connect(self.publish_selection_results)
 
 	def publish_selection_results(self, value):
-		print("Final value after publish selection: ", value[0])
 
 		selected_publish = None
 		for item in self.sanitized_publish_list:
-			print("value[0]: ", value[0])
-			print("item: ", item)
 			if value[0] == item:
 				selected_publish = item
 
@@ -101,14 +98,6 @@ class MayaCloner:
 				selected_scene_file = publish[3]
 
 		# selected_scene_file is the one that contains the scene file for the selected commit
-
-		print("selected scene: ", selected_scene_file)
-
-		# TODO: what needs to happen now is to turn the selected publish into the filepath for the actual publish and get the scene file
-		# TODO: Currently, the returned value is the string of username, timestamp, and comment.
-		# TODO: What I'm thinking is of adding another value to the publish tuple, which would be an ID. This isn't necessary since we
-		# TODO: could just compare timestamps. But, we still need a way of associating the selected publish with the correct commit directory.
-
 		if selected_scene_file is not None:
 			if not mc.file(q=True, sceneName=True) == '':
 				mc.file(save=True, force=True) #save file
@@ -121,4 +110,6 @@ class MayaCloner:
 			else:
 				mc.file(selected_scene_file, open=True, force=True)
 				print "File opened: " + selected_scene_file
-		# TODO do something with the selected value: Get the alembic or .mb file and open in Maya
+
+# FIXME: When cloning an asset, the changes to the current asset are saved over the scene file of the commit user was working on previously
+# We should give user an option to save their changes to the asset or not when they opt to clone another asset, and if so, save as a new publish.
