@@ -22,6 +22,8 @@ class Body:
 	NAME = 'name'
 	REFERENCES = 'references'
 	DESCRIPTION = 'description'
+	TYPE = 'type'
+	FRAME_RANGE = 'frame_range'
 
 	@staticmethod
 	def create_new_dict(name):
@@ -32,6 +34,8 @@ class Body:
 		datadict[Body.NAME] = name
 		datadict[Body.REFERENCES] = []
 		datadict[Body.DESCRIPTION] = ''
+		datadict[Body.TYPE] = AssetType.PROP
+		datadict[Body.FRAME_RANGE] = 0
 		return datadict
 
 	@staticmethod
@@ -46,7 +50,7 @@ class Body:
 		'''
 		return the parent directory that bodies of this type are stored in
 		'''
-		raise NotImplementedError('subclass must implement get_parent_dir')
+		return Environment().get_assets_dir()
 
 	def __init__(self, filepath):
 		'''
@@ -85,6 +89,24 @@ class Body:
 	def get_description(self):
 
 		return self._datadict[Body.DESCRIPTION]
+
+	def get_type(self):
+
+		return self._datadict[Body.TYPE]
+
+	def update_type(self, new_type):
+
+		self._datadict[Body.TYPE] = new_type
+		pipeline_io.writefile(self._pipeline_file, self._datadict)
+
+	def get_frame_range(self):
+
+		return self._datadict[Body.FRAME_RANGE]
+
+	def update_frame_range(self, frame_range):
+
+		self._datadict[Body.FRAME_RANGE] = frame_range
+		pipeline_io.writefile(self._pipeline_file, self._datadict)
 
 	# def get_parent_dir(self):
 	# 	'''
@@ -200,20 +222,25 @@ class AssetType:
 	CHARACTER = 'character'
 	SET = 'set'
 	PROP = 'prop'
+	TOOL = 'tool'
+	SHOT = 'shot'
 	ALL = [CHARACTER, SET, PROP]
+
+	def __init__(self):
+		pass
+
+	def list_asset_types(self):
+		return self.ALL.sorted()
 
 class Asset(Body):
 	'''
 	Class describing an asset body.
 	'''
 
-	TYPE = 'type'
-
 	@staticmethod
 	def create_new_dict(name):
 
 		datadict = Body.create_new_dict(name)
-		datadict[Asset.TYPE] = AssetType.PROP
 		return datadict
 
 	@staticmethod
@@ -221,11 +248,6 @@ class Asset(Body):
 
 		return Department.ASSET_DEPTS
 
-	@staticmethod
-	def get_parent_dir():
-
-		return Environment().get_assets_dir()
-
 	def is_shot(self):
 
 		return False
@@ -242,30 +264,16 @@ class Asset(Body):
 
 		return False
 
-	def get_type(self):
-
-		return self._datadict[Asset.TYPE]
-
-	def update_type(self, new_type):
-
-		self._datadict[Asset.TYPE] = new_type
-		pipeline_io.writefile(self._pipeline_file, self._datadict)
-
-'''
-shot module
-'''
 
 class Shot(Body):
 	'''
 	Class describing a shot body.
 	'''
-	FRAME_RANGE = 'frame_range'
 
 	@staticmethod
 	def create_new_dict(name):
 
 		datadict = Body.create_new_dict(name)
-		datadict[Shot.FRAME_RANGE] = 0
 		return datadict
 
 	@staticmethod
@@ -273,11 +281,6 @@ class Shot(Body):
 
 		return Department.SHOT_DEPTS
 
-	@staticmethod
-	def get_parent_dir():
-
-		return Environment().get_shots_dir()
-
 	def is_shot(self):
 
 		return True
@@ -294,14 +297,6 @@ class Shot(Body):
 
 		return False
 
-	def get_frame_range(self):
-
-		return self._datadict[Shot.FRAME_RANGE]
-
-	def update_frame_range(self, frame_range):
-
-		self._datadict[Shot.FRAME_RANGE] = frame_range
-		pipeline_io.writefile(self._pipeline_file, self._datadict)
 
 class Tool(Body):
 	'''
@@ -318,11 +313,6 @@ class Tool(Body):
 	def default_departments():
 
 		return Department.TOOL_DEPTS
-
-	@staticmethod
-	def get_parent_dir():
-
-		return Environment().get_tools_dir()
 
 	def is_shot(self):
 
@@ -355,11 +345,6 @@ class CrowdCycle(Body):
 	def default_departments():
 
 		return Department.CROWD_DEPTS
-
-	@staticmethod
-	def get_parent_dir():
-
-		return Environment().get_crowds_dir()
 
 	def is_shot(self):
 
