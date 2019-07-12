@@ -38,7 +38,7 @@ class SelectFromList(QtWidgets.QWidget):
     '''
     submitted = QtCore.Signal(list)
 
-    def __init__(self, parent=None, title="Select", l=[], multiple_selection=False):
+    def __init__(self, parent=None, title="Select", l=[], multiple_selection=False, width=600, height=600):
         super(SelectFromList, self).__init__()
         if parent:
             self.parent = parent
@@ -48,7 +48,7 @@ class SelectFromList(QtWidgets.QWidget):
 
         self.setWindowTitle(title)
         self.setObjectName('SelectFromList')
-        self.resize(600,600)
+        self.resize(width,height)
         self.initializeVBox()
         self.setLayout(self.vbox)
         self.show()
