@@ -1,4 +1,7 @@
 {
     "PYSTYLESHEET" : "onedarktheme.json",
-    "TOOL_DIR_VAR" : "MEDIA_TOOLS_DIR"
+    "TOOL_DIR_VAR" : "MEDIA_TOOLS_DIR",
+    "TOOL_EDITOR_DEFAULT_TOOL" : "test.message_displayer",
+    "TOOL_EDITOR_DEFAULT_LANGUAGE" : "python",
+    "TOOL_EDITOR_VERSION" : "0.0.1"
 }

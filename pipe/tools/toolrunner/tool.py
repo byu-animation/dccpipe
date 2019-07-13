@@ -34,7 +34,7 @@ class Tool:
     def __init__(self, tool_path, gui=False):
         # Load the tool as an object
         pwd = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        tool_path = os.path.join(pwd, *tool_path.split(".")) + ".json"
+        tool_path = os.path.join(pwd, *(tool_path.split(".") + ["tool.json"]))
         with open(tool_path) as f:
             tool_json = json.load(f)
 

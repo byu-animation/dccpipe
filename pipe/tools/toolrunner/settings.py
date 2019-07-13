@@ -9,6 +9,9 @@ class ToolRunnerSettingNotFoundError(Exception):
     pass
 
 class ToolRunnerSettings:
+    '''
+    A class for getting values of settings for the ToolRunner
+    '''
     def __init__(self, directory):
         self.directory = directory
 
@@ -25,6 +28,12 @@ class ToolRunnerSettings:
 
     def get_pystylesheet(self):
         return self.get("PYSTYLESHEET")
+
+    def get_default_tool(self):
+        return self.get("TOOL_EDITOR_DEFAULT_TOOL")
+
+    def get_version(self):
+        return self.get("TOOL_EDITOR_VERSION")
 
     def get(self, key):
         '''
