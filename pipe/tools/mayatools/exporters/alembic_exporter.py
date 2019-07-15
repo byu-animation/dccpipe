@@ -5,13 +5,14 @@ import pymel.core as pm
 
 from exporter import MayaExporter
 
-# import maya.utils as maya_utils
+import pipe.tools.mayatools.utils as maya_utils
+from pipe.am.body import AssetType
 from pipe.tools.mayatools.utils.utils import ExportFlags
 
 
-class AlembicExporter(MayaExporter, object):
+class AlembicExporter:
     def __init__(self, gui=True, element=None, show_tagger=False):
-        super(AlembicExporter, self).__init__(gui=gui, element=element, show_tagger=show_tagger)
+        #super(AlembicExporter, self).__init__(gui=gui, element=element, show_tagger=show_tagger)
         #self.as_super = super(AlembicExporter, self)
         #self.as_super.__init__(publisher, gui)
         pm.loadPlugin('AbcExport')
@@ -29,19 +30,19 @@ class AlembicExporter(MayaExporter, object):
     def export_set(self):
         pass
 
-    def export_shot(self):
-        abc_cache_dir = self.abc_cache_dir(asset=False)
-        abc_file_path = os.path.join(abc_cache_dir, self.body.get_name)
+    def export(self, element, username, selection=None, startFrame=None, endFrame=None):
+        abc_cache_dir = element.get_checkout_dir(username)
+        #abc_file_path = os.path.join(abc_cache_dir, body.get_name())
         refs = maya_utils.get_loaded_references()
         for ref in refs:
             body = maya_utils.get_body_from_reference(ref)
             node = maya_utils.get_root_node_from_reference(ref)
             name, version_number = maya_utils.extract_reference_data(ref)
             if maya_utils.node_is_tagged_with_flag(node, ExportFlags.EXPORT):
-                if body.get_type() == AssetType.CHARACTER:
-                    export_target = maya_utils.get_first_child_with_flag(node, ExportFlags.EXPORT_TARGET)
-                    if export_target:
-                        self.export_abc(self.abc_options_default(export_target, abc_cache_dir))
+                #if body.get_type() == AssetType.CHARACTER:
+                export_target = maya_utils.get_first_child_with_flag(node, ExportFlags.EXPORT_TARGET)
+                if export_target:
+                    self.export_abc(self.abc_options_default(export_target, abc_cache_dir))
 
     def export_abc(self, alembic_options):
         command = "AbcExport "
