@@ -105,7 +105,7 @@ def post_publish(element, user, published=True, comment="No comment."):
         '''body = Project().get_body(element.get_parent())
 
         try:
-            alembic_exporter.go(element=element)
+            alembic_exporter.export(element, username)
         except:
             print("alembic export failed.")
 
