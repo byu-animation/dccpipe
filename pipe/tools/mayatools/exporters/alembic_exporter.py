@@ -3,8 +3,6 @@ from gui import quick_dialogs
 import os
 import pymel.core as pm
 
-from exporter import MayaExporter
-
 import pipe.tools.mayatools.utils as maya_utils
 from pipe.am.body import AssetType
 from pipe.tools.mayatools.utils.utils import ExportFlags
