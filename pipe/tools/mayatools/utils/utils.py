@@ -102,7 +102,7 @@ def post_publish(element, user, published=True, comment="No comment."):
 
         # Export Alembics
         print('Publish Complete. Begin Exporting Alembic, or JSON if set')
-        body = Project().get_body(element.get_parent())
+        '''body = Project().get_body(element.get_parent())
 
         try:
             alembic_exporter.go(element=element)
@@ -112,7 +112,7 @@ def post_publish(element, user, published=True, comment="No comment."):
         if body and body.is_asset():
             json_exporter.go(body, body.get_type())
         else:
-            json_exporter.go(body, type="shot")
+            json_exporter.go(body, type="shot")'''
         convert_to_education()
 
 def save_scene_file():
