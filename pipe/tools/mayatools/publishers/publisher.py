@@ -68,6 +68,8 @@ class MayaPublisher:
 
         # get the comment
         comment = qd.input("Comment for publish")
+        if comment = None:
+            comment = "No comment."
         post_publish(selected_element, user, published=True, comment=comment)
 
         qd.info("Asset published successfully.", "Success")
