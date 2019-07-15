@@ -81,6 +81,21 @@ def input(label, title='Input', text=None):
 	else:
 		return None
 
+def large_input(label, title='Input', text=None):
+	'''
+	Allows the user to respond with a larger text input
+	If the okay button is pressed it returns the inputed text, otherwise None
+	'''
+
+	dialog = QtWidgets.QTextEdit()
+	# dialog.setCancelButtonText("Skip")toPlainText
+	text = dialog.toPlainText(None, title, label, text=text)
+
+	if text[1]:
+		return text[0]
+	else:
+		return None
+
 def binary_option(text, optionOne, optionTwo, title='Question'):
 	'''Gives the user a message and a binary choice'''
 	'''returns True if option one is selected, false if the second option is selected, otherwise None'''

@@ -5,6 +5,7 @@ from pipe.tools.mayatools.utils.utils import *
 from pipe.am.environment import Environment
 from pipe.am.body import Body
 from pipe.am.project import Project
+import pipe.gui.quick_dialogs as qd
 
 
 from pipe.gui.checkbox_options import CheckBoxOptions
@@ -60,31 +61,16 @@ class MayaPublisher:
 
         prepare_scene_file()
 
-        project = Project()
-        body = project.get_body(filename)
-
         # get the element for the model dept and the user, and using that publish
-        selected_element = body.get_element("model")
+        selected_element = self.body.get_element(chosen_department)
 
         user = Environment().get_user()
-        post_publish(selected_element, user, published=True, comment="No comment.")
 
-        qd.info("Asset created successfully (but not really, yet).", "Success")
+        # get the comment
+        comment = qd.input("Comment for publish")
+        post_publish(selected_element, user, published=True, comment=comment)
 
-#TODO: FIXME. LOTS OF STUFF TO DO PRIOR TO PUBLISHING FROM MAYA. ALL THE FOLLOWING.
-
-    def go():
-    	parent = maya_main_window()
-    	filePath = cmds.file(q=True, sceneName=True)
-    	if not filePath:
-    		filePath = Environment().get_user_workspace()
-    		filePath = os.path.join(filePath, 'untitled.mb')
-    		filePath = pipeline_io.version_file(filePath)
-    		cmds.file(rename=filePath)
-    		cmds.file(save=True)
-    	global maya_publish_dialog
-    	maya_publish_dialog = PublishWindow(filePath, parent, [Department.MODEL, Department.RIG, Department.LAYOUT, Department.ANIM, Department.CFX, Department.CYCLES])
-    	maya_publish_dialog.finished.connect(post_publish)
+        qd.info("Asset published successfully.", "Success")
 
     # TODO: SET UP A FUNCTION FOR PUBLISH WITHOUT GUI
     # def non_gui_publish(element, user, src, comment):
