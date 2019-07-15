@@ -1,10 +1,9 @@
 from am import *
 from gui import quick_dialogs
 import os
-
-#from pipe.tools.mayatools.utils.utils import ExportFlags
-import maya.cmds as mc
 import shutil
+
+import maya.cmds as mc
 from pymel.core import *
 
 import pipe.am.pipeline_io as pio
@@ -14,21 +13,10 @@ from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
 #import reference_selection as rs #wakaranai
 
-class ExportFlags:
-    EXPORT_TARGET = "BYU_Export_Target_Flag"
-    ANIMATED = "BYU_Animated_Flag"
-    EXPORT = "BYU_Export"
-
-    def __init__(self):
-        pass
-
 
 class AlembicExporter:
     def __init__(self, gui=True, element=None, show_tagger=False):
-        #super(AlembicExporter, self).__init__(gui=gui, element=element, show_tagger=show_tagger)
-        #self.as_super = super(AlembicExporter, self)
-        #self.as_super.__init__(publisher, gui)
-        pm.loadPlugin('AbcExport')
+        pass
 
     def abcExport(self, selected, path):
     	if not os.path.exists(path):
