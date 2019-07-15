@@ -2,7 +2,6 @@ from am import *
 from gui import quick_dialogs
 import os
 
-import pipe.tools.mayatools.utils.utils as maya_utils
 #from pipe.tools.mayatools.utils.utils import ExportFlags
 import maya.cmds as mc
 import shutil
@@ -155,7 +154,6 @@ class AlembicExporter:
     		@throws: a shutil exception if the move failed
     	'''
 
-    	print 'install newly created geo in files'
     	path=os.path.dirname(mc.file(q=True, sceneName=True))
 
     	srcABC = os.path.join(path, 'cache', 'abcFiles')
