@@ -43,7 +43,7 @@ class Body:
 		'''
 		return a list of departments that this body should create on initialization
 		'''
-		raise NotImplementedError('subclass must implement default_departments')
+		return Department.ALL
 
 	@staticmethod
 	def get_parent_dir():
@@ -243,10 +243,10 @@ class Asset(Body):
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	@staticmethod
-	def default_departments():
-
-		return Department.ASSET_DEPTS
+	# @staticmethod
+	# def default_departments():
+	#
+	# 	return Department.ASSET_DEPTS
 
 	def is_shot(self):
 
@@ -276,10 +276,10 @@ class Shot(Body):
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	@staticmethod
-	def default_departments():
-
-		return Department.SHOT_DEPTS
+	# @staticmethod
+	# def default_departments():
+	#
+	# 	return Department.SHOT_DEPTS
 
 	def is_shot(self):
 
@@ -309,10 +309,10 @@ class Tool(Body):
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	@staticmethod
-	def default_departments():
-
-		return Department.TOOL_DEPTS
+	# @staticmethod
+	# def default_departments():
+	#
+	# 	return Department.TOOL_DEPTS
 
 	def is_shot(self):
 
@@ -341,10 +341,10 @@ class CrowdCycle(Body):
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	@staticmethod
-	def default_departments():
-
-		return Department.CROWD_DEPTS
+	# @staticmethod
+	# def default_departments():
+	#
+	# 	return Department.CROWD_DEPTS
 
 	def is_shot(self):
 
