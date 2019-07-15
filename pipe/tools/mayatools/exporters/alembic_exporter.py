@@ -11,7 +11,7 @@ from pymel.core import *
 import pipe.am.pipeline_io as pio
 from pipe.am.environment import Environment
 from pipe.am.body import AssetType
-from byupipe.amam.project import Project
+from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
 #import reference_selection as rs #wakaranai
 
@@ -158,17 +158,11 @@ class AlembicExporter:
     	print 'install newly created geo in files'
     	path=os.path.dirname(mc.file(q=True, sceneName=True))
 
-    	#srcOBJ = os.path.join(path, 'cache', 'objFiles')
-    	#destOBJ = os.path.join(os.environ['ASSETS_DIR'], assetName, 'cache', 'objFiles')
-    	#destABC = os.path.join(os.environ['ASSETS_DIR'], assetName, 'cache', 'abcFiles')
-
     	srcABC = os.path.join(path, 'cache', 'abcFiles')
-    	destABC = getElementCacheDirectory(path, element)
+    	destABC = self.getElementCacheDirectory(path, element)
     	if destABC is None:
     		return False
 
-    	#if os.path.exists(destOBJ):
-    	#	shutil.rmtree(destOBJ)
     	if os.path.exists(destABC):
     		try:
     			shutil.rmtree(destABC)
@@ -176,15 +170,6 @@ class AlembicExporter:
     			print 'Couldn\'t delete old abc files:'
     			print e
 
-    	#print 'Copying '+srcOBJ+' to '+destOBJ
-    	#try:
-    	#	os.system('chmod 774 -R ' + srcOBJ)
-    	#	shutil.copytree(srcOBJ, destOBJ)
-    	#	os.system('chmod 774 -R '+ destOBJ)
-    	#except Exception as e:
-    	#	print e
-
-    	#treat alembic special so we don't mess up concurrent houdini reading . . .
     	srcABC = os.path.join(srcABC, '*');
     	if not os.path.exists(destABC):
     		os.mkdir(destABC);
@@ -196,6 +181,7 @@ class AlembicExporter:
     		result = os.system('mv -f '+srcABC+' '+destABC)
     		print result
     		# shutil.copytree(src=srcABC, dst=destABC)
+
     	except Exception as e:
     		print 'Couldn\'t copy newly generated abc files:'
     		print e
@@ -217,35 +203,24 @@ class AlembicExporter:
     	'''
 
     	path = os.path.dirname(mc.file(q=True, sceneName=True))
-    	print 'generateGeometry start'
     	if not os.path.exists (os.path.join(path, 'cache')):
     		os.makedirs(os.path.join(path, 'cache'))
 
-    	#OBJPATH = os.path.join(path, 'cache', 'objFiles')
     	ABCPATH = os.path.join(path, 'cache', 'abcFiles')
 
-    	#if os.path.exists(OBJPATH):
-    	#	shutil.rmtree(OBJPATH)
     	if os.path.exists(ABCPATH):
     		shutil.rmtree(ABCPATH)
 
     	filePath = mc.file(q=True, sceneName=True)
     	fileDir = os.path.dirname(filePath)
-    	print 'This is the fileDir in question: ', fileDir
 
-    	abcFilePath = getElementCacheDirectory(fileDir, element)
+    	abcFilePath = self.getElementCacheDirectory(fileDir, element)
     	if abcFilePath is None:
     		return False
 
     	selection = mc.ls(geometry=True, visible=True)
     	selection_long = mc.ls(geometry=True, visible=True, long=True)
 
-    	# Temporarily disabled obj support (might not be needed)
-    	#objs = objExport(selection, OBJPATH)
-
-    	# Check to see if all .obj files were created
-    	#if not len(checkFiles(objs)) == 0:
-    	#	return False
     	proj = Project()
     	if element is None:
     		checkout = proj.get_checkout(path)
@@ -261,18 +236,17 @@ class AlembicExporter:
     	# abcs = abcExport(selection_long, ABCPATH)
     	if body.is_asset():
     		if body.get_type() == AssetType.SET:
-    			abcs = abcExportLoadedReferences(ABCPATH)
+    			abcs = self.abcExportLoadedReferences(ABCPATH)
     		else:
-    			abcs = abcExportAll(element.get_long_name(), ABCPATH)
+    			abcs = self.abcExportAll(element.get_long_name(), ABCPATH)
     	else:
-    		abcs = abcExportAll(element.get_long_name(), ABCPATH)
-    	print str(body.is_asset()) + ' it is an asset'
-    	print 'The type is ' + body.get_type()
-    	if not len(checkFiles(abcs)) == 0:
+    		abcs = self.abcExportAll(element.get_long_name(), ABCPATH)
+
+    	if not len(self.checkFiles(abcs)) == 0:
     		return False
 
     	return True
 
     def export(self, element=None):
-    	if generateGeometry(element=element):
-    		installGeometry(element=element)
+    	if self.generateGeometry(element=element):
+    		self.installGeometry(element=element)

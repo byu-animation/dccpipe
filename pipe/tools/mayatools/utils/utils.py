@@ -106,7 +106,7 @@ def post_publish(element, user, published=True, comment="No comment."):
 
         #try:
         abc = alembic_exporter()
-        abc.export(element, username)
+        abc.export(element)
         #except:
         #    print("alembic export failed.")
 
