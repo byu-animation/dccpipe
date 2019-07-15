@@ -4,8 +4,16 @@ import os
 import pymel.core as pm
 
 import pipe.tools.mayatools.utils as maya_utils
+#from pipe.tools.mayatools.utils.utils import ExportFlags
 from pipe.am.body import AssetType
-from pipe.tools.mayatools.utils.utils import ExportFlags
+
+class ExportFlags:
+    EXPORT_TARGET = "BYU_Export_Target_Flag"
+    ANIMATED = "BYU_Animated_Flag"
+    EXPORT = "BYU_Export"
+
+    def __init__(self):
+        pass
 
 
 class AlembicExporter:

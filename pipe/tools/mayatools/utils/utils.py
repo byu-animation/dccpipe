@@ -10,7 +10,7 @@ from pipe.am.environment import Environment
 from pipe.am.project import Project
 from pipe.am.element import Element
 
-# from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter as alembic_exporter
+from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter as alembic_exporter
 # from pipe.tools.mayatools.exporters.json_exporter import JSONExporter as json_exporter
 
 import maya.cmds as mc
@@ -267,10 +267,6 @@ def get_first_child_with_flag(node, flag):
                 return child
         for child in curr.getChildren():
             stack.append(child)
-
-class ExportFlags:
-    EXPORT_TARGET = "BYU_Export_Target_Flag"
-    ANIMATED = "BYU_Animated_Flag"
 
 
 def has_parent_set(rootNode):
