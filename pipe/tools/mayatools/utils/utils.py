@@ -104,10 +104,11 @@ def post_publish(element, user, published=True, comment="No comment."):
         print('Publish Complete. Begin Exporting Alembic, or JSON if set')
         body = Project().get_body(element.get_parent())
 
-        try:
-            alembic_exporter.export(element, username)
-        except:
-            print("alembic export failed.")
+        #try:
+        abc = alembic_exporter()
+        abc.export(element, username)
+        #except:
+        #    print("alembic export failed.")
 
         # if body and body.is_asset():
         #     json_exporter.go(body, body.get_type())
@@ -164,7 +165,9 @@ def delete_image_planes():
             pm.delete(scene_object)
 
 def get_loaded_references():
+    print("here?")
     references = pm.ls(references=True, transforms=True)
+    print(references)
     loaded=[]
     for ref in references:
         print "Checking status of " + ref
@@ -173,6 +176,7 @@ def get_loaded_references():
                 loaded.append(ref)
         except:
             print "Warning: " + ref + " was not associated with a reference file"
+    print(loaded)
     return loaded
 
 def extract_reference_data(ref):
