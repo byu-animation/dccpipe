@@ -7,7 +7,7 @@ import maya.cmds as mc
 from pymel.core import *
 
 import pipe.am.pipeline_io as pio
-from pipe.tools.mayatools.utils import utils as maya_utils
+from pipe.tools.mayatools.utils.utils import *
 from pipe.am.environment import Environment
 from pipe.am.body import AssetType
 from pipe.am.project import Project

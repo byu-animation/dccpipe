@@ -52,12 +52,6 @@
 			"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"interpolate.svg",
-			"annotation":"Cluster Interpolate",
-			"tool":"mayatools.utils.cluster_interpolate",
-			"function":"cluster_interpolate.go"
-		}, {
-			"itemType":"button",
 			"icon":"education.svg",
 			"annotation":"Change the licence to education",
 			"tool":"mayatools.utils.education",
