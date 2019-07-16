@@ -46,7 +46,7 @@ class AlembicExporter:
     	abcfiles = []
 
     	loadPlugin('AbcExport')
-    	loadedRefs = maya_utils.get_loaded_references()
+    	loadedRefs = get_loaded_references()
     	for i, ref in enumerate(loadedRefs):
     		print ref
     		refNodes = mc.referenceQuery(unicode(ref), nodes=True)

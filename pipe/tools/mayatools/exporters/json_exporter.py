@@ -5,7 +5,7 @@ import os, sys
 import shutil
 import json
 
-from pipe.tools.mayatools.utils import utils as maya_utils
+from pipe.tools.mayatools.utils.utils import *
 
 import pymel.core as pm
 import maya.cmds as mc
