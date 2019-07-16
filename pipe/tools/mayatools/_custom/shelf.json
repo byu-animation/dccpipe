@@ -47,7 +47,7 @@
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
 			"tool":"mayatools.importers.referencer",
-			"function":"Referencer.reference"
+			"function":"MayaReferencer.go"
 		}, {
 			"itemType":"separator"
 		}, {
