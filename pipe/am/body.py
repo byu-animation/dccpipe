@@ -43,6 +43,7 @@ class Body:
 		'''
 		return a list of departments that this body should create on initialization
 		'''
+		print(Department.ALL)
 		return Department.ALL
 
 	@staticmethod
