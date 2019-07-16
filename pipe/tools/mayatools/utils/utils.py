@@ -11,7 +11,7 @@ from pipe.am.project import Project
 from pipe.am.element import Element
 
 from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter as alembic_exporter
-# from pipe.tools.mayatools.exporters.json_exporter import JSONExporter as json_exporter
+from pipe.tools.mayatools.exporters.json_exporter import JSONExporter as json_exporter
 
 import maya.cmds as mc
 
@@ -110,10 +110,12 @@ def post_publish(element, user, published=True, comment="No comment."):
         #except:
         #    print("alembic export failed.")
 
-        # if body and body.is_asset():
-        #     json_exporter.go(body, body.get_type())
-        # else:
-        #     json_exporter.go(body, type="shot")
+        json = json_exporter()
+        if body and body.is_asset():
+            json.go(body, body.get_type())
+        else:
+            json.go(body, type="shot")
+
         convert_to_education()
 
 def save_scene_file():

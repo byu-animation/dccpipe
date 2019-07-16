@@ -4,6 +4,7 @@ from pipe.tools.mayatools.creators import creator as maya_creator
 from pipe.tools.mayatools.publishers import publisher as maya_publisher
 from pipe.tools.mayatools.utils import utils as maya_utils
 from pipe.tools.mayatools.exporters import alembic_exporter as alembic_exporter
+from pipe.tools.mayatools.exporters import json_exporter as json_exporter
 # from pipe.tools.general import prompts
 # from pipe.tools.general import publisher
 
@@ -16,6 +17,7 @@ class ReloadScripts:
         reload(maya_publisher)
         reload(maya_utils)
         reload(alembic_exporter)
+        reload(json_exporter)
         # reload(prompts)
         # reload(gui_tool)
         # reload(publisher)

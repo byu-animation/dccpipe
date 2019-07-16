@@ -11,7 +11,7 @@ from pipe.am.environment import Environment
 from pipe.am.body import AssetType
 from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
-#import reference_selection as rs #wakaranai
+import pipe.tools.mayatools.utils.utils as maya_utils
 
 
 class AlembicExporter:
@@ -46,7 +46,7 @@ class AlembicExporter:
     	abcfiles = []
 
     	loadPlugin('AbcExport')
-    	loadedRefs = rs.getLoadedReferences()
+    	loadedRefs = maya_utils.get_loaded_references()
     	for i, ref in enumerate(loadedRefs):
     		print ref
     		refNodes = mc.referenceQuery(unicode(ref), nodes=True)
