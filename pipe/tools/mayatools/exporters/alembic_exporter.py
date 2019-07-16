@@ -7,11 +7,11 @@ import maya.cmds as mc
 from pymel.core import *
 
 import pipe.am.pipeline_io as pio
+from pipe.tools.mayatools.utils import utils as maya_utils
 from pipe.am.environment import Environment
 from pipe.am.body import AssetType
 from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
-import pipe.tools.mayatools.utils.utils as maya_utils
 
 
 class AlembicExporter:
@@ -220,13 +220,14 @@ class AlembicExporter:
 
     	# We decided to try exporting all the geo into one alembic file instead of many. This is the line that does many
     	# abcs = abcExport(selection_long, ABCPATH)
-    	if body.is_asset():
-    		if body.get_type() == AssetType.SET:
-    			abcs = self.abcExportLoadedReferences(ABCPATH)
-    		else:
-    			abcs = self.abcExportAll(element.get_long_name(), ABCPATH)
-    	else:
-    		abcs = self.abcExportAll(element.get_long_name(), ABCPATH)
+    	# if body.is_asset():
+    	# 	if body.get_type() == AssetType.SET:
+    	# 		abcs = self.abcExportLoadedReferences(ABCPATH)
+    	# 	else:
+    	# 		abcs = self.abcExportAll(element.get_long_name(), ABCPATH)
+    	# else:
+
+    	abcs = self.abcExportAll(element.get_long_name(), ABCPATH)
 
     	if not len(self.checkFiles(abcs)) == 0:
     		return False
