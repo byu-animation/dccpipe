@@ -78,26 +78,54 @@
         frozen: Nothing happens.
 '''
 import hou, sys, os, json #??
-from pipe.am import *
-gui = True
+from pipe.am.project import Project
+from pipe.am.environment import Environment, Department
+from pipe.am.element import Element
+from pipe.am.body import Body, Asset, Shot, AssetType
+
+import pipe.gui.select_from_list as sfl
 import pipe.gui.quick_dialogs as qd
+import pipe.gui.write_message as wm
+from pipe.tools.houtools.utils import *
 
-# CHECKOUT BREAKS IN NON_GUI MODE
-import checkout #old pipe file
+# # CHECKOUT BREAKS IN NON_GUI MODE
+# import checkout #old pipe file
+#
+# import publish #old pipe file
+# # DEBUGGING ONLY
+# import inspect #no idea
+# import datetime #never
 
-import publish #old pipe file
-# DEBUGGING ONLY
-import inspect #no idea
-import datetime #never
 
-
-class Assember:
+class Assembler:
     def __init__(self):
-        pass
+        self.asset_gui = None
 
-    def SelectBody(self):
-        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
-        self.item_gui.submitted.connect(self.asset_results)
+    def run(self):
+        # step 1: Select the body
+        # step 2: select the element to assemble
+        # step 3: assemble the element
+        project = Project()
+        asset_list = project.list_assets()
+
+        self.asset_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to assemble")
+        self.asset_gui.submitted.connect(self.asset_results)
+
+    def asset_results(self, asset):
+        self.selected_asset = asset[0]
+
+        project = Project()
+        self.body = project.get_body(self.selected_asset)
+
+        department_list = self.body.default_departments()
+
+        self.element_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="Select element to assemble")
+        self.element_gui.submitted.connect(self.element_results)
+
+    def element_results(self, value):
+        self.chosen_department = value[0]
+
+        self.create_hda(self.selected_asset, self.chosen_department)
 
     #sys.stdout = open(os.path.join(Project().get_users_dir(), Project().get_current_username(), "houdini_console_output.txt"), "a+")
 
@@ -124,7 +152,7 @@ class Assember:
     this = sys.modules[__name__]
 
     # The source HDA's are currently stored inside the pipe source code.
-    hda_path = os.path.join(Environment().get_project_dir(), "byu-pipeline-tools", "houdini-tools", "otls")
+    hda_path = Environment().get_hda_dir()
 
     # We define the template HDAs definitions here, for use in the methods below
     hda_definitions = {
@@ -170,7 +198,7 @@ class Assember:
         if body.get_type() == AssetType.CHARACTER:
             return byu_character(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.PROP:
-            return byu_geo(parent, asset_name, already_tabbed_in_node, excluded_departments)
+            return self.byu_geo(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.SET:
             return byu_set(parent, asset_name, already_tabbed_in_node)
         else:
@@ -299,7 +327,7 @@ class Assember:
             # Tab the subnet in if it doesn't exist, otherwise update_contents
             subnet = next((child for child in current_children if matches_reference(child, reference)), None)
             if subnet is None:
-                subnet = byu_geo(inside, reference["asset_name"])
+                subnet = self.byu_geo(inside, reference["asset_name"])
             else:
                 self.update_contents(subnet, reference["asset_name"], mode)
 
@@ -423,9 +451,9 @@ class Assember:
 
             elif mode == UpdateModes.CLEAN:
                 geo.destroy()
-                geo = byu_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
+                geo = self.byu_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
         else:
-            geo = byu_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
+            geo = self.byu_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
 
         # Tab in each content HDA based on department
         for department in this.byu_character_departments:
@@ -557,7 +585,7 @@ class Assember:
         checkout_file = element.checkout(username)
 
         # Tab in the parent asset that will hold this checked out HDA
-        node = already_tabbed_in_node if already_tabbed_in_node else tab_in(hou.node("/obj"), asset_name, excluded_departments=[department])
+        node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name, excluded_departments=[department])
 
         # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
         if body.get_type() == AssetType.CHARACTER and department not in this.byu_character_departments:
@@ -590,7 +618,7 @@ class Assember:
     '''
         Updates a content node.
     '''
-    def update_content_node(self, parent, inside, asset_name, department, mode=UpdateModes.SMART, inherit_parameters=False, ignore_folders=this.default_ignored_folders):
+    def update_content_node(self, parent, inside, asset_name, department, mode=UpdateModes.SMART, inherit_parameters=False, ignore_folders=["Asset Controls"]):  # changed ignore_folders=default_ignored_folders to ignore_folders=["Asset Controls"]
 
         # See if there's a content node with this department name already tabbed in.
         content_node = inside.node(department)

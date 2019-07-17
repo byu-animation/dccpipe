@@ -15,6 +15,21 @@ T.run()
 							</scriptCode>
 			</scriptItem>
 
+			<scriptItem id="h.createBody">
+					<label>Assemble</label>
+						<scriptCode scriptType="python">
+							<!-- need to import hou and reference the tool created with hou.session to keep the tool in memory so GUIs appear -->
+							<![CDATA[
+from pipe.tools.houtools.assembler import assembler
+import hou
+assembler = assembler.Assembler()
+hou.session.assembler = assembler
+assembler.run()
+						]]>
+							</scriptCode>
+			</scriptItem>
+
+
 			<subMenu id="import_menu">
 				<label>Import</label>
 				<scriptItem id="h.import_shot">

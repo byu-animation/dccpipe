@@ -10,19 +10,19 @@
     {
       "name" : "SelectBody",
       "prompt" : true,
-      "module" : "hou.prompts",
+      "module" : "houtools.prompts",
       "provides" : ["body"]
     },
     {
       "name" : "SelectElementFromBody",
       "prompt" : true,
-      "module" : "hou.prompts",
+      "module" : "houtools.prompts",
       "provides" : ["element"],
-      "needs" : ["body"],
+      "needs" : ["body"]
     },
     {
       "name" : "assemble",
-      "module" : "hou.assembler",
+      "module" : "houtools.assembler",
       "needs" : ["element"],
       "optional" : ["node"]
     }
