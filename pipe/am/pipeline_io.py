@@ -94,3 +94,13 @@ def timestamp():
 	return a string containing the current time
 	"""
 	return time.strftime("%a, %d %b %Y %I:%M:%S %p", time.localtime())
+
+def get_project_info(project_dir, key):
+	'''
+	opens .project and gets information from this file
+	'''
+	filepath = os.path.join(project_dir, ".project")
+	with open(filepath, "r") as json_file:
+		json_data = json.load(json_file)
+
+	return json_data[key]

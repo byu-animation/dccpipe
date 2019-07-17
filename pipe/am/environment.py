@@ -75,35 +75,42 @@ class Environment:
         '''
         return the absolute filepath to the assets directory of the current project
         '''
-        return os.path.abspath(self._datadict[Environment.ASSETS_DIR])
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "assets_dir"))
 
     def get_shots_dir(self):
         '''
         return the absolute filepath to the shots directory of the current project
         '''
-        return os.path.abspath(self._datadict[Environment.SHOTS_DIR])
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "shots_dir"))
 
     def get_tools_dir(self):
         '''
         return the absolute filepath to the tools directory of the current project
         '''
-        return os.path.abspath(self._datadict[Environment.TOOLS_DIR])
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "tools_dir"))
 
     def get_crowds_dir(self):
         '''
         return the absolute filepath to the crowds directory of the current project
         '''
-        return os.path.abspath(self._datadict[Environment.CROWDS_DIR])
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "crowds_dir"))
 
     def get_hda_dir(self):
         '''
         return the absolute filepath to the assembly directory of the current project
         (in a houdini pipeline, this is the otls directory)
         '''
-        return os.path.abspath(self._datadict[Environment.HDA_DIR])
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "hda_dir"))
+
+    def get_users_dir(self):
+        '''
+        return the absolute filepath to the users directory of the current project
+        '''
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "users_dir"))
 
     def _create_user(self, username):
         workspace = os.path.join(self._project_dir, os.path.join(self.get_users_dir(), username))
+
         if not os.path.exists(workspace):
             if not pipeline_io.mkdir(workspace):
                 print("failed to create workspace")
@@ -122,12 +129,6 @@ class Environment:
         if not os.path.exists(user_filepath):
             raise EnvironmentError('no such user '+str(username))
         return User(user_filepath)
-
-    def get_users_dir(self):
-        '''
-        return the absolute filepath to the users directory of the current project
-        '''
-        return os.path.abspath(self._datadict[Environment.USERS_DIR])
 
     def get_current_username(self):
 
@@ -236,4 +237,3 @@ class Department:
     TOOL_DEPTS = [HDA]
     CROWD_DEPTS = [CYCLES]
     ALL = [DESIGN, MODEL, RIG, TEXTURE, MATERIAL, ASSEMBLY, LAYOUT, ANIM, CFX, FX, LIGHTING, RENDER, COMP, HDA, RIB_ARCHIVE, MODIFY, HAIR, CLOTH]
-
