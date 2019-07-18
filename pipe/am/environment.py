@@ -102,6 +102,14 @@ class Environment:
         '''
         return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "hda_dir"))
 
+    def get_otl_dir(self):
+        '''
+        return the absolute filepath to the assembly directory of the current project
+        (in a houdini pipeline, this is the otls directory)
+        '''
+        return os.path.join(self._project_dir, "/pipe/tools/houtools/_custom/otls/")
+
+
     def get_users_dir(self):
         '''
         return the absolute filepath to the users directory of the current project

@@ -114,9 +114,27 @@ class UpdateModes:
 class Assembler:
     def __init__(self):
         self.asset_gui = None
+
         # The order in which these nodes appear is the order they will be created in
         self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
         self.dcc_character_departments = [Department.HAIR, Department.CLOTH]
+
+        # The source HDA's are currently stored inside the pipe source code.
+        self.hda_path = Environment().get_otl_dir()
+
+        print("otl path: ", self.hda_path)
+
+        # We define the template HDAs definitions here, for use in the methods below
+        self.hda_definitions = {
+            Department.MATERIAL: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_material", os.path.join(self.hda_path, "dcc_material.hda")),
+            Department.MODIFY: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_modify", os.path.join(self.hda_path, "dcc_modify.hda")),
+            Department.HAIR: hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_hair", os.path.join(self.hda_path, "dcc_hair.hda")),
+            Department.CLOTH: hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_cloth", os.path.join(self.hda_path, "dcc_cloth.hda"))
+        }
+
+        # By default, we ignore "Asset Controls", so that we can put things in there without them being promoted.
+        # See: inherit_parameters() method
+        self.default_ignored_folders = ["Asset Controls"]
 
     def run(self):
         # step 1: Select the body
@@ -162,28 +180,6 @@ class Assembler:
             f.write("\n" + str(datetime.datetime.now()) + "\n")
             f.write(message)
             f.flush()
-
-    # DEBUGGING END
-
-    # I set this sucker up as a singleton. It's a matter of preference.
-    this = sys.modules[__name__]
-
-    # The source HDA's are currently stored inside the pipe source code.
-    hda_path = Environment().get_hda_dir()
-
-    # We define the template HDAs definitions here, for use in the methods below
-    hda_definitions = {
-        Department.MATERIAL: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_material", os.path.join(hda_path, "dcc_material.hda")),
-        Department.MODIFY: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_modify", os.path.join(hda_path, "dcc_modify.hda")),
-        Department.HAIR: hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_hair", os.path.join(hda_path, "dcc_hair.hda")),
-        Department.CLOTH: hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_cloth", os.path.join(hda_path, "dcc_cloth.hda"))
-    }
-
-    hda_dir = Environment().get_hda_dir()
-
-    # By default, we ignore "Asset Controls", so that we can put things in there without them being promoted.
-    # See: inherit_parameters() method
-    default_ignored_folders = ["Asset Controls"]
 
     '''
         Easily callable method, meant for tool scripts
@@ -595,6 +591,16 @@ class Assembler:
         # CREATE NEW HDA DEFINITION
         operator_name = element.get_parent() + "_" + element.get_department()
         operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
+
+        print("department: ", department)
+
+        some_val = hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_modify", os.path.join(self.hda_path, "dcc_modify.hda")),
+
+        print("hda definition of modify returns: ", some_val)
+
+        return_val = self.hda_definitions[department]
+        print("return value: ", return_val)
+
         self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
         hda_type = hou.objNodeTypeCategory() if department in this.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(checkout_file)
@@ -617,7 +623,7 @@ class Assembler:
     '''
         Updates a content node.
     '''
-    def update_content_node(self, parent, inside, asset_name, department, mode=UpdateModes.SMART, inherit_parameters=False, ignore_folders=["Asset Controls"]):  # changed ignore_folders=default_ignored_folders to ignore_folders=["Asset Controls"]
+    def update_content_node(self, parent, inside, asset_name, department, mode=UpdateModes.SMART, inherit_parameters=False, ignore_folders=["Asset Controls"]):
 
         # See if there's a content node with this department name already tabbed in.
         content_node = inside.node(department)
