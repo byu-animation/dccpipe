@@ -100,6 +100,9 @@ from pipe.tools.houtools.utils import *
 class Assembler:
     def __init__(self):
         self.asset_gui = None
+        # The order in which these nodes appear is the order they will be created in
+        self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
+        self.dcc_character_departments = [Department.HAIR, Department.CLOTH]
 
     def run(self):
         # step 1: Select the body
@@ -156,15 +159,11 @@ class Assembler:
 
     # We define the template HDAs definitions here, for use in the methods below
     hda_definitions = {
-        Department.MATERIAL: hou.hdaDefinition(hou.sopNodeTypeCategory(), "byu_material", os.path.join(hda_path, "byu_material.hda")),
-        Department.MODIFY: hou.hdaDefinition(hou.sopNodeTypeCategory(), "byu_modify", os.path.join(hda_path, "byu_modify.hda")),
-        Department.HAIR: hou.hdaDefinition(hou.objNodeTypeCategory(), "byu_hair", os.path.join(hda_path, "byu_hair.hda")),
-        Department.CLOTH: hou.hdaDefinition(hou.objNodeTypeCategory(), "byu_cloth", os.path.join(hda_path, "byu_cloth.hda"))
+        Department.MATERIAL: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_material", os.path.join(hda_path, "dcc_material.hda")),
+        Department.MODIFY: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_modify", os.path.join(hda_path, "dcc_modify.hda")),
+        Department.HAIR: hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_hair", os.path.join(hda_path, "dcc_hair.hda")),
+        Department.CLOTH: hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_cloth", os.path.join(hda_path, "dcc_cloth.hda"))
     }
-
-    # The order in which these nodes appear is the order they will be created in
-    byu_geo_departments = [Department.MODIFY, Department.MATERIAL]
-    byu_character_departments = [Department.HAIR, Department.CLOTH]
 
     hda_dir = Environment().get_hda_dir()
 
@@ -196,11 +195,11 @@ class Assembler:
             self.error_message("Pipeline error: This asset either doesn't exist or isn't an asset.")
             return
         if body.get_type() == AssetType.CHARACTER:
-            return byu_character(parent, asset_name, already_tabbed_in_node, excluded_departments)
+            return dcc_character(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.PROP:
-            return self.byu_geo(parent, asset_name, already_tabbed_in_node, excluded_departments)
+            return self.dcc_geo(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.SET:
-            return byu_set(parent, asset_name, already_tabbed_in_node)
+            return dcc_set(parent, asset_name, already_tabbed_in_node)
         else:
             self.error_message("Pipeline error: this asset isn't a character, prop or set.")
             return
@@ -210,11 +209,11 @@ class Assembler:
     '''
     def update_contents(self, node, asset_name, mode=UpdateModes.SMART):
         #super_print("{0}() line {1}:\n\tasset: {2}\n\tmode: {3}\n\tnode type name: {4}".format(method_name(), lineno(), asset_name, mode, node.type().name()))
-        if node.type().name() == "byu_set":
+        if node.type().name() == "dcc_set":
             self.update_contents_set(node, asset_name, mode=mode)
-        elif node.type().name() == "byu_character":
+        elif node.type().name() == "dcc_character":
             self.update_contents_character(node, asset_name, mode=mode)
-        elif node.type().name() == "byu_geo":
+        elif node.type().name() == "dcc_geo":
             self.update_contents_geo(node, asset_name, mode=mode)
 
     def subnet_type(self, asset_name):
@@ -223,11 +222,11 @@ class Assembler:
             self.error_message("Pipeline error: This asset either doesn't exist or isn't an asset.")
             return
         if body.get_type() == AssetType.CHARACTER:
-            return "byu_character"
+            return "dcc_character"
         elif body.get_type() == AssetType.PROP:
-            return "byu_geo"
+            return "dcc_geo"
         elif body.get_type() == AssetType.SET:
-            return "byu_set"
+            return "dcc_set"
         else:
             self.error_message("Pipeline error: this asset isn't a character, prop or set.")
             return
@@ -238,14 +237,14 @@ class Assembler:
         This function tabs in a BYU Set and fills its contents with other BYU Geo nodes based on JSON data
     '''
 
-    def byu_set(self, parent, set_name, already_tabbed_in_node=False, mode=UpdateModes.CLEAN):
+    def dcc_set(self, parent, set_name, already_tabbed_in_node=False, mode=UpdateModes.CLEAN):
 
         # Check if it's a set and that it exists
         body = Project().get_body(set_name)
         if not body.is_asset() or not body.get_type() == AssetType.SET:
             self.error_message("Must be a set.")
 
-        node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("byu_set")
+        node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("dcc_set")
         try:
             node.setName(set_name)
         except:
@@ -295,7 +294,7 @@ class Assembler:
         inside = node.node("inside")
 
         # Grab current BYU Dynamic Content Subnets that have been tabbed in
-        current_children = [child for child in inside.children() if child.type().name() in ["byu_set", "byu_character", "byu_geo"]]
+        current_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
 
         # Smart updating will only destroy assets that no longer exist in the Set's JSON list
         if mode == UpdateModes.SMART:
@@ -311,7 +310,7 @@ class Assembler:
             inside.deleteItems(inside.children())
 
         # Grab current children again
-        current_children = [child for child in inside.children() if child.type().name() in ["byu_set", "byu_character", "byu_geo"]]
+        current_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
 
         # Tab-in/update all assets in list
         for reference in set_data:
@@ -327,7 +326,7 @@ class Assembler:
             # Tab the subnet in if it doesn't exist, otherwise update_contents
             subnet = next((child for child in current_children if matches_reference(child, reference)), None)
             if subnet is None:
-                subnet = self.byu_geo(inside, reference["asset_name"])
+                subnet = self.dcc_geo(inside, reference["asset_name"])
             else:
                 self.update_contents(subnet, reference["asset_name"], mode)
 
@@ -369,7 +368,7 @@ class Assembler:
 
     def set_read_from_disk(self, node, on_or_off):
         inside = node.node("inside")
-        children = [child for child in inside.children() if child.type().name() == "byu_geo"]
+        children = [child for child in inside.children() if child.type().name() == "dcc_geo"]
 
         for child in children:
             set_cache_path(node, child)
@@ -377,7 +376,7 @@ class Assembler:
 
     def reload_from_disk(self, node):
         inside = node.node("inside")
-        children = [child for child in inside.children() if child.type().name() == "byu_geo"]
+        children = [child for child in inside.children() if child.type().name() == "dcc_geo"]
 
         for child in children:
             set_cache_path(node, child)
@@ -385,7 +384,7 @@ class Assembler:
 
     def save_to_disk(self, node):
         inside = node.node("inside")
-        children = [child for child in inside.children() if child.type().name() == "byu_geo"]
+        children = [child for child in inside.children() if child.type().name() == "dcc_geo"]
 
         for child in children:
             set_cache_path(node, child)
@@ -399,7 +398,7 @@ class Assembler:
         This function tabs in a BYU Character node and fills its contents with the appropriate character name.
         Departments is a mask because sometimes we tab this asset in when we want to work on Hair or Cloth, and don't want the old ones to be there.
     '''
-    def byu_character(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], mode=UpdateModes.CLEAN, shot=None):
+    def dcc_character(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], mode=UpdateModes.CLEAN, shot=None):
 
         # Set up the body/elements and make sure it's a character
         body = Project().get_body(asset_name)
@@ -408,7 +407,7 @@ class Assembler:
             return None
 
         # If there's an already tabbed in node, set it to that node
-        node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("byu_character")
+        node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("dcc_character")
         try:
             node.setName(asset_name.title())
         except:
@@ -432,7 +431,7 @@ class Assembler:
         ##super_print("{0}() line {1}:\n\tcharacter: {2}\n\tmode: {3}".format(method_name(), lineno(), asset_name, mode))
         # Set up the body/elements and make sure it's a character. Just do some simple error checking.
         body = Project().get_body(asset_name)
-        if not body.is_asset() or body.get_type() != AssetType.CHARACTER or "byu_character" not in node.type().name():
+        if not body.is_asset() or body.get_type() != AssetType.CHARACTER or "dcc_character" not in node.type().name():
             self.error_message("Must be a character.")
             return None
 
@@ -451,12 +450,12 @@ class Assembler:
 
             elif mode == UpdateModes.CLEAN:
                 geo.destroy()
-                geo = self.byu_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
+                geo = self.dcc_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
         else:
-            geo = self.byu_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
+            geo = self.dcc_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
 
         # Tab in each content HDA based on department
-        for department in this.byu_character_departments:
+        for department in self.dcc_character_departments:
             # If the department is not excluded, tab-in/update the content node like normal
             if department not in excluded_departments:
 
@@ -483,7 +482,7 @@ class Assembler:
     '''
         This function tabs in a BYU Geo node and fills its contents according to the appropriate asset name.
     '''
-    def byu_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], character=False, mode=UpdateModes.CLEAN):
+    def dcc_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], character=False, mode=UpdateModes.CLEAN):
         # Set up the body/elements and check if it's an asset.
         body = Project().get_body(asset_name)
         if not body.is_asset():
@@ -491,7 +490,7 @@ class Assembler:
             return None
 
         # Set up the nodes, name geo
-        node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("byu_geo")
+        node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("dcc_geo")
         if character:
             node.setName("geo")
         else:
@@ -520,7 +519,7 @@ class Assembler:
         if body is None:
             self.error_message("Asset doesn't exist.")
             return None
-        if not body.is_asset() or body.get_type() == AssetType.SET or "byu_geo" not in node.type().name():
+        if not body.is_asset() or body.get_type() == AssetType.SET or "dcc_geo" not in node.type().name():
             self.error_message("Must be a prop or character.")
             return None
 
@@ -534,7 +533,7 @@ class Assembler:
         importnode.parm("reload").pressButton()
 
         # Tab in each content HDA based on department
-        for department in this.byu_geo_departments:
+        for department in self.dcc_geo_departments:
             # If the department is not excluded, tab-in/update the content node like normal
             if department not in excluded_departments:
                 self.update_content_node(node, inside, asset_name, department, mode, inherit_parameters = department == Department.MODIFY)
@@ -588,7 +587,7 @@ class Assembler:
         node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name, excluded_departments=[department])
 
         # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-        if body.get_type() == AssetType.CHARACTER and department not in this.byu_character_departments:
+        if body.get_type() == AssetType.CHARACTER and department not in this.dcc_character_departments:
             inside = node.node("inside/geo/inside")
         else:
             inside = node.node("inside")
@@ -597,7 +596,7 @@ class Assembler:
         operator_name = element.get_parent() + "_" + element.get_department()
         operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
         this.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
-        hda_type = hou.objNodeTypeCategory() if department in this.byu_character_departments else hou.sopNodeTypeCategory()
+        hda_type = hou.objNodeTypeCategory() if department in this.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(checkout_file)
         hda_definition = hou.hdaDefinition(hda_type, operator_name, checkout_file)
         hda_definition.setPreferred(True)
@@ -672,7 +671,7 @@ class Assembler:
     '''
     def published_definition(self, asset_name, department):
         # Set the node type correctly
-        category = hou.objNodeTypeCategory() if department in this.byu_character_departments else hou.sopNodeTypeCategory()
+        category = hou.objNodeTypeCategory() if department in this.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.reloadAllFiles()
 
         # Get the HDA File Path
@@ -753,7 +752,7 @@ class Assembler:
     def tab_into_correct_place(self, inside, node, department):
 
         # If the node belongs inside a BYU Character, do the following
-        if department in this.byu_character_departments:
+        if department in this.dcc_character_departments:
 
             # Hair and Cloth assets should be connected to geo. If it doesn't exist, throw an error.
             geo = inside.node("geo")
@@ -828,7 +827,7 @@ class Assembler:
 
                 # Check if it is a dynamic content subnet, and press the build button. Else, continue.
                 type_name = child.type().name()
-                if "byu_geo" in type_name or "byu_character" in type_name or "byu_set" in type_name:
+                if "dcc_geo" in type_name or "dcc_character" in type_name or "dcc_set" in type_name:
                     build_button = child.parm("build")
                     if build_button:
                         build_button.pressButton()
@@ -837,7 +836,7 @@ class Assembler:
 
         for node in nodes:
 
-            if node.type().name() == "byu_geo":
+            if node.type().name() == "dcc_geo":
                 node = node.parent().createNode(node.parm("asset_name").evalAsString() + "_main")
 
             geometry = next((child for child in node.children() if child.type().name() == "geo"), None)
