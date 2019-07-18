@@ -1,7 +1,10 @@
 import os,sys,subprocess
 sys.path.insert(0,'../shelf/scripts')
 import checkout
-from byuam import Body,AssetType,Department,Element,Project,Environment
+from pipe.am.project import Project
+from pipe.am.environment import Environment, Department
+from pipe.am.element import Element
+from pipe.am.body import Body, Asset, Shot, AssetType
 
 import maya.standalone
 maya.standalone.initialize(name='python')

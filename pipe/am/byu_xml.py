@@ -1,7 +1,7 @@
 import os
 from string import Template
-from byuam import Project
-from byuam import Body
+from pipe.am.project import Project
+from pipe.am.body import Body
 
 
 
