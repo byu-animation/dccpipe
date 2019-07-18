@@ -583,7 +583,7 @@ class Assembler:
         node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name, excluded_departments=[department])
 
         # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-        if body.get_type() == AssetType.CHARACTER and department not in this.dcc_character_departments:
+        if body.get_type() == AssetType.CHARACTER and department not in self.dcc_character_departments:
             inside = node.node("inside/geo/inside")
         else:
             inside = node.node("inside")
@@ -602,7 +602,7 @@ class Assembler:
         print("return value: ", return_val)
 
         self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
-        hda_type = hou.objNodeTypeCategory() if department in this.dcc_character_departments else hou.sopNodeTypeCategory()
+        hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(checkout_file)
         hda_definition = hou.hdaDefinition(hda_type, operator_name, checkout_file)
         hda_definition.setPreferred(True)
@@ -677,7 +677,7 @@ class Assembler:
     '''
     def published_definition(self, asset_name, department):
         # Set the node type correctly
-        category = hou.objNodeTypeCategory() if department in this.dcc_character_departments else hou.sopNodeTypeCategory()
+        category = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.reloadAllFiles()
 
         # Get the HDA File Path
@@ -758,7 +758,7 @@ class Assembler:
     def tab_into_correct_place(self, inside, node, department):
 
         # If the node belongs inside a DCC Character, do the following
-        if department in this.dcc_character_departments:
+        if department in self.dcc_character_departments:
 
             # Hair and Cloth assets should be connected to geo. If it doesn't exist, throw an error.
             geo = inside.node("geo")
