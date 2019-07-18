@@ -9,7 +9,7 @@
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<label>Checkout</label>
 			<expression>
-from byuam import Project
+from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
@@ -35,7 +35,7 @@ if node:
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<label>Publish</label>
 			<expression>
-from byuam import Project
+from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if not node.isLockedHDA():
@@ -61,7 +61,7 @@ if node:
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<label>Rollback</label>
 			<expression>
-from byuam import Project
+from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
@@ -89,7 +89,7 @@ if node:
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<label>Checkout</label>
 			<expression>
-from byuam import Project
+from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
@@ -116,7 +116,8 @@ if node:
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<label>Publish</label>
 			<expression>
-from byuam import Project, Body
+from pipe.am.project import Project
+from pipe.am.body import Body
 node = kwargs.get('node', None)
 if node:
 	if not node.isLockedHDA():
@@ -144,7 +145,7 @@ if node:
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<label>Rollback</label>
 			<expression>
-from byuam import Project
+from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
@@ -191,7 +192,7 @@ if node:
 			<label>Match Production Definition...</label>
 			<insertBefore>opmenu.create_hda</insertBefore>
 			<expression>
-from byuam import Project
+from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if not node.isLockedHDA():

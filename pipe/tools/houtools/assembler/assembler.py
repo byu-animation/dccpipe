@@ -595,7 +595,7 @@ class Assembler:
         # CREATE NEW HDA DEFINITION
         operator_name = element.get_parent() + "_" + element.get_department()
         operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
-        this.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
+        self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
         hda_type = hou.objNodeTypeCategory() if department in this.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(checkout_file)
         hda_definition = hou.hdaDefinition(hda_type, operator_name, checkout_file)
