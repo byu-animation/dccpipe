@@ -26,7 +26,7 @@ baseXML='''<?xml version="1.0" encoding="UTF-8"?>
 def writeXML(assetName='None',context='OBJ'):
     project=Project()
     asset_body=project.get_body(assetName)
-    icon=os.path.join('$JOB','byu-pipeline-tools','assets','images','icons','tool-icons','2.png')
+    icon=os.path.join('$JOB','pipe','tools','_resources','2.png')
 
     if not asset_body.is_asset():
         print('error me this')

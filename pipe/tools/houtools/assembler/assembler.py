@@ -5,8 +5,8 @@
     ================
     I designed this new procedure to minimize dependencies and allow for easier changes to our Houdini pipeline. With the old
     code, whenever we assembled an asset, we were locked into a specific configuration for that asset and would need to
-    re-assemble if anything changed. Now, we abstracted out a lot of the functionality into nodes like BYU Import, BYU Geo,
-    BYU Character, BYU Set, etc, so that way we push changes to all the assets at once (for example, if we were to switch to
+    re-assemble if anything changed. Now, we abstracted out a lot of the functionality into nodes like DCC Import, DCC Geo,
+    DCC Character, DCC Set, etc, so that way we push changes to all the assets at once (for example, if we were to switch to
     USD mid production.)
     Please pay attention to the differences in each of these nodes. Functional HDAs and Template HDAs are very different (for
     example, a Template HDA is never intended to be tabbed into Houdini, it simply serves as a template for creating other
@@ -15,31 +15,31 @@
     Dynamic Content Subnets
     =======================
     These HDAs are simply subnets that hold other HDAs. The difference is that they will destroy and re-tab in the HDAs inside
-    of them, based on what asset is loaded. Let's say Swingset_001 is loaded, and we switch to Swingset_002. BYU Geo would
+    of them, based on what asset is loaded. Let's say Swingset_001 is loaded, and we switch to Swingset_002. DCC Geo would
     switch out all the Content HDAs (material, etc.) of Swingset_001 with the content of Swingset_002. A description of
     Content HDAs is found in the "Content HDAs" section.
         NAME         Subnet Type    Description
      ----------------------------------------------------------------------------------------------------------------------------
-    | BYU Geo          OBJ>SOP    Houses the other nodes at the most basic level, good enough for props and character meshs.     |
-    | BYU Character    OBJ>OBJ    Houses a BYU Geo, a Hair asset and a Cloth asset. It's our verion of a character group.        |
-    | BYU Set          OBJ>OBJ    Reads from a JSON file (exported from Maya) that contains positions of assets in a set. It     |
-    |                                 tabs them all in as BYU Geos, and then offsets them to their correct                       |
+    | DCC Geo          OBJ>SOP    Houses the other nodes at the most basic level, good enough for props and character meshs.     |
+    | DCC Character    OBJ>OBJ    Houses a DCC Geo, a Hair asset and a Cloth asset. It's our verion of a character group.        |
+    | DCC Set          OBJ>OBJ    Reads from a JSON file (exported from Maya) that contains positions of assets in a set. It     |
+    |                                 tabs them all in as DCC Geos, and then offsets them to their correct                       |
     |                                 positions/scales/rotates.                                                                  |
      ----------------------------------------------------------------------------------------------------------------------------
     ===============
     Functional HDAs
     ===============
     These HDAs take some of the more common procedures and generalize them. That way, if we ever change the way we import
-    geometry into Houdini, we could make a simple change to BYU Import (for example) and that change would propagate to all
-    the assets that contain BYU Import.
+    geometry into Houdini, we could make a simple change to DCC Import (for example) and that change would propagate to all
+    the assets that contain DCC Import.
         NAME         Node Type    Description
      ----------------------------------------------------------------------------------------------------------------------------
-    | BYU Import       SOP        Has all the functionality to bring in assets from the pipe via Alembic. This functionality     |
+    | DCC Import       SOP        Has all the functionality to bring in assets from the pipe via Alembic. This functionality     |
     |                                 could be swapped out for USD Import at a future date.                                      |
-    | BYU Mat. Assign  SOP        Full Name: BYU Material Assign. Basically the Material SOP, but provides a way of switching    |
+    | DCC Mat. Assign  SOP        Full Name: DCC Material Assign. Basically the Material SOP, but provides a way of switching    |
     |                                 between material options.                                                                  |
-    | BYU Shopnet      SOP        Provides a way for us to supply default material setups for shading artists.                   |
-    | BYU Primvars     SOP        Allows for quick selection of primitive/point/vertex groups and using them as masks for        |
+    | DCC Shopnet      SOP        Provides a way for us to supply default material setups for shading artists.                   |
+    | DCC Primvars     SOP        Allows for quick selection of primitive/point/vertex groups and using them as masks for        |
     |                                 RenderMan shaders.                                                                         |
      ----------------------------------------------------------------------------------------------------------------------------
     =============
@@ -49,11 +49,11 @@
     see the section on "Content HDAs" below for an explanation of the process.
         NAME         Node Type    Description
      ----------------------------------------------------------------------------------------------------------------------------
-    | BYU Material     SOP         Holds a Primvars, Mat. Assign and Shopnet Functional HDA. Intended for shading.                |
-    | BYU Modify       SOP         Modifies incoming geometry, intended for any geometry fixes that need to be done in Houdini.   |
-    | BYU Hair         OBJ>OBJ     Holds all hair subnets for a given character. It should take a BYU Geo as an input. It should  |
+    | DCC Material     SOP         Holds a Primvars, Mat. Assign and Shopnet Functional HDA. Intended for shading.                |
+    | DCC Modify       SOP         Modifies incoming geometry, intended for any geometry fixes that need to be done in Houdini.   |
+    | DCC Hair         OBJ>OBJ     Holds all hair subnets for a given character. It should take a DCC Geo as an input. It should  |
     |                                  also have simulation parameters promoted to the top-level, which is done by the artist.    |
-    | BYU Cloth        OBJ>OBJ     Holds all cloth subnets for a given character. It should take a BYU Geo as an input. It should |
+    | DCC Cloth        OBJ>OBJ     Holds all cloth subnets for a given character. It should take a DCC Geo as an input. It should |
     |                                  also have simulation parameters promoted to the top-level, which is done by the artist.    |
      ----------------------------------------------------------------------------------------------------------------------------
     ============
@@ -234,7 +234,7 @@ class Assembler:
 
 
     '''
-        This function tabs in a BYU Set and fills its contents with other BYU Geo nodes based on JSON data
+        This function tabs in a DCC Set and fills its contents with other DCC Geo nodes based on JSON data
     '''
 
     def dcc_set(self, parent, set_name, already_tabbed_in_node=False, mode=UpdateModes.CLEAN):
@@ -293,7 +293,7 @@ class Assembler:
 
         inside = node.node("inside")
 
-        # Grab current BYU Dynamic Content Subnets that have been tabbed in
+        # Grab current DCC Dynamic Content Subnets that have been tabbed in
         current_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
 
         # Smart updating will only destroy assets that no longer exist in the Set's JSON list
@@ -395,7 +395,7 @@ class Assembler:
 
 
     '''
-        This function tabs in a BYU Character node and fills its contents with the appropriate character name.
+        This function tabs in a DCC Character node and fills its contents with the appropriate character name.
         Departments is a mask because sometimes we tab this asset in when we want to work on Hair or Cloth, and don't want the old ones to be there.
     '''
     def dcc_character(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], mode=UpdateModes.CLEAN, shot=None):
@@ -424,7 +424,7 @@ class Assembler:
         return node
 
     '''
-        This function sets the inner contents of a BYU Character node.
+        This function sets the inner contents of a DCC Character node.
     '''
     def update_contents_character(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART, shot=None):
 
@@ -480,7 +480,7 @@ class Assembler:
         return node
 
     '''
-        This function tabs in a BYU Geo node and fills its contents according to the appropriate asset name.
+        This function tabs in a DCC Geo node and fills its contents according to the appropriate asset name.
     '''
     def dcc_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], character=False, mode=UpdateModes.CLEAN):
         # Set up the body/elements and check if it's an asset.
@@ -510,7 +510,7 @@ class Assembler:
         return node
 
     '''
-        This function sets the dynamic inner contents of a BYU Geo node.
+        This function sets the dynamic inner contents of a DCC Geo node.
     '''
     def update_contents_geo(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART):
 
@@ -751,7 +751,7 @@ class Assembler:
     '''
     def tab_into_correct_place(self, inside, node, department):
 
-        # If the node belongs inside a BYU Character, do the following
+        # If the node belongs inside a DCC Character, do the following
         if department in this.dcc_character_departments:
 
             # Hair and Cloth assets should be connected to geo. If it doesn't exist, throw an error.
@@ -763,7 +763,7 @@ class Assembler:
             # Attach the Hair or Cloth asset to the geo network.
             node.setInput(0, geo)
 
-        # If the node belongs inside a BYU Geo, do the following
+        # If the node belongs inside a DCC Geo, do the following
         else:
 
             # Shot_modeling and geo are our way of knowing where to insert nodes. If either of them is null, throw an error.
@@ -844,7 +844,7 @@ class Assembler:
 
             print geometry
             # If there's not a geometry network inside that has the same name as the operator,
-            # then it's probably not an old BYU asset that we know how to deal with, so skip it.
+            # then it's probably not an old DCC asset that we know how to deal with, so skip it.
 
             if not geometry or not shopnet or geometry.name() not in node.type().name() or geometry.name() not in shopnet.name():
                 continue
@@ -1016,7 +1016,7 @@ class Assembler:
             new_node = next((node for node in box.nodes() if "_new" in node.name()), None)
 
             old_hda = old_node.type().definition()
-            old_hda.setIcon(Environment().get_project_dir() + '/byu-pipeline-tools/assets/images/icons/tool-icons/1.png')
+            old_hda.setIcon(Environment().get_project_dir() + '/pipe/tools/_resources/1.png')
 
             publish.non_gui_publish_go(old_node, "Converted to V2")
             for child in new_node.allSubChildren():
