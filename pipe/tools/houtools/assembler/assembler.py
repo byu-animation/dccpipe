@@ -530,7 +530,7 @@ class Assembler:
         # Set the asset_name and reload
         if node.parm("asset_name").evalAsString() != asset_name:
             node.parm("asset_name").set(asset_name)
-        importnode.parm("reload").pressButton()
+        #importnode.parm("reload").pressButton()
 
         # Tab in each content HDA based on department
         for department in self.dcc_geo_departments:
