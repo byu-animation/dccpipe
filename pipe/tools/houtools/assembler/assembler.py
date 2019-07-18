@@ -97,6 +97,20 @@ from pipe.tools.houtools.utils import *
 # import datetime #never
 
 
+class UpdateModes:
+    SMART = "smart"
+    CLEAN = "clean"
+    FROZEN = "frozen"
+
+    @classmethod
+    def list_modes(cls):
+        return [cls.SMART, cls.CLEAN, cls.FROZEN]
+
+    @classmethod
+    def mode_from_index(cls, index):
+        return [cls.SMART, cls.CLEAN, cls.FROZEN][index]
+
+
 class Assembler:
     def __init__(self):
         self.asset_gui = None
@@ -1031,18 +1045,3 @@ class Assembler:
                 node.parm('shot').set(shot_name)
             except:
                 print 'error ', asset['asset_name']
-
-
-    # Update mode types
-class UpdateModes:
-    SMART = "smart"
-    CLEAN = "clean"
-    FROZEN = "frozen"
-
-    @classmethod
-    def list_modes(cls):
-        return [cls.SMART, cls.CLEAN, cls.FROZEN]
-
-    @classmethod
-    def mode_from_index(cls, index):
-        return [cls.SMART, cls.CLEAN, cls.FROZEN][index]
