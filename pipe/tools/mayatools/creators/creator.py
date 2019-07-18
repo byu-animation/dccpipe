@@ -55,7 +55,7 @@ class Creator:
                 asset_list = body.list_elements(department)
 
                 # get the element for the model dept and the user, and using that publish
-                selected_element = body.get_element("model")
+                selected_element = body.get_element("modify")
 
                 user = Environment().get_user()
                 post_publish(selected_element, user, published=True, comment="First commit.")
