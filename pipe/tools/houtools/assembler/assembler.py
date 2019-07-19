@@ -122,8 +122,6 @@ class Assembler:
         # The source HDA's are currently stored inside the pipe source code.
         self.hda_path = Environment().get_otl_dir()
 
-        print("otl path: ", self.hda_path)
-
         # We define the template HDAs definitions here, for use in the methods below
         self.hda_definitions = {
             Department.MATERIAL: hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_material", os.path.join(self.hda_path, "dcc_material.hda")),
@@ -204,7 +202,6 @@ class Assembler:
         Easily callable method, meant for tool scripts
     '''
     def update_contents(self, node, asset_name, mode=UpdateModes.SMART):
-        #super_print("{0}() line {1}:\n\tasset: {2}\n\tmode: {3}\n\tnode type name: {4}".format(method_name(), lineno(), asset_name, mode, node.type().name()))
         if node.type().name() == "dcc_set":
             self.update_contents_set(node, asset_name, mode=mode)
         elif node.type().name() == "dcc_character":
@@ -424,7 +421,6 @@ class Assembler:
     '''
     def update_contents_character(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART, shot=None):
 
-        ##super_print("{0}() line {1}:\n\tcharacter: {2}\n\tmode: {3}".format(method_name(), lineno(), asset_name, mode))
         # Set up the body/elements and make sure it's a character. Just do some simple error checking.
         body = Project().get_body(asset_name)
         if not body.is_asset() or body.get_type() != AssetType.CHARACTER or "dcc_character" not in node.type().name():
@@ -592,15 +588,6 @@ class Assembler:
         operator_name = element.get_parent() + "_" + element.get_department()
         operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
 
-        print("department: ", department)
-
-        some_val = hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_modify", os.path.join(self.hda_path, "dcc_modify.hda")),
-
-        print("hda definition of modify returns: ", some_val)
-
-        return_val = self.hda_definitions[department]
-        print("return value: ", return_val)
-
         self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
         hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(checkout_file)
@@ -610,7 +597,7 @@ class Assembler:
         # Tab an instance of this new HDA into the asset you are working on
         try:
             hda_instance = inside.createNode(asset_name + "_" + department)
-            print('noce')
+            print('created hda instance')
         except Exception as e:
             self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
         hda_instance.setName(department)

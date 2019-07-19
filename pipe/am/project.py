@@ -156,7 +156,6 @@ class Project:
 			raise OSError('couldn\'t create body directory: '+filepath)
 			# some issue
 
-		print("got this far")
 		datadict = bodyobj.create_new_dict(name)
 		pipeline_io.writefile(os.path.join(filepath, bodyobj.PIPELINE_FILENAME), datadict)
 		new_body = bodyobj(filepath)
@@ -172,7 +171,7 @@ class Project:
 		name -- the name of the new asset to create
 		'''
 		asset = self._create_body(name, Asset)
-		
+
 		if asset is None:
 			return None  # asset already exists.
 
