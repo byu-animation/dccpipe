@@ -71,20 +71,18 @@ class Body:
 		return self._filepath
 
 	def is_shot(self):
-
-		raise NotImplementedError('subclass must implement is_shot')
+		return self.get_type() == AssetType.SHOT
 
 	def is_asset(self):
-
-		raise NotImplementedError('subclass must implement is_asset')
+		return True
 
 	def is_tool(self):
 
-		raise NotImplementedError('subclass must implemtn is_tool')
+		raise NotImplementedError('subclass must implement is_tool')
 
 	def is_crowd_cycle(self):
 
-		raise NotImplementedError('subclass must implemtn is_crowd_cycle')
+		raise NotImplementedError('subclass must implement is_crowd_cycle')
 
 	def get_description(self):
 
@@ -257,7 +255,7 @@ class Asset(Body):
 
 	def is_asset(self):
 
-		return True
+		return True is_shot(self):
 
 	def is_tool(self):
 
