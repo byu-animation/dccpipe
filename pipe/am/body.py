@@ -71,7 +71,10 @@ class Body:
 		return self._filepath
 
 	def is_shot(self):
-		return self.get_type() == AssetType.SHOT
+		if self.get_type() == AssetType.SHOT:
+			return True
+		else:
+			return False
 
 	def is_asset(self):
 		return True
@@ -240,29 +243,13 @@ class Asset(Body):
 
 	@staticmethod
 	def create_new_dict(name):
-
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	# @staticmethod
-	# def default_departments():
-	#
-	# 	return Department.ASSET_DEPTS
-
-	def is_shot(self):
-
-		return False
-
-	def is_asset(self):
-
-		return True is_shot(self):
-
 	def is_tool(self):
-
 		return False
 
 	def is_crowd_cycle(self):
-
 		return False
 
 
@@ -273,29 +260,13 @@ class Shot(Body):
 
 	@staticmethod
 	def create_new_dict(name):
-
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	# @staticmethod
-	# def default_departments():
-	#
-	# 	return Department.SHOT_DEPTS
-
-	def is_shot(self):
-
-		return True
-
-	def is_asset(self):
-
-		return False
-
 	def is_tool(self):
-
 		return False
 
 	def is_crowd_cycle(self):
-
 		return False
 
 

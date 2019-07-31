@@ -58,7 +58,7 @@ class Creator:
                 selected_element = body.get_element("modify")
 
                 user = Environment().get_user()
-                post_publish(selected_element, user, published=True, comment="First commit.")
+                post_publish(selected_element, user, published=True, comment="First commit.")  # FIXME: WE NEED TO FIGURE OUT TO WHICH DEPARTMENT(S) WE ACTUALLY NEED TO PUBLISH TO
 
                 selected_element = body.get_element("model")
                 post_publish(selected_element, user, published=True, comment="First commit.")

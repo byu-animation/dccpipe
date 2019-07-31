@@ -127,8 +127,6 @@ def post_publish(element, user, published=True, comment="No comment."):
         json = json_exporter()
         if body and body.is_asset():
             json.go(body, body.get_type())
-        else:
-            json.go(body, type="shot")
 
         convert_to_education()
 
