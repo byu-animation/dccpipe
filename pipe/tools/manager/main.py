@@ -178,7 +178,7 @@ class DateLineEdit(QtWidgets.QLineEdit):
 class ElementBrowser(QtWidgets.QWidget):
 
 	ASSETS = "Assets"
-	SHOTS = "Shots"
+	#SHOTS = "Shots"
 
 	BODY_DATA_COLUMN = 1
 	BODY_DESCRIPTION_COLUMN = 7
@@ -260,7 +260,7 @@ class ElementBrowser(QtWidgets.QWidget):
 		# asset/shot menu
 		self.body_menu = QtWidgets.QComboBox()
 		self.body_menu.addItem(self.ASSETS)
-		self.body_menu.addItem(self.SHOTS)
+		#self.body_menu.addItem(self.SHOTS)
 		self.current_body = self.ASSETS
 		self._set_bodies()
 
@@ -390,8 +390,8 @@ class ElementBrowser(QtWidgets.QWidget):
 					type_idx = idx
 			combobox.setCurrentIndex(type_idx)
 			self.tree.setItemWidget(item, self.BODY_DATA_COLUMN, combobox)
-		elif self.current_body==self.SHOTS:
-			item.setText(self.BODY_DATA_COLUMN, str(body.get_frame_range()))
+		#elif self.current_body==self.SHOTS:
+		#	item.setText(self.BODY_DATA_COLUMN, str(body.get_frame_range()))
 		else:
 			self.status_bar.showMessage("Error: unknown body type")
 
@@ -448,8 +448,8 @@ class ElementBrowser(QtWidgets.QWidget):
 				asset_filter_str = str(self.type_filter.currentText())
 				asset_filter = (Asset.TYPE, operator.eq, asset_filter_str)
 			self.bodies = self.project.list_assets(asset_filter)
-		elif self.current_body == self.SHOTS:
-			self.bodies = self.project.list_shots()
+		#elif self.current_body == self.SHOTS:
+		#	self.bodies = self.project.list_shots()
 		else:
 			self.bodies = []
 
@@ -506,15 +506,15 @@ class ElementBrowser(QtWidgets.QWidget):
 		self.new_body_dialog = new_body_gui.CreateWindow(self)
 		if self.current_body == self.ASSETS:
 			self.new_body_dialog.setCurrentIndex(self.new_body_dialog.ASSET_INDEX)
-		elif self.current_body == self.SHOTS:
-			self.new_body_dialog.setCurrentIndex(self.new_body_dialog.SHOT_INDEX)
+		#elif self.current_body == self.SHOTS:
+		#	self.new_body_dialog.setCurrentIndex(self.new_body_dialog.SHOT_INDEX)
 		self.new_body_dialog.finished.connect(self._refresh)
 
 	def _update_body_data(self, body, item):
 		if self.current_body==self.ASSETS:
 			body.update_type(str(item.text(self.BODY_DATA_COLUMN)))
-		elif self.current_body==self.SHOTS:
-			body.update_frame_range(int(item.text(self.BODY_DATA_COLUMN)))
+		#elif self.current_body==self.SHOTS:
+		#	body.update_frame_range(int(item.text(self.BODY_DATA_COLUMN)))
 		else:
 			self.status_bar.showMessage("Error: unknown body type")
 

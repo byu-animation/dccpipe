@@ -42,7 +42,7 @@ class Project:
 		'''
 		return the absolute filepath to the shots directory of this project
 		'''
-		return self._env.get_shots_dir()
+		return self._env.get_assets_dir()
 
 	def get_tools_dir(self):
 		'''
