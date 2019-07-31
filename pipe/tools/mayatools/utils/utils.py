@@ -10,6 +10,8 @@ from pipe.am.environment import Environment
 from pipe.am.project import Project
 from pipe.am.element import Element
 
+import pipe.gui.quick_dialogs as qd
+
 from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter as alembic_exporter
 from pipe.tools.mayatools.exporters.json_exporter import JSONExporter as json_exporter
 
@@ -104,8 +106,20 @@ def post_publish(element, user, published=True, comment="No comment."):
         print('Publish Complete. Begin Exporting Alembic, or JSON if set')
         body = Project().get_body(element.get_parent())
 
+        frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
+
+        body.set_frame_range(frame_range)
+
+        if frame_range is None:
+            frame_range = 1
+
+        frame_range = str(frame_range)
+
+        if not frame_range.isdigit():
+            qd.error("Invalid frame range input. Setting to 1.")
+
         #try:
-        abc = alembic_exporter()
+        abc = alembic_exporter(frame_range)
         abc.export(element)
         #except:
         #    print("alembic export failed.")

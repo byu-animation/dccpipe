@@ -103,6 +103,9 @@ class Body:
 
 		return self._datadict[Body.FRAME_RANGE]
 
+	def set_frame_range(self, frame_range):
+		self._datadict[Body.FRAME_RANGE] = frame_range
+
 	def update_frame_range(self, frame_range):
 
 		self._datadict[Body.FRAME_RANGE] = frame_range

@@ -15,7 +15,8 @@ from pipe.gui import quick_dialogs as qd
 
 
 class AlembicExporter:
-    def __init__(self, gui=True, element=None, show_tagger=False):
+    def __init__(self, frame_range, gui=True, element=None, show_tagger=False):
+        self.frame_range = frame_range
         pass
 
     def abcExport(self, selected, path):
@@ -81,7 +82,8 @@ class AlembicExporter:
 
     	loadPlugin('AbcExport')
 
-    	command = 'AbcExport -j "-stripNamespaces -writeVisibility -noNormals -uvWrite -worldSpace -autoSubd -file ' + abcFilePath + '";'
+    	command = 'AbcExport -j "-frameRange 1 ' + self.frame_range + ' -stripNamespaces -writeVisibility -noNormals -uvWrite -worldSpace -autoSubd -file ' + abcFilePath + '";'
+        print(command)
     	Mel.eval(command)
 
     	abcFiles = []
