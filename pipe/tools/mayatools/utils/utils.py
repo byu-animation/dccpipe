@@ -110,7 +110,7 @@ def post_publish(element, user, published=True, comment="No comment."):
 
         body.set_frame_range(frame_range)
 
-        if frame_range is None:
+        if frame_range is None or frame_range == u'':
             frame_range = 1
 
         frame_range = str(frame_range)
