@@ -123,8 +123,8 @@ class JSONExporter:
                 print "Warning: " + ref + " was not associated with a reference file"
         return loaded
 
-    def write_animated_props(self):
-        animated_props = self.select_from_list_dialog.animated_props
+    def write_animated_props(self, values):
+        animated_props = values
         print "writing animated props: {0}".format(animated_props)
         animated_prop_jsons = []
         for animated_prop in animated_props:
@@ -187,20 +187,16 @@ class JSONExporter:
             f.write(jsonSets)
             f.close()
 
-        response = showAnimatedPropPopup()
+        response = self.showAnimatedPropPopup()
         if response == "No":
             self.showSuccessPopup()
             return
 
-        self.select_from_list_dialog = SelectFromList(parent=maya_main_window(), multiple_selection=True)
-        self.select_from_list_dialog.setWindowTitle("Select any animated props")
         props_and_nums = [prop["asset_name"] + ", version: " + str(prop["version_number"]) for prop in props]
-        self.select_from_list_dialog.setList(props_and_nums)
-        self.select_from_list_dialog.filePath = filePath
-        self.select_from_list_dialog.selected_list.connect(self.write_animated_props)
-        self.select_from_list_dialog.show()
+        self.select_from_list_dialog = SelectFromList(parent=maya_main_window(), title="Select any animated props", l=props_and_nums, multiple_selection=True)
+        # self.select_from_list_dialog.filePath = filePath
+        self.select_from_list_dialog.submitted.connect(self.write_animated_props)
         #AnimatedPropWriter(filePath, props)
-        #self.select_from_list_dialog.show()
 
     # Creates a list of all reference files in the current set
     def exportReferences(self, filePath):
@@ -401,7 +397,7 @@ class JSONExporter:
             self.maya_publish_dialog.selected.connect(publish_submitted)
             self.maya_publish_dialog.show()
         else:
-            if type == "shot":
+            if type == AssetType.SHOT:
                 self.confirmWriteShotReferences(body)
             elif type == AssetType.PROP:
                 self.confirmWritePropReference(body)
