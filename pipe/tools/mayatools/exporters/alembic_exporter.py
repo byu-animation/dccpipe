@@ -40,36 +40,36 @@ class AlembicExporter:
     	return abcfiles
 
     def abcExportLoadedReferences(self, path):
-    	if not os.path.exists(path):
-    		os.makedirs(path)
+        if not os.path.exists(path):
+            os.makedirs(path)
 
-    	abcfiles = []
+        abcfiles = []
 
-    	loadedRefs = get_loaded_references()
-    	for i, ref in enumerate(loadedRefs):
-    		print ref
-    		refNodes = mc.referenceQuery(unicode(ref), nodes=True)
-    		rootNode = ls(refNodes[0])
-    		roots_string = ''
-    		#TODO check if the root has been tagged
-    		# if not check to see if its children have been tagged
-    		# At this point we have a node that is ready for export
-    		for alem_obj in rootNode:
-    			roots_string += (' -root %s'%(alem_obj))
+        loadedRefs = get_loaded_references()
+        for i, ref in enumerate(loadedRefs):
+            print ref
+            refNodes = mc.referenceQuery(unicode(ref), nodes=True)
+            rootNode = ls(refNodes[0])
+            roots_string = ''
+            #TODO check if the root has been tagged
+            # if not check to see if its children have been tagged
+            # At this point we have a node that is ready for export
+            for alem_obj in rootNode:
+            	roots_string += (' -root %s'%(alem_obj))
 
-    		print 'roots_string: ' + roots_string
+            print 'roots_string: ' + roots_string
 
-    		abcFile = formatFilename(ref) + '.abc'
-    		abcFilePath = os.path.join(path, abcFile)
-    		print 'The file path: ' + str(abcFilePath)
+            abcFile = formatFilename(ref) + '.abc'
+            abcFilePath = os.path.join(path, abcFile)
+            print 'The file path: ' + str(abcFilePath)
             command = 'AbcExport -j "-frameRange 1 ' + self.frame_range + ' -stripNamespaces -writeVisibility -noNormals -uvWrite -worldSpace -autoSubd -file ' + abcFilePath + '";'
-    		print 'The command: ' + command
-    		Mel.eval(command)
-    		print 'Export successful! ' + str(i) + ' of ' + str(len(loadedRefs))
-    		abcfiles.append(abcFilePath)
+            print 'The command: ' + command
+            Mel.eval(command)
+            print 'Export successful! ' + str(i) + ' of ' + str(len(loadedRefs))
+            abcfiles.append(abcFilePath)
 
-    	print 'all exports complete'
-    	return abcfiles
+        print 'all exports complete'
+        return abcfiles
 
     def abcExportAll(self, name, path):
     	if not os.path.exists(path):
@@ -272,6 +272,9 @@ class AlembicExporter:
         bodyName = element.get_parent()
         body = proj.get_body(bodyName)
         abcFilePath = element.get_cache_dir()
+
+        self.element = element
+
         #TODO we don't want to put them into the element cache right away. We want to put them in a seperate place and then copy them over later.
 
         if startFrame is None:
@@ -312,9 +315,14 @@ class AlembicExporter:
 
 
     def exportSelected(self, selection, destination, tag=None, startFrame=1, endFrame=1, disregardNoTags=False):
+        endFrame = self.frame_range
         abcFiles = []
         for node in selection:
             abcFilePath = os.path.join(destination, str(node) + '.abc')
+            print("abc file path 1: ", abcFilePath)
+            abcFilePath = os.path.join(destination, self.element.get_long_name() + '.abc')
+            print("abc file path 2: ", abcFilePath)
+
             try:
                 command = self.buildTaggedAlembicCommand(node, abcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
