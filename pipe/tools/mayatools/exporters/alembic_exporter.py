@@ -1,4 +1,4 @@
-from am import *
+qdfrom am import *
 from gui import quick_dialogs
 import os
 import shutil
@@ -285,7 +285,7 @@ class AlembicExporter:
             endFrame += 5
             endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', selectionMode=True, startFrame=startFrame, endFrame=endFrame)
-            result = message_gui.yes_or_no('Are there any crowds that need to be exported?')
+            result = qd.yes_or_no('Are there any crowds that need to be exported?')
             if result:
                 self.exportCrowd(abcFilePath, 'DCC_Crowd_Agent_Flag', tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
         elif body.is_asset():
@@ -300,7 +300,7 @@ class AlembicExporter:
             #Maybe this is a bad distinction but None is if it was canceled or something and empty is if it went but there weren't any alembics
             if files is None:
                 return
-            message_gui.error('No alembics were exported')
+            qd.error('No alembics were exported')
             return
 
         for abcFile in files:
@@ -384,7 +384,7 @@ class AlembicExporter:
                     command = self.buildTaggedAlembicCommand(rootNode, refAbcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
             except e:
-                message_gui.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
+                qd.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
                 return
             print 'Export Alembic command: ', command
             pm.Mel.eval(command)
