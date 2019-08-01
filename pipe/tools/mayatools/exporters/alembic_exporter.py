@@ -12,7 +12,7 @@ from pipe.am.environment import Environment
 from pipe.am.body import AssetType
 from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
-
+from pipe.tools.mayatools.exporters import reference_selection
 
 class AlembicExporter:
     def __init__(self, frame_range, gui=True, element=None, show_tagger=False):
