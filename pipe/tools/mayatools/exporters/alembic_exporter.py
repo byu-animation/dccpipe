@@ -1,4 +1,4 @@
-qdfrom am import *
+from am import *
 from gui import quick_dialogs
 import os
 import shutil
