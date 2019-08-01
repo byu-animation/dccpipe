@@ -6,7 +6,7 @@ from pipe.tools.mayatools.utils import utils as maya_utils
 from pipe.tools.mayatools.exporters import alembic_exporter as alembic_exporter
 from pipe.tools.mayatools.exporters import json_exporter as json_exporter
 from pipe.tools.mayatools.importers import referencer as maya_referencer
-from pipe.tools.mayatools.importers import tagger as maya_tagger
+from pipe.tools.mayatools.exporters import tagger as maya_tagger
 
 # from pipe.tools.general import prompts
 # from pipe.tools.general import publisher
