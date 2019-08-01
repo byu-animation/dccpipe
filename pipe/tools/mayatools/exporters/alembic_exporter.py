@@ -324,7 +324,7 @@ class AlembicExporter:
             except e:
                 if disregardNoTags:
                     continue
-                message_gui.error('Unable to locate Alembic Export tag for ' + str(node), title='No Alembic Tag Found')
+                qd.error('Unable to locate Alembic Export tag for ' + str(node), title='No Alembic Tag Found')
                 continue
             print 'Export Alembic command: ', command
             pm.Mel.eval(command)
