@@ -240,10 +240,8 @@ class AlembicExporter:
     	if self.generateGeometry(element=element):
     		self.installGeometry(element=element)
 
-    #class NoTaggedGeo(Exception):
-#      '''Raised when the geo has no tags'''
-
-    def go(self, element=None, dept=None, selection=None, startFrame=1, endFrame=self.frame_range):
+    def go(self, element=None, dept=None, selection=None, startFrame=1, endFrame=1):
+        endFrame = self.frame_range
         pm.loadPlugin('AbcExport')
 
         if not pm.sceneName() == '':
@@ -323,7 +321,7 @@ class AlembicExporter:
             try:
                 command = self.buildTaggedAlembicCommand(node, abcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
-            except NoTaggedGeo, e:
+            except e:
                 if disregardNoTags:
                     continue
                 message_gui.error('Unable to locate Alembic Export tag for ' + str(node), title='No Alembic Tag Found')
@@ -388,7 +386,7 @@ class AlembicExporter:
                 else:
                     command = self.buildTaggedAlembicCommand(rootNode, refAbcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
-            except NoTaggedGeo, e:
+            except e:
                 message_gui.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
                 return
             print 'Export Alembic command: ', command
@@ -414,7 +412,7 @@ class AlembicExporter:
         taggedNodes = self.getTaggedNodes(rootNode, tag)
 
         if not taggedNodes:
-            raise NoTaggedGeo
+            print("No tagged nodes")
 
             # Visualize References and tags
         print rootNode
