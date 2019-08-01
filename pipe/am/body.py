@@ -71,14 +71,10 @@ class Body:
 		return self._filepath
 
 	def is_shot(self):
-<<<<<<< HEAD
-		return self.get_type() is AssetType.SHOT
-=======
 		if self.get_type() == AssetType.SHOT:
 			return True
 		else:
 			return False
->>>>>>> d4f7219f02999ac2603decfd1873312796233715
 
 	def is_asset(self):
 		return True
