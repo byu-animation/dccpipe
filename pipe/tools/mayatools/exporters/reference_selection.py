@@ -5,20 +5,13 @@ import maya.cmds as cmds
 from pymel.core import *
 import pymel.core as pm
 import os
-import byuam
-from byuam.environment import Environment, Department
-from byuam.project import Project
-from byugui import message_gui
+from pipe.am.environment import Environment, Department
+from pipe.am.project import Project
+from pipe.gui import quick_dialogs as qd
+from pipe.tools.mayatools.utils.utils import *
 
 WINDOW_WIDTH = 330
 WINDOW_HEIGHT = 300
-
-def maya_main_window():
-	"""Return Maya's main window"""
-	for obj in QtWidgets.qApp.topLevelWidgets():
-		if obj.objectName() == 'MayaWindow':
-			return obj
-	raise RuntimeError('Could not find MayaWindow instance')
 
 class AlembicExportDialog(QDialog):
 	def __init__(self, parent=maya_main_window()):
@@ -114,14 +107,3 @@ def getLoadedReferences():
 		except:
 			print "Warning: " + ref + " was not associated with a reference file"
 	return loaded
-
-def go(cfx=False):
-	if cfx:
-		raise Exception("This is no longer the way you are going to want to do this.")
-	else:
-		raise Exception("We need to get rid of this go function soon")
-	dialog = AlembicExportDialog()
-	dialog.show()
-
-if __name__ == '__main__':
-	go()
