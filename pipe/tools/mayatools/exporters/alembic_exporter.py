@@ -32,7 +32,7 @@ class AlembicExporter:
     		abcFile = formatFilename(abcFile) + '.abc'
     		abcFilePath = os.path.join(path, abcFile)
     		print abcFilePath
-    		command = 'AbcExport -j "-frameRange 1 1 -stripNamespaces -root '+parent_geo+' -nn -uv -as -file '+abcFilePath+'";'
+    		command = 'AbcExport -j "-frameRange 1 ' + self.frame_range + ' -stripNamespaces -root '+parent_geo+' -nn -uv -as -file '+abcFilePath+'";'
     		print command
     		Mel.eval(command)
     		abcfiles.append(abcFilePath)
@@ -62,7 +62,7 @@ class AlembicExporter:
     		abcFile = formatFilename(ref) + '.abc'
     		abcFilePath = os.path.join(path, abcFile)
     		print 'The file path: ' + str(abcFilePath)
-    		command = 'AbcExport -j "%s -frameRange 1 1 -stripNamespaces -writeVisibility -noNormals -uvWrite -worldSpace -autoSubd -file %s"'%(roots_string, abcFilePath)
+            command = 'AbcExport -j "-frameRange 1 ' + self.frame_range + ' -stripNamespaces -writeVisibility -noNormals -uvWrite -worldSpace -autoSubd -file ' + abcFilePath + '";'
     		print 'The command: ' + command
     		Mel.eval(command)
     		print 'Export successful! ' + str(i) + ' of ' + str(len(loadedRefs))
@@ -292,7 +292,7 @@ class AlembicExporter:
             if body.get_type() == AssetType.SET:
                 files = self.exportReferences(abcFilePath)
             else:
-                files = self.exportAll(abcFilePath, element=element)
+                files = self.exportAll(abcFilePath, tag='DCC_Alembic_Export_Flag', element=element)
         elif body.is_crowd_cycle():
             files = self.exportAll(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, element=element)
 
@@ -318,7 +318,7 @@ class AlembicExporter:
             try:
                 command = self.buildTaggedAlembicCommand(node, abcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
-            except e:
+            except:
                 if disregardNoTags:
                     continue
                 qd.error('Unable to locate Alembic Export tag for ' + str(node), title='No Alembic Tag Found')
@@ -383,7 +383,7 @@ class AlembicExporter:
                 else:
                     command = self.buildTaggedAlembicCommand(rootNode, refAbcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
-            except e:
+            except:
                 qd.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
                 return
             print 'Export Alembic command: ', command
