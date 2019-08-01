@@ -35,7 +35,7 @@
 			"icon":"alembic-export.svg",
 			"annotation":"Export as Alembic",
 			"tool":"mayatools.exporters.alembic_exporter",
-			"function":"AlembicExporter.export"
+			"function":"AlembicExporter.go"
 		}, {
 			"itemType":"button",
 			"icon":"tag.svg",
