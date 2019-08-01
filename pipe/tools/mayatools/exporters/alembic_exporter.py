@@ -243,7 +243,7 @@ class AlembicExporter:
     #class NoTaggedGeo(Exception):
 #      '''Raised when the geo has no tags'''
 
-    def go(self, element=None, dept=None, selection=None, startFrame=None, endFrame=None):
+    def go(self, element=None, dept=None, selection=None, startFrame=1, endFrame=self.frame_range):
         pm.loadPlugin('AbcExport')
 
         if not pm.sceneName() == '':
@@ -289,17 +289,17 @@ class AlembicExporter:
         if body.is_shot():
             startFrame -= 5
             endFrame += 5
-            files = self.exportReferences(abcFilePath, tag='BYU_Alembic_Export_Flag', selectionMode=True, startFrame=startFrame, endFrame=endFrame)
+            files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', selectionMode=True, startFrame=startFrame, endFrame=endFrame)
             result = message_gui.yes_or_no('Are there any crowds that need to be exported?')
             if result:
-                self.exportCrowd(abcFilePath, 'BYU_Crowd_Agent_Flag', tag='BYU_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
+                self.exportCrowd(abcFilePath, 'DCC_Crowd_Agent_Flag', tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
         elif body.is_asset():
             if body.get_type() == AssetType.SET:
                 files = self.exportReferences(abcFilePath)
             else:
                 files = exportAll(abcFilePath, element=element)
         elif body.is_crowd_cycle():
-            files = exportAll(abcFilePath, tag='BYU_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, element=element)
+            files = exportAll(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, element=element)
 
         if not files:
             #Maybe this is a bad distinction but None is if it was canceled or something and empty is if it went but there weren't any alembics
@@ -336,7 +336,7 @@ class AlembicExporter:
     def exportAll(self, destination, tag=None, startFrame=1, endFrame=1, element=None):
         if tag is not None:
             selection = pm.ls(assemblies=True)
-            return self.exportSelected(selection, destination, tag='BYU_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, disregardNoTags=True)
+            return self.exportSelected(selection, destination, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, disregardNoTags=True)
         else:
             return alembic_static_exporter.go(element=element)
 
@@ -356,7 +356,7 @@ class AlembicExporter:
                 if self.getTaggedNodes(node, crowdTag):
                     print 'the destination is', destination
                     print 'the node is', node
-                    self.exportSelected([node], destination, tag='BYU_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
+                    self.exportSelected([node], destination, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
                 else:
                     print 'We did not find a tag on', node
 #For each of those parent nodes export the tagged geo within

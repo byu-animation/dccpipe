@@ -60,8 +60,8 @@ class Creator:
                 user = Environment().get_user()
                 post_publish(selected_element, user, published=True, comment="First commit.")  # FIXME: WE NEED TO FIGURE OUT TO WHICH DEPARTMENT(S) WE ACTUALLY NEED TO PUBLISH TO
 
-                selected_element = body.get_element("model")
-                post_publish(selected_element, user, published=True, comment="First commit.")
+                # selected_element = body.get_element("model")
+                # post_publish(selected_element, user, published=True, comment="First commit.")
 
                 qd.info("Asset created successfully (but not really, yet).", "Success")
 
