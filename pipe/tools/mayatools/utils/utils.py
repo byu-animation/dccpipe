@@ -120,8 +120,8 @@ def post_publish(element, user, published=True, comment="No comment."):
 
         #try:
         abc = alembic_exporter(frame_range)
-        abc.export(element=element, dept="model")
-        abc.export(element=element, dept="modify")
+        abc.go(element=element, dept="model")
+        abc.go(element=element, dept="modify")
         #except:
         #    print("alembic export failed.")
 

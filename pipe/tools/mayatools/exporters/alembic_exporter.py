@@ -17,7 +17,7 @@ from pipe.gui import quick_dialogs as qd
 class AlembicExporter:
     def __init__(self, frame_range, gui=True, element=None, show_tagger=False):
         self.frame_range = frame_range
-        pass
+        pm.loadPlugin('AbcExport')
 
     def abcExport2(self, selected, path):
     	if not os.path.exists(path):
@@ -25,7 +25,6 @@ class AlembicExporter:
 
     	abcfiles = []
 
-    	loadPlugin2('AbcExport')
     	for geo in selected:
     		chop = geo.rfind('|')
     		parent_geo = geo[:chop]
@@ -46,7 +45,6 @@ class AlembicExporter:
 
     	abcfiles = []
 
-    	loadPlugin('AbcExport')
     	loadedRefs = get_loaded_references()
     	for i, ref in enumerate(loadedRefs):
     		print ref
@@ -79,8 +77,6 @@ class AlembicExporter:
 
     	abcFile = name + '.abc'
     	abcFilePath = os.path.join(path, abcFile)
-
-    	loadPlugin('AbcExport')
 
     	command = 'AbcExport -j "-frameRange 1 ' + self.frame_range + ' -stripNamespaces -writeVisibility -noNormals -uvWrite -worldSpace -autoSubd -file ' + abcFilePath + '";'
         print(command)
@@ -242,7 +238,6 @@ class AlembicExporter:
 
     def go(self, element=None, dept=None, selection=None, startFrame=1, endFrame=1):
         endFrame = self.frame_range
-        pm.loadPlugin('AbcExport')
 
         if not pm.sceneName() == '':
             pm.saveFile(force=True)
