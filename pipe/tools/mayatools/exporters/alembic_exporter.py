@@ -281,7 +281,9 @@ class AlembicExporter:
 
         if body.is_shot():
             startFrame -= 5
+            endFrame = int(endFrame)
             endFrame += 5
+            endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', selectionMode=True, startFrame=startFrame, endFrame=endFrame)
             result = message_gui.yes_or_no('Are there any crowds that need to be exported?')
             if result:
