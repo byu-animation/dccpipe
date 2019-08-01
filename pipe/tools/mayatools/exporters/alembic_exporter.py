@@ -236,22 +236,12 @@ class AlembicExporter:
 
     	return True
 
-    def export(self, element=None):
+    def export2(self, element=None):
     	if self.generateGeometry(element=element):
     		self.installGeometry(element=element)
-'''
-
-import reference_selection
-import alembic_static_exporter
-from byugui import selection_gui, message_gui
-from byuam.body import AssetType
-from PySide2 import QtWidgets
-from byuam import Project
-import pymel.core as pm
-import os'''
 
     #class NoTaggedGeo(Exception):
-	#      '''Raised when the geo has no tags'''
+#      '''Raised when the geo has no tags'''
 
     def go(self, element=None, dept=None, selection=None, startFrame=None, endFrame=None):
         pm.loadPlugin('AbcExport')
@@ -259,30 +249,30 @@ import os'''
         if not pm.sceneName() == '':
             pm.saveFile(force=True)
 
-            if element is None:
-                filePath = pm.sceneName()
-                fileDir = os.path.dirname(filePath)
-                proj = Project()
-                checkout = proj.get_checkout(fileDir)
-                if checkout is None:
-                    parent = QtWidgets.QApplication.activeWindow()
-                    element = selection_gui.getSelectedElement(parent)
-                    if element is None:
-                        return None
-                    else:
-                        bodyName = checkout.get_body_name()
-                        deptName = checkout.get_department_name()
-                        elemName = checkout.get_element_name()
-                        body = proj.get_body(bodyName)
-                        element = body.get_element(deptName, name=elemName)
+        if element is None:
+            filePath = pm.sceneName()
+            fileDir = os.path.dirname(filePath)
+            proj = Project()
+            checkout = proj.get_checkout(fileDir)
+            if checkout is None:
+                parent = QtWidgets.QApplication.activeWindow()
+                element = selection_gui.getSelectedElement(parent)
+                if element is None:
+                    return None
+            else:
+                bodyName = checkout.get_body_name()
+                deptName = checkout.get_department_name()
+                elemName = checkout.get_element_name()
+                body = proj.get_body(bodyName)
+                element = body.get_element(deptName, name=elemName)
 
-                        #Get the element from the right Department
-                        if dept is not None and not element.get_department() == dept:
-                            print 'We are overwriting the', element.get_department(), 'with', dept
-                            body = proj.get_body(element.get_parent())
-                            element = body.get_element(dept)
+            #Get the element from the right Department
+            if dept is not None and not element.get_department() == dept:
+                print 'We are overwriting the', element.get_department(), 'with', dept
+                body = proj.get_body(element.get_parent())
+                element = body.get_element(dept)
 
-        return export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
+            return export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
 
     def export(self, element, selection=None, startFrame=None, endFrame=None):
         proj = Project()
