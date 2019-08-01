@@ -238,6 +238,7 @@ class AlembicExporter:
 
     def go(self, element=None, dept=None, selection=None, startFrame=1, endFrame=1):
         endFrame = self.frame_range
+        proj = Project()
 
         if not pm.sceneName() == '':
             pm.saveFile(force=True)
@@ -245,7 +246,6 @@ class AlembicExporter:
         if element is None:
             filePath = pm.sceneName()
             fileDir = os.path.dirname(filePath)
-            proj = Project()
             checkout = proj.get_checkout(fileDir)
             if checkout is None:
                 parent = QtWidgets.QApplication.activeWindow()
@@ -265,7 +265,7 @@ class AlembicExporter:
             body = proj.get_body(element.get_parent())
             element = body.get_element(dept)
 
-        return export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
+        return self.export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
 
     def export(self, element, selection=None, startFrame=None, endFrame=None):
         proj = Project()
@@ -290,9 +290,9 @@ class AlembicExporter:
             if body.get_type() == AssetType.SET:
                 files = self.exportReferences(abcFilePath)
             else:
-                files = exportAll(abcFilePath, element=element)
+                files = self.exportAll(abcFilePath, element=element)
         elif body.is_crowd_cycle():
-            files = exportAll(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, element=element)
+            files = self.exportAll(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, element=element)
 
         if not files:
             #Maybe this is a bad distinction but None is if it was canceled or something and empty is if it went but there weren't any alembics
