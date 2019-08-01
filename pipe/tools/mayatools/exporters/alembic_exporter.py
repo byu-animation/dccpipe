@@ -19,7 +19,7 @@ class AlembicExporter:
         self.frame_range = frame_range
         pm.loadPlugin('AbcExport')
 
-    def abcExport2(self, selected, path):
+    def abcExport(self, selected, path):
     	if not os.path.exists(path):
     		os.makedirs(path)
 
@@ -39,7 +39,7 @@ class AlembicExporter:
 
     	return abcfiles
 
-    def abcExportLoadedReferences2(self, path):
+    def abcExportLoadedReferences(self, path):
     	if not os.path.exists(path):
     		os.makedirs(path)
 
@@ -71,7 +71,7 @@ class AlembicExporter:
     	print 'all exports complete'
     	return abcfiles
 
-    def abcExportAll2(self, name, path):
+    def abcExportAll(self, name, path):
     	if not os.path.exists(path):
     		os.makedirs(path)
 
@@ -88,13 +88,13 @@ class AlembicExporter:
 
     	return abcFiles
 
-    def formatFilename2(self, filename):
+    def formatFilename(self, filename):
     	filename = filename.replace('Shape', '')
     	filename = filename.replace('RN', '')
     	filename = pio.alphanumeric(filename)
     	return filename
 
-    def checkFiles2(self, files):
+    def checkFiles(self, files):
     	'''
     		Checks the list of output files against which files were actually created
     		@param: files - a list of strings representing full paths
@@ -119,7 +119,7 @@ class AlembicExporter:
 
     	return missingFiles
 
-    def getElementCacheDirectory2(self, path, element=None):
+    def getElementCacheDirectory(self, path, element=None):
 
     	if element is None:
     		proj = Project()
@@ -132,7 +132,7 @@ class AlembicExporter:
 
     	return element.get_cache_dir()
 
-    def installGeometry2(self, path='',element=None):
+    def installGeometry(self, path='',element=None):
 
     	'''
     		Function to install the geometry into the PRODUCTION asset directory
@@ -147,7 +147,7 @@ class AlembicExporter:
     	if destABC is None:
     		return False
 
-    	if os.path.exists2(destABC):
+    	if os.path.exists(destABC):
     		try:
     			shutil.rmtree(destABC)
     		except Exception as e:
@@ -175,7 +175,7 @@ class AlembicExporter:
 
     	return True
 
-    def generateGeometry2(self, path='',element=None):
+    def generateGeometry(self, path='',element=None):
     	'''
     		Function for generating geometry for Maya files.
     		Creates the following output formats:
@@ -232,7 +232,7 @@ class AlembicExporter:
 
     	return True
 
-    def export2(self, element=None):
+    def static_export(self, element=None):
     	if self.generateGeometry(element=element):
     		self.installGeometry(element=element)
 
@@ -331,7 +331,7 @@ class AlembicExporter:
             selection = pm.ls(assemblies=True)
             return self.exportSelected(selection, destination, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, disregardNoTags=True)
         else:
-            return alembic_static_exporter.go(element=element)
+            return self.static_export(element=element)
 
     def exportCrowd(self, destination, crowdTag, tag=None, startFrame=1, endFrame=1):
         #Find all of the parent nodes with the crowdTag.
