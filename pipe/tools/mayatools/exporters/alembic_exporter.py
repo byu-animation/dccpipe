@@ -339,7 +339,13 @@ class AlembicExporter:
     def exportAll(self, destination, tag=None, startFrame=1, endFrame=1, element=None):
         if tag is not None:
             selection = pm.ls(assemblies=True)
-            return self.exportSelected(selection, destination, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, disregardNoTags=True)
+            culled_selection = []
+            for item in selection:
+                if item.find("joint") == -1:
+                    culled_selection.append(item)
+            print("culled selection: ", culled_selection)
+
+            return self.exportSelected(culled_selection, destination, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame, disregardNoTags=True)
         else:
             return self.static_export(element=element)
 
@@ -432,11 +438,12 @@ class AlembicExporter:
         # Each of these should be in a list, so it should know how many to add the -root tag to the alembic.
         for alem_obj in geoList:
             print 'alem_obj: ' + alem_obj
-            roots_string += (' -root %s'%(alem_obj))
+            roots_string += ('-root |%s'%(alem_obj))
         print 'roots_string: ' + roots_string
 
         # Then here is the actual Alembic Export command for Mel.
-        command = 'AbcExport -j "%s -frameRange %s %s -stripNamespaces -step %s -writeVisibility -noNormals -uvWrite -worldSpace -file %s"'%(roots_string, str(startFrame), str(endFrame), str(step), outFilePath)
+        # command = 'AbcExport -j "%s -frameRange %s %s -stripNamespaces -step %s -writeVisibility -noNormals -uvWrite -worldSpace -file %s"'%(roots_string, str(startFrame), str(endFrame), str(step), outFilePath)
+        command = 'AbcExport -j "-frameRange %s %s -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), roots_string, outFilePath)
         print 'Command', command
         return command
 
