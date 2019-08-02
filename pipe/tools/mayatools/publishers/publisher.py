@@ -47,15 +47,6 @@ class MayaPublisher:
         self.item_gui = sfl.SelectFromList(l=department_list, parent=maya_main_window(), title="Select department for this publish")
         self.item_gui.submitted.connect(self.department_results)
 
-        # TODO: get the body, get the department.
-        # body = project.create_asset(name, asset_type=type)
-        # selected_element = body.get_element("model")
-        # department = "model"
-
-        # TODO: publish
-        # show the gui, get the element. To list elements, get the body and get the department
-
-
     def department_results(self, value):
         chosen_department = value[0]
 

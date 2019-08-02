@@ -265,12 +265,11 @@ class AlembicExporter:
 
         department_list = self.body.default_departments()
 
-        self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export")
+        self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export: Always select either modify, material, cloth, or hair along with any other departments.", width=700)
         self.item_gui.submitted.connect(self.department_results)
 
     def department_results(self, value):
         department_list = value
-        department_list.append("modify")  # always publish to modify also?
 
         selection=None
         startFrame=1

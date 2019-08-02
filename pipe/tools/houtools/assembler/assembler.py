@@ -1,5 +1,5 @@
 '''
-    Hunter Tinney
+    Big thanks to Hunter Tinney!
     ================
     Intro to Pipe V2
     ================
@@ -77,7 +77,9 @@
         clean: Everything is deleted and re-tabbed in, ensuring it is 100% synced. Does not allow for overrides.
         frozen: Nothing happens.
 '''
-import hou, sys, os, json #??
+
+
+import hou, sys, os, json
 from pipe.am.project import Project
 from pipe.am.environment import Environment, Department
 from pipe.am.element import Element
@@ -90,11 +92,7 @@ from pipe.tools.houtools.utils import *
 
 # # CHECKOUT BREAKS IN NON_GUI MODE
 # import checkout #old pipe file
-#
 # import publish #old pipe file
-# # DEBUGGING ONLY
-# import inspect #no idea
-# import datetime #never
 
 
 class UpdateModes:
@@ -150,9 +148,9 @@ class Assembler:
         project = Project()
         self.body = project.get_body(self.selected_asset)
 
-        department_list = self.body.default_departments()
+        department_list = [Department.MATERIAL, Department.MODIFY, Department.HAIR, Department.CLOTH]
 
-        self.element_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="Select element to assemble")
+        self.element_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="What do you want to do: Modify - bring in an asset for geometry manipulation. Material - bring in an asset for shading. Cloth/Hair - bring in a character with cloth/hair", height=250, width=700)
         self.element_gui.submitted.connect(self.element_results)
 
     def element_results(self, value):
@@ -824,150 +822,7 @@ class Assembler:
                     build_button = child.parm("build")
                     if build_button:
                         build_button.pressButton()
-    '''
-    def convertV1_to_V2(nodes):
 
-        for node in nodes:
-
-            if node.type().name() == "dcc_geo":
-                node = node.parent().createNode(node.parm("asset_name").evalAsString() + "_main")
-
-            geometry = next((child for child in node.children() if child.type().name() == "geo"), None)
-            shopnet = next((child for child in node.children() if child.type().name() == "shopnet"), None)
-
-            print geometry
-            # If there's not a geometry network inside that has the same name as the operator,
-            # then it's probably not an old DCC asset that we know how to deal with, so skip it.
-
-            if not geometry or not shopnet or geometry.name() not in node.type().name() or geometry.name() not in shopnet.name():
-                continue
-
-            root = geometry.node("hide_geo")
-            print root
-            if not root:
-                continue
-
-            checkout.checkout_asset_go(node)
-
-            parent = node.parent()
-            output = geometry.displayNode()
-
-            # Find descendants of the root node, these are the old components
-            descendants = []
-            stack = []
-            stack.append(root)
-            while len(stack) > 0:
-                ancestor = stack.pop()
-                descendants.append(ancestor)
-                for output in ancestor.outputs():
-                    stack.append(output)
-
-
-
-
-            # Tab in a V2 Dynamic Content Subnet
-            asset_name = geometry.name()
-
-            new_node=None
-            new_node = tab_in(parent, asset_name, excluded_departments=[Department.MODIFY, Department.MATERIAL])
-
-            # Copy old components into a modify node
-            modify_node = create_hda(asset_name, Department.MODIFY, already_tabbed_in_node=new_node)
-
-            display_out=modify_node.displayNode()
-            copied_nodes=hou.copyNodesTo(descendants, modify_node)
-
-            ## TODO: PARSE THROUGH NODES AND CONNECT TO OUTPUT
-
-
-            hide_geo=None
-            descend_out=None
-            mat_node=None
-
-            for copied_node in copied_nodes:
-                if 'switch' in copied_node.type().name():
-                    hide_geo=copied_node
-                elif 'material' == copied_node.type().name():
-                    mat_node=copied_node
-                elif 'output' == copied_node.type().name():
-                    descend_out=copied_node
-                elif 'null' == copied_node.type().name() and 'OUT' in copied_node.name():
-                    descend_out=copied_node
-
-
-
-            hide_geo.setInput(0,modify_node.indirectInputs()[0])
-            display_out.setInput(0,descend_out)
-
-
-
-            display_out.setDisplayFlag(True)
-            display_out.setRenderFlag(True)
-
-            display_out.setInput(0,descend_out)
-            modify_node.layoutChildren()
-
-            descend_out.destroy()
-            hide_geo.destroy()
-            mat_node.destroy()
-
-
-
-
-            # Copy old components into a material node
-            material_node = create_hda(asset_name, Department.MATERIAL, already_tabbed_in_node=new_node)
-            hou.copyNodesTo(shopnet.children(), material_node.node("shopnet/shaders"))
-
-            # Do material assignment as much as possible
-            # TODO: riley
-
-            material= geometry.node("material1")
-            num_groups=material.evalParm('num_materials')
-
-            #map of material to string of group mask
-            info={}
-
-            for i in range(1,num_groups+1):
-                group=material.evalParm('group'+str(i))
-                mat=material.evalParm('shop_materialpath'+str(i))
-
-                mat='../shopnet/shaders/'+'/'.join(mat.split('/')[-2:])
-
-                if mat in info:
-                    info[mat]+=' '+group
-                else:
-                    info[mat]=group
-
-
-            mat_assign=material_node.node('material_assign')
-            mat_assign.parm('num_materials').set(len(info))
-
-
-            #transfer material assignments
-            for i,key in enumerate(info):
-                mat_assign.parm('group'+str(i+1)).set(info[key])
-                mat_assign.parm('material_options'+str(i+1)).set(1)
-                mat_assign.parm('mat_option'+str(i+1)+'_1').set(key)
-
-
-
-            # Name the nodes
-            node.setName(asset_name + "_old")
-            new_node.setName(asset_name + "_new")
-
-            # Put them both into a network box, so we can see that they are related.
-            box = parent.createNetworkBox()
-            box.addItem(node)
-            box.addItem(new_node)
-            box.fitAroundContents()
-            box.setComment(node.type().name().replace("_main", "").title())
-            parent.layoutChildren()
-    '''
-
-    '''
-        The user has selected a bunch of nodes/network boxes and this should sort out which is which,
-        so that it can commit the conversions for those groups.
-    '''
     def commit_conversions(self):
 
         # Find all boxes that have nodes that were made by the conversion script
