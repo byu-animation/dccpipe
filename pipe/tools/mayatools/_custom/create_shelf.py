@@ -37,7 +37,7 @@ def load_shelf():
 			annotation = shelf_item['annotation']
 
 			path = "pipe.tools." + shelf_item['tool']
-			function = shelf_item['function'] + "()"
+			function = shelf_item['function']
 			class_with_method = function.split(".")
 			module = class_with_method[0]
 			method = class_with_method[1]

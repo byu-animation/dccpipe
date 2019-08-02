@@ -5,49 +5,55 @@
 			"icon":"new-body.svg",
 			"annotation":"Create a new body",
 			"tool":"mayatools.creators.creator",
-			"function":"Creator.create_body"
+			"function":"Creator.create_body()"
 		}, {
 			"itemType":"button",
 			"icon":"checkout.svg",
 			"annotation":"Check-out/clone an asset",
 			"tool":"mayatools.cloners.cloner",
-			"function":"MayaCloner.clone"
+			"function":"MayaCloner.clone()"
 		}, {
 			"itemType":"button",
 			"icon":"publish.svg",
 			"annotation":"Publish a model, rig or animation",
 			"tool":"mayatools.publishers.publisher",
-			"function":"MayaPublisher.publish"
+			"function":"MayaPublisher.publish()"
 		}, {
 			"itemType":"button",
 			"icon":"rollback.svg",
 			"annotation":"Rollback body to previous version",
 			"tool":"mayatools.cloners.cloner",
-			"function":"MayaCloner.rollback"
+			"function":"MayaCloner.rollback()"
 		}, {
 			"itemType":"button",
 			"icon":"playblast.svg",
 			"annotation":"Playblast this shot",
 			"tool":"mayatools.submitters.playblaster",
-			"function":"Playblaster.playblast"
+			"function":"Playblaster.playblast()"
 		}, {
 			"itemType":"button",
 			"icon":"alembic-export.svg",
 			"annotation":"Export as Alembic",
 			"tool":"mayatools.exporters.alembic_exporter",
-			"function":"AlembicExporter.go"
+			"function":"AlembicExporter.go()"
 		}, {
 			"itemType":"button",
 			"icon":"tag.svg",
 			"annotation":"Tag Selected Objects for Export",
 			"tool":"mayatools.exporters.tagger",
-			"function":"Tagger.tag"
+			"function":"Tagger.tag()"
+		}, {
+			"itemType":"button",
+			"icon":"untag.svg",
+			"annotation":"Remove Export Tags from Selected Objects",
+			"tool":"mayatools.exporters.tagger",
+			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
 			"tool":"mayatools.importers.referencer",
-			"function":"MayaReferencer.go"
+			"function":"MayaReferencer.go()"
 		}, {
 			"itemType":"separator"
 		}, {
@@ -55,13 +61,13 @@
 			"icon":"education.svg",
 			"annotation":"Change the licence to education",
 			"tool":"mayatools.utils.education",
-			"function":"education.go"
+			"function":"education.go()"
 		}, {
 			"itemType":"button",
 			"icon":"reload-scripts.svg",
 			"annotation":"Reload python scripts",
 			"tool":"mayatools.utils.reload_scripts",
-			"function":"ReloadScripts.go"
+			"function":"ReloadScripts.go()"
 		}, {
 			"itemType": "separator"
 		}, {
@@ -69,19 +75,19 @@
 			"icon":"2_set.png",
 			"annotation":"Export JSON Set File",
 			"tool":"mayatools.exporters.json_exporter",
-			"function":"JSONExporter.export"
+			"function":"JSONExporter.export()"
 		}, {
 			"itemType":"button",
 			"icon":"2_shot.png",
 			"annotation":"Export JSON Shot File",
 			"tool":"mayatools.exporters.json_exporter",
-			"function":"JSONExporter.export"
+			"function":"JSONExporter.export()"
 		}, {
 			"itemType":"button",
 			"icon":"2_prop.png",
 			"annotation":"Export JSON Prop File",
 			"tool":"mayatools.exporters.json_exporter",
-			"function":"JSONExporter.export"
+			"function":"JSONExporter.export()"
 		}
 
 	]
