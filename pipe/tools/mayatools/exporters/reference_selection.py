@@ -14,8 +14,9 @@ WINDOW_WIDTH = 330
 WINDOW_HEIGHT = 300
 
 class AlembicExportDialog(QDialog):
-	def __init__(self, parent=maya_main_window()):
+	def __init__(self, parent=None):
 	#def setup(self, parent):
+		parent = maya_main_window()
 		QDialog.__init__(self, parent)
 		self.setWindowTitle('Select Objects for Export')
 		self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)

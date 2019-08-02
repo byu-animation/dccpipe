@@ -12,10 +12,11 @@ from pipe.am.environment import Environment
 from pipe.am.body import AssetType
 from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
+import pipe.gui.select_from_list as sfl
 from pipe.tools.mayatools.exporters import reference_selection
 
 class AlembicExporter:
-    def __init__(self, frame_range, gui=True, element=None, show_tagger=False):
+    def __init__(self, frame_range=1, gui=True, element=None, show_tagger=False):
         self.frame_range = frame_range
         pm.loadPlugin('AbcExport')
 
@@ -122,12 +123,12 @@ class AlembicExporter:
     def getElementCacheDirectory(self, path, element=None):
 
     	if element is None:
-    		proj = Project()
-    		checkout = proj.get_checkout(path)
+    		project = Project()
+    		checkout = project.get_checkout(path)
     		if checkout is None:
     			qd.error('There was a problem exporting the alembic to the correct location. Checkout the asset again and try one more time.')
     			return None
-    		body = proj.get_body(checkout.get_body_name())
+    		body = project.get_body(checkout.get_body_name())
     		element = body.get_element(checkout.get_department_name(), checkout.get_element_name())
 
     	return element.get_cache_dir()
@@ -205,16 +206,16 @@ class AlembicExporter:
     	selection = mc.ls(geometry=True, visible=True)
     	selection_long = mc.ls(geometry=True, visible=True, long=True)
 
-    	proj = Project()
+    	project = Project()
     	if element is None:
-    		checkout = proj.get_checkout(path)
+    		checkout = project.get_checkout(path)
     		if checkout is None:
     			qd.error('There was a problem exporting the alembic to the correct location. Checkout the asset again and try one more time.')
     			return None
-    		body = proj.get_body(checkout.get_body_name())
+    		body = project.get_body(checkout.get_body_name())
     		element = body.get_element(checkout.get_department_name(), checkout.get_element_name())
     	else:
-    		body = proj.get_body(element.get_parent())
+    		body = project.get_body(element.get_parent())
 
     	# We decided to try exporting all the geo into one alembic file instead of many. This is the line that does many
     	# abcs = abcExport(selection_long, ABCPATH)
@@ -236,9 +237,37 @@ class AlembicExporter:
     	if self.generateGeometry(element=element):
     		self.installGeometry(element=element)
 
-    def go(self, element=None, dept=None, selection=None, startFrame=1, endFrame=1):
-        endFrame = self.frame_range
-        proj = Project()
+    def go(self):
+
+        project = Project()
+
+        asset_list = project.list_assets()
+
+        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
+        self.item_gui.submitted.connect(self.asset_results)
+
+    def asset_results(self, value):
+        chosen_asset = value[0]
+
+        dept = "model"
+        selection=None
+        startFrame=1
+        endFrame=1
+
+        project = Project()
+        frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
+        self.frame_range = frame_range
+
+        if frame_range is None or frame_range == u'':
+            frame_range = 1
+
+        frame_range = str(frame_range)
+        if not frame_range.isdigit():
+            qd.error("Invalid frame range input. Setting to 1.")
+
+        self.body = project.get_body(chosen_asset)
+        self.body.set_frame_range(frame_range)
+        element = self.body.get_element(dept)
 
         if not pm.sceneName() == '':
             pm.saveFile(force=True)
@@ -246,7 +275,7 @@ class AlembicExporter:
         if element is None:
             filePath = pm.sceneName()
             fileDir = os.path.dirname(filePath)
-            checkout = proj.get_checkout(fileDir)
+            checkout = project.get_checkout(fileDir)
             if checkout is None:
                 parent = QtWidgets.QApplication.activeWindow()
                 element = selection_gui.getSelectedElement(parent)
@@ -256,21 +285,21 @@ class AlembicExporter:
                 bodyName = checkout.get_body_name()
                 deptName = checkout.get_department_name()
                 elemName = checkout.get_element_name()
-                body = proj.get_body(bodyName)
+                body = project.get_body(bodyName)
                 element = body.get_element(deptName, name=elemName)
 
             #Get the element from the right Department
         if dept is not None and not element.get_department() == dept:
             print 'We are overwriting the', element.get_department(), 'with', dept
-            body = proj.get_body(element.get_parent())
+            body = project.get_body(element.get_parent())
             element = body.get_element(dept)
 
         return self.export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
 
     def export(self, element, selection=None, startFrame=None, endFrame=None):
-        proj = Project()
+        project = Project()
         bodyName = element.get_parent()
-        body = proj.get_body(bodyName)
+        body = project.get_body(bodyName)
         abcFilePath = element.get_cache_dir()
 
         self.element = element
@@ -339,6 +368,7 @@ class AlembicExporter:
     def exportAll(self, destination, tag=None, startFrame=1, endFrame=1, element=None):
         if tag is not None:
             selection = pm.ls(assemblies=True)
+            # selection = [nt.Transform(u"pCube1")]
             culled_selection = []
             for item in selection:
                 if item.find("joint") == -1:
