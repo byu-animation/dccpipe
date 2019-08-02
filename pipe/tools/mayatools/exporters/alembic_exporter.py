@@ -249,11 +249,6 @@ class AlembicExporter:
     def asset_results(self, value):
         chosen_asset = value[0]
 
-        dept = "model"
-        selection=None
-        startFrame=1
-        endFrame=1
-
         project = Project()
         frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
         self.frame_range = frame_range
@@ -267,34 +262,49 @@ class AlembicExporter:
 
         self.body = project.get_body(chosen_asset)
         self.body.set_frame_range(frame_range)
-        element = self.body.get_element(dept)
 
-        if not pm.sceneName() == '':
-            pm.saveFile(force=True)
+        department_list = self.body.default_departments()
 
-        if element is None:
-            filePath = pm.sceneName()
-            fileDir = os.path.dirname(filePath)
-            checkout = project.get_checkout(fileDir)
-            if checkout is None:
-                parent = QtWidgets.QApplication.activeWindow()
-                element = selection_gui.getSelectedElement(parent)
-                if element is None:
-                    return None
-            else:
-                bodyName = checkout.get_body_name()
-                deptName = checkout.get_department_name()
-                elemName = checkout.get_element_name()
-                body = project.get_body(bodyName)
-                element = body.get_element(deptName, name=elemName)
+        self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export")
+        self.item_gui.submitted.connect(self.department_results)
 
-            #Get the element from the right Department
-        if dept is not None and not element.get_department() == dept:
-            print 'We are overwriting the', element.get_department(), 'with', dept
-            body = project.get_body(element.get_parent())
-            element = body.get_element(dept)
+    def department_results(self, value):
+        department_list = value
+        department_list.append("modify")  # always publish to modify also?
 
-        return self.export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
+        selection=None
+        startFrame=1
+        endFrame=1
+
+        for dept in department_list:  # export to all departments selected
+            element = self.body.get_element(dept)
+
+            if not pm.sceneName() == '':
+                pm.saveFile(force=True)
+
+            if element is None:
+                filePath = pm.sceneName()
+                fileDir = os.path.dirname(filePath)
+                checkout = project.get_checkout(fileDir)
+                if checkout is None:
+                    parent = QtWidgets.QApplication.activeWindow()
+                    element = selection_gui.getSelectedElement(parent)
+                    if element is None:
+                        return None
+                else:
+                    bodyName = checkout.get_body_name()
+                    deptName = checkout.get_department_name()
+                    elemName = checkout.get_element_name()
+                    body = project.get_body(bodyName)
+                    element = body.get_element(deptName, name=elemName)
+
+                #Get the element from the right Department
+            if dept is not None and not element.get_department() == dept:
+                print 'We are overwriting the', element.get_department(), 'with', dept
+                body = project.get_body(element.get_parent())
+                element = body.get_element(dept)
+
+            self.export(element, selection=selection, startFrame=startFrame, endFrame=endFrame)
 
     def export(self, element, selection=None, startFrame=None, endFrame=None):
         project = Project()
