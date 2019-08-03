@@ -150,7 +150,7 @@ class Assembler:
 
         department_list = [Department.MATERIAL, Department.MODIFY, Department.HAIR, Department.CLOTH]
 
-        self.element_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="What do you want to do: Modify - bring in an asset for geometry manipulation. Material - bring in an asset for shading. Cloth/Hair - bring in a character with cloth/hair", height=250, width=700)
+        self.element_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="What do you want to do: Modify - bring in an asset for geometry manipulation. Material - bring in an asset for shading. Cloth/Hair - bring in a character with cloth/hair", height=250, width=800)
         self.element_gui.submitted.connect(self.element_results)
 
     def element_results(self, value):
