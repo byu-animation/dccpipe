@@ -17,7 +17,7 @@ class Tagger:
             qd.info("tag successful!")
 
     def untag(self):
-        response = qd.binary_option("Remove Alembic tag from:\n" + self.selected_string, "Yes", "No", title='Remove Alembic Tag')
+        response = qd.binary_option("Remove Alembic tag from:\n" + str(self.selected_string), "Yes", "No", title='Remove Alembic Tag')
 
         if response:
             for node in self.selected:
