@@ -55,6 +55,7 @@ assembler.run()
 			<!-- TODO: Should importer be a divisoin of assembler instead? -->
 			<subMenu id="import_menu">
 				<label>Import</label>
+				<!-- ============================ Start Shot Importer Tool =========================== -->
 				<scriptItem id="h.import_shot">
 					<label>Shot</label>
 					<scriptCode scriptType="python">
@@ -67,13 +68,14 @@ importer.import_shot()
 						]]>
 					</scriptCode>
 				</scriptItem>
+				<!-- ============================ End Shot Importer Tool =========================== -->
 			</subMenu>
 		<!-- ============================ End Import subMenu =========================== -->
 
-		<!-- ============================ Start Checkout subMenu =========================== -->
-		<subMenu id="checkout_menu">
-			<label>Checkout</label>
-			<!-- ============================ Start Asset Checkout Tool =========================== -->
+		<!-- ============================ Start cloner subMenu =========================== -->
+		<subMenu id="cloner_menu">
+			<label>Clone</label>
+			<!-- ============================ Start Asset cloner Tool =========================== -->
 			<scriptItem id="h.checkcout_asset">
 				<label>Asset</label>
 				<scriptCode scriptType="python">
@@ -86,10 +88,10 @@ cloner.clone_asset()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Asset Checkout Tool =========================== -->
+			<!-- ============================ End Asset cloner Tool =========================== -->
 
-			<!-- ============================ Start Tool Checkout Tool =========================== -->
-			<scriptItem id="h.checkout_tool">
+			<!-- ============================ Start Tool cloner Tool =========================== -->
+			<scriptItem id="h.cloner_tool">
 				<label>Tool</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
@@ -101,10 +103,10 @@ cloner.clone_tool()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Tool Checkout Tool =========================== -->
+			<!-- ============================ End Tool cloner Tool =========================== -->
 
-			<!-- ============================ Start Shot Checkout Tool =========================== -->
-			<scriptItem id="h.checkout_shot">
+			<!-- ============================ Start Shot cloner Tool =========================== -->
+			<scriptItem id="h.cloner_shot">
 				<label>Shot</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
@@ -116,9 +118,9 @@ cloner.clone_shot()
 ]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Shot Checkout Tool =========================== -->
+			<!-- ============================ End Shot cloner Tool =========================== -->
 		</subMenu>
-		<!-- ============================ End Checkout subMenu =========================== -->
+		<!-- ============================ End cloner subMenu =========================== -->
 
 		<!-- ============================ Start Publish subMenu =========================== -->
 		<subMenu id="publish_menu">
