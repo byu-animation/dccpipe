@@ -6,5 +6,5 @@ class CreateToolHda:
     def __init__(self):
         pass
 
-    def run(self):
+    def run(self, node=None):
         pass
