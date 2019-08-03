@@ -1,47 +1,213 @@
 <mainMenu>
 	<menuBar>
-		<!-- ============================ BYU Tools Menu =========================== -->
+
+		<!-- ============================ Start DCC Tools Menu =========================== -->
+		<!-- if calling a tool that uses gui, need to reference the tool with hou.session to keep the tool in memory -->
+
+
+		<!-- ============================ Start Message Displayer Tool =========================== -->
 		<subMenu id="tools_menu">
 			<label>DCCPipe</label>
-
-			<scriptItem id="h.createBody">
+			<scriptItem id="h.message_displayer">
 					<label>Message Displayer</label>
-						<scriptCode scriptType="python">
-							<![CDATA[
+					<scriptCode scriptType="python">
+						<![CDATA[
 from pipe.tools.tool import Tool
 T = Tool("houtools.message_displayer.tool", gui=True)
 T.run()
 						]]>
-							</scriptCode>
+					</scriptCode>
 			</scriptItem>
+			<!-- ============================ End Message Displayer Tool =========================== -->
 
+			<!-- ============================ Start Create Body Tool =========================== -->
 			<scriptItem id="h.createBody">
-					<label>Assemble</label>
-						<scriptCode scriptType="python">
-							<!-- need to import hou and reference the tool created with hou.session to keep the tool in memory so GUIs appear -->
-							<![CDATA[
+				<label>Create Body</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.creator import creator
+import hou
+creator = creator.Creator()
+hou.session.creator = creator
+creator.run()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Create Body Tool =========================== -->
+
+			<!-- ============================ Start Assembler Tool =========================== -->
+			<scriptItem id="h.assembler">
+				<label>Assemble</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
 from pipe.tools.houtools.assembler import assembler
 import hou
 assembler = assembler.Assembler()
 hou.session.assembler = assembler
 assembler.run()
-						]]>
-							</scriptCode>
+					]]>
+				</scriptCode>
 			</scriptItem>
+			<!-- ============================ End Assembler Tool =========================== -->
 
 
+			<!-- ============================ Start Import subMenu =========================== -->
+			<!-- TODO: Should importer be a divisoin of assembler instead? -->
 			<subMenu id="import_menu">
 				<label>Import</label>
 				<scriptItem id="h.import_shot">
 					<label>Shot</label>
 					<scriptCode scriptType="python">
 						<![CDATA[
-print "Shot importer goes here."
+from pipe.tools.houtools.importer import importer
+import hou
+importer = importer.Importer()
+hou.session.importer = importer
+importer.import_shot()
 						]]>
 					</scriptCode>
 				</scriptItem>
 			</subMenu>
-    </subMenu>
+		<!-- ============================ End Import subMenu =========================== -->
 
+		<!-- ============================ Start Checkout subMenu =========================== -->
+		<subMenu id="checkout_menu">
+			<label>Checkout</label>
+			<!-- ============================ Start Asset Checkout Tool =========================== -->
+			<scriptItem id="h.checkcout_asset">
+				<label>Asset</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.cloner import cloner
+import hou
+cloner = cloner.Cloner()
+hou.session.cloner = cloner
+cloner.clone_asset()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Asset Checkout Tool =========================== -->
+
+			<!-- ============================ Start Tool Checkout Tool =========================== -->
+			<scriptItem id="h.checkout_tool">
+				<label>Tool</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.cloner import cloner
+import hou
+cloner = cloner.Cloner()
+hou.session.cloner = cloner
+cloner.clone_tool()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Tool Checkout Tool =========================== -->
+
+			<!-- ============================ Start Shot Checkout Tool =========================== -->
+			<scriptItem id="h.checkout_shot">
+				<label>Shot</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.cloner import cloner
+import hou
+cloner = cloner.Cloner()
+hou.session.cloner = cloner
+cloner.clone_shot()
+]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Shot Checkout Tool =========================== -->
+		</subMenu>
+		<!-- ============================ End Checkout subMenu =========================== -->
+
+		<!-- ============================ Start Publish subMenu =========================== -->
+		<subMenu id="publish_menu">
+			<label>Publish</label>
+			<!-- ============================ Start Asset Publish Tool =========================== -->
+			<scriptItem id="h.publishAsset">
+				<label>Asset</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.publisher import publisher
+import hou
+publisher = publisher.Publisher()
+hou.session.publisher = publisher
+publisher.publish_asset()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Asset Publish Tool =========================== -->
+
+			<!-- ============================ Start Tool Publish Tool =========================== -->
+			<scriptItem id="h.publish_tool">
+				<label>Tool</label>
+				<expression>
+import hou
+good = len(hou.selectedNodes())==0
+return good
+				</expression>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.publisher import publisher
+import hou
+publisher = publisher.Publisher()
+hou.session.publisher = publisher
+publisher.publish_tool()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Tool Publish Tool =========================== -->
+
+			<!-- ============================ Start Shot Publish Tool =========================== -->
+			<scriptItem id="h.publish_shot">
+				<label>Shot</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.publisher import publisher
+import hou
+publisher = publisher.Publisher()
+hou.session.publisher = publisher
+publisher.publish_shot()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Shot Publish Tool =========================== -->
+		</subMenu>
+		<!-- ============================ End Publish subMenu =========================== -->
+
+		<!-- ============================ Start Utilities subMenu =========================== -->
+		<subMenu id="utils_menu">
+			<label>Utilities</label>
+			<!-- ============================ Start Reload Scripts Tool =========================== -->
+			<scriptItem id="h.reload_scripts">
+				<label>Reload Scripts</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.utils import reload_scripts
+reload_scripts = ReloadScripts()
+reload_scripts.run()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Reload Scripts Tool =========================== -->
+
+			<!-- ============================ Start Create HDA Tool =========================== -->
+			<scriptItem id="h.create_hda">
+				<label>Create Digital Asset</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.utils import create_tool_hda
+create_tool_hda = CreateToolHda()
+create_tool_hda.run()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Create HDA Tool =========================== -->
+
+		</subMenu>
+		<!-- ============================ End Utilities subMenu =========================== -->
+
+	</subMenu>
+	<!-- ============================ End DCC Tools Menu =========================== -->
   </menuBar>
 </mainMenu>
