@@ -1,0 +1,36 @@
+{
+  "name": "hda_publisher",
+  "fields":
+  {
+    "hda_path" : null,
+    "hda_node" : null,
+    "element" : null,
+    "commit_message" : null
+  },
+  "methods":
+  [
+    {
+      "name" : "pre_hda_publish",
+      "module" : "hou.publisher",
+      "needs" : ["hda_path"],
+      "provides" : ["hda_node"]
+    },
+    {
+      "name" : "SelectElement",
+      "prompt" : true,
+      "module" : "general.prompts",
+      "provides" : ["element"]
+    },
+    {
+      "name" : "WriteCommitMessage",
+      "prompt" : true,
+      "module" : "general.prompts",
+      "provides" : ["commit_message"]
+    },
+    {
+      "name" : "hda_publish",
+      "module" : "hou.publisher", 
+      "needs" : ["hda_node", "element", "commit_message"]
+    }
+  ]
+}
