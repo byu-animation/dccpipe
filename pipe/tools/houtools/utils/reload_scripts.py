@@ -13,7 +13,7 @@ from pipe.tools.houtools.assembler import assembler as hou_assembler
 
 class ReloadScripts:
 
-    def go(self):
+    def run(self):
         reload(utils.reload_scripts)
         reload(hou_assembler)
         # reload(hou_creator)
