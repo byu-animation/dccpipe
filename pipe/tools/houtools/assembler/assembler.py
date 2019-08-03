@@ -88,7 +88,7 @@ from pipe.am.body import Body, Asset, Shot, AssetType
 import pipe.gui.select_from_list as sfl
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.write_message as wm
-from pipe.tools.houtools.utils import *
+from pipe.tools.houtools.utils.utils import *
 
 # # CHECKOUT BREAKS IN NON_GUI MODE
 # import checkout #old pipe file

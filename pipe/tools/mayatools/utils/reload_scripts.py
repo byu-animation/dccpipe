@@ -8,8 +8,6 @@ from pipe.tools.mayatools.exporters import json_exporter as json_exporter
 from pipe.tools.mayatools.importers import referencer as maya_referencer
 from pipe.tools.mayatools.exporters import tagger as maya_tagger
 
-# from pipe.tools.general import prompts
-# from pipe.tools.general import publisher
 
 class ReloadScripts:
 
@@ -23,14 +21,3 @@ class ReloadScripts:
         reload(json_exporter)
         reload(maya_referencer)
         reload(maya_tagger)
-        # reload(prompts)
-        # reload(gui_tool)
-        # reload(publisher)
-        # reload(maya_publisher)
-        # reload(exporters.exporter)
-        # reload(exporters.tagger)
-        # reload(importers.referencer)
-        # reload(publishers.publisher)
-        # reload(submitters)  # FIXME: causing problems.
-
-        # reload(publisher)
