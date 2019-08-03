@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- menuDocument can only contain 1 menu whose id is implicitly "root_menu" -->
 <menuDocument>
-	<!-- menuDocument can only contain 1 menu element, whose id is implicitly "root_menu" -->
 	<menu>
 		<!-- ============================ Start Tool Cloner Tool =========================== -->
 		<scriptItem id="opmenu.checkoutTool">
