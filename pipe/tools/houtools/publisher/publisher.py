@@ -6,6 +6,7 @@ from pipe.am.environment import Department
 from pipe.am.environment import Environment
 from pipe.am.body import Body
 from pipe.am.project import Project
+from pipe.am.element import Element
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
 from pipe.tools.houtools.utils.utils import *
@@ -54,27 +55,28 @@ class Publisher:
         #Publish
         user = environment.get_user()
         src = "something"  # TODO!!!!!!!!!!!!!!!
-        comment = "publish by " + str(user.get_username) + " in department " + str(chosen_department)
+        comment = "publish by " + str(user.get_username()) + " in department " + str(chosen_department)
         dst = publish_element(element, user, src, comment)
 
 
     def publish(self, selectedHDA=None):  #, departments=[Department.HDA, Department.ASSEMBLY, Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]):
-    	project = Project()
+        project = Project()
         self.selectedHDA = selectedHDA
 
-    	if selectedHDA is None:
-    		nodes = hou.selectedNodes()
+        if selectedHDA is None:
+            nodes = hou.selectedNodes()
 
-    		if len(nodes) == 1:
-    			selectedHDA = nodes[0]
-    		elif len(nodes) > 1:
-    			qd.error('Too many nodes selected. Please select only one node.')
-    			return
-    		else:
-    			qd.error('No nodes selected. Please select a node.')
-    			return
+            if len(nodes) == 1:
+                selectedHDA = nodes[0]
+                self.selectedHDA = selectedHDA
+            elif len(nodes) > 1:
+                qd.error('Too many nodes selected. Please select only one node.')
+                return
+            else:
+                qd.error('No nodes selected. Please select a node.')
+                return
 
-    	if selectedHDA.type().definition() is not None:
+        if selectedHDA.type().definition() is not None:
             self.src = selectedHDA.type().definition().libraryFilePath()
             asset_list = project.list_assets()
             self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to publish to")
@@ -108,7 +110,7 @@ class Publisher:
         src = self.src
         body = self.body
 
-        comment = "publish by " + str(user.get_username) + " in department " + str(department)
+        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
         hdaName = selectedHDA.type().name()
 
         # TODO: UGLY HOTFIX FOR OLD ASSEMBLY & TOOL ASSETS
@@ -135,7 +137,7 @@ class Publisher:
                 print(str(e))
 
             element = body.get_element(department, Element.DEFAULT_NAME)
-            dst = publish_element(element, user, src, comment)
+            dst = self.publish_element(element, user, src, comment)
 
             # # TODO: UGLY HOTFIX FOR OLD ASSEMBLY ASSETS
             # saveFile = hdaName + "_" + Element.DEFAULT_NAME + ".hdanc" if department not in [Department.ASSEMBLY, Department.HDA] else asset_name + "_" + department + "_" + Element.DEFAULT_NAME + ".hdanc"
@@ -151,7 +153,7 @@ class Publisher:
             qd.error('File does not exist', details=src)
 
     def publish_element(self, element, user, src, comment="None"):
-        dst = element.publish(user, src, comment)
+        dst = element.publish(user.get_username(), src, comment)
 
         #Ensure file has correct permissions
         try:
