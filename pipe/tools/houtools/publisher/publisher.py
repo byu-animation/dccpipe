@@ -54,7 +54,7 @@ class Publisher:
         #Publish
         user = environment.get_user()
         src = "something"  # TODO!!!!!!!!!!!!!!!
-        comment = "publish by " + user.get_username + " in department " + chosen_department
+        comment = "publish by " + str(user.get_username) + " in department " + str(chosen_department)
         dst = publish_element(element, user, src, comment)
 
 
@@ -108,7 +108,7 @@ class Publisher:
         src = self.src
         body = self.body
 
-        comment = "publish by " + user.get_username + " in department " + department
+        comment = "publish by " + str(user.get_username) + " in department " + str(department)
         hdaName = selectedHDA.type().name()
 
         # TODO: UGLY HOTFIX FOR OLD ASSEMBLY & TOOL ASSETS
