@@ -5,18 +5,17 @@
 	<menu>
 		<!-- ============================ Start Tool Cloner Tool =========================== -->
 		<scriptItem id="opmenu.checkoutTool">
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<label>Clone Tool</label>
+						<label>Clone Tool</label>
 			<expression>
 from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
-			node_name = node.type().name()
-			index = node_name.find('_main')
-			node_name = node_name[:index]
-			if node_name in Project().list_tools():
+			node_path = node.path()
+			name = node_path.split('/')[2]
+			name = name.lower()
+			if name in Project().list_tools():
 				return 1
 				print("This is the Cloner Tool MenuItem")
 return 0
@@ -26,7 +25,7 @@ return 0
 from pipe.tools.houtools.cloner import cloner
 node = kwargs.get('node', None)
 if node:
-	cloner = Cloner()
+	cloner = cloner.Cloner()
 	cloner.clone_tool(node)
 				]]>
 			</scriptCode>
@@ -35,18 +34,17 @@ if node:
 
 		<!-- ============================ Start Tool Publisher Tool =========================== -->
 		<scriptItem id="opmenu.publishTool">
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<label>Publish Tool</label>
+						<label>Publish Tool</label>
 			<expression>
 from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if not node.isLockedHDA():
 		if node.type().definition() is not None:
-			node_name = node.type().name()
-			index = node_name.find('_main')
-			node_name = node_name[:index]
-			if node_name in Project().list_tools():
+			node_path = node.path()
+			name = node_path.split('/')[2]
+			name = name.lower()
+			if name in Project().list_tools():
 				return 1
 return 0
 			</expression>
@@ -55,8 +53,8 @@ return 0
 from pipe.tools.houtools.publisher import publisher
 node = kwargs.get('node', None)
 if node:
-	publisher = Publisher()
-	publish.publish_tool(node)
+	publisher = publisher.Publisher()
+	publisher.publish_tool(node)
 				]]>
 			</scriptCode>
 		</scriptItem>
@@ -64,18 +62,17 @@ if node:
 
 		<!-- ============================ Start Tool Rollback Tool =========================== -->
 		<scriptItem id="opmenu.rollbackTool">
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<label>Rollback Tool</label>
+						<label>Rollback Tool</label>
 			<expression>
 from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
-			node_name = node.type().name()
-			index = node_name.find('_main')
-			node_name = node_name[:index]
-			if node_name in Project().list_tools():
+			node_path = node.path()
+			name = node_path.split('/')[2]
+			name = name.lower()
+			if name in Project().list_tools():
 				return 1
 				print "This is the Rollback Tool MenuItem"
 return 0
@@ -85,7 +82,7 @@ return 0
 from pipe.tools.houtools.rollback import rollback
 node = kwargs.get('node', None)
 if node:
-	rollback = Rollback()
+	rollback = rollback.Rollback()
 	rollback.rollback_tool(node)
 				]]>
 			</scriptCode>
@@ -94,18 +91,17 @@ if node:
 
 		<!-- ============================ Start Asset Cloner Tool =========================== -->
 		<scriptItem id="opmenu.checkoutAsset">
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<label>Clone Asset</label>
+						<label>Clone Asset</label>
 			<expression>
 from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
-			node_name = node.type().name()
-			index = node_name.rfind('_')
-			node_name = node_name[:index]
-			node_body = Project().get_body(node_name)
+			node_path = node.path()
+			name = node_path.split('/')[2]
+			name = name.lower()
+			node_body = Project().get_body(name)
 			if node_body:
 				if node_body.is_asset():
 					return 1
@@ -116,7 +112,7 @@ return 0
 from pipe.tools.houtools.cloner import cloner
 node = kwargs.get('node', None)
 if node:
-	cloner = Cloner()
+	cloner = cloner.Cloner()
 	cloner.clone_asset(node)
 				]]>
 			</scriptCode>
@@ -125,8 +121,7 @@ if node:
 
 		<!-- ============================ Start Asset Publisher Tool =========================== -->
 		<scriptItem id="opmenu.publishAsset">
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<label>Publish Asset</label>
+						<label>Publish Asset</label>
 			<expression>
 from pipe.am.project import Project
 from pipe.am.body import Body
@@ -134,10 +129,10 @@ node = kwargs.get('node', None)
 if node:
 	if not node.isLockedHDA():
 		if node.type().definition() is not None:
-			node_name = node.type().name()
-			index = node_name.rfind('_')
-			node_name = node_name[:index]
-			node_body = Project().get_body(node_name)
+			node_path = node.path()
+			name = node_path.split('/')[2]
+			name = name.lower()
+			node_body = Project().get_body(name)
 			if node_body:
 				if node_body.is_asset():
 					return 1
@@ -148,8 +143,8 @@ return 0
 from pipe.tools.houtools.publisher import publisher
 node = kwargs.get('node', None)
 if node:
-	publisher = Publisher()
-	publish.publish_asset(node)
+	publisher = publisher.Publisher()
+	publisher.publish_asset(node)
 				]]>
 			</scriptCode>
 		</scriptItem>
@@ -157,18 +152,17 @@ if node:
 
 		<!-- ============================ Start Asset Rollback Tool =========================== -->
 		<scriptItem id="opmenu.rollbackAsset">
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<label>Rollback Asset</label>
+						<label>Rollback Asset</label>
 			<expression>
 from pipe.am.project import Project
 node = kwargs.get('node', None)
 if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
-			node_name = node.type().name()
-			index = node_name.rfind('_')
-			node_name = node_name[:index]
-			node_body = Project().get_body(node_name)
+			node_path = node.path()
+			name = node_path.split('/')[2]
+			name = name.lower()
+			node_body = Project().get_body(name)
 			if node_body:
 				if node_body.is_asset():
 					return 1
@@ -179,7 +173,7 @@ return 0
 from pipe.tools.houtools.rollback import rollback
 node = kwargs.get('node', None)
 if node:
-	rollback = Rollback()
+	rollback = rollback.Rollback()
 	rollback.rollback_asset(node)
 				]]>
 			</scriptCode>
@@ -189,8 +183,7 @@ if node:
 		<!-- ============================ Start Tool Creator Tool =========================== -->
 		<scriptItem id="opmenu.createTool">
 			<label>Create DCC Digital Asset</label>
-			<insertBefore>opmenu.create_hda</insertBefore>
-			<expression>
+						<expression>
 node = kwargs.get('node', None)
 if node:
 	return node.canCreateDigitalAsset()
@@ -201,7 +194,7 @@ return 0
 from pipe.tools.houtools.utils import create_tool_hda
 node = kwargs.get('node', None)
 if node:
-	create_tool_hda = CreateToolHda()
+	create_tool_hda = create_tool_hda.CreateToolHda()
 	create_tool_hda.go(node)
 				]]>
 			</scriptCode>

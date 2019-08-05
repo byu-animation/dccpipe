@@ -186,7 +186,7 @@ publisher.publish_shot()
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.utils import reload_scripts
-reload_scripts = ReloadScripts()
+reload_scripts = reload_scripts.ReloadScripts()
 reload_scripts.run()
 					]]>
 				</scriptCode>
