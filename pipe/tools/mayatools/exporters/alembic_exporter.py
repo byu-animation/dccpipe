@@ -254,7 +254,7 @@ class AlembicExporter:
         self.frame_range = frame_range
 
         if frame_range is None or frame_range == u'':
-            frame_range = 1
+            self.frame_range = 1
 
         frame_range = str(frame_range)
         if not frame_range.isdigit():
