@@ -149,6 +149,8 @@ class Publisher:
             definition.setPreferred(True)
             #hou.hda.uninstallFile(src, change_oplibraries_file=False)
 
+            return dst
+
         else:
             qd.error('File does not exist', details=src)
 
@@ -163,7 +165,12 @@ class Publisher:
 
         return dst
 
+    def non_gui_publish_hda(self, hda, src, body, department):
+        self.selectedHDA = hda
+        self.src = src
+        self.body = body
 
+        return self.publish_hda(department)
 
 
 

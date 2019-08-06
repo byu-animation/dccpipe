@@ -88,7 +88,9 @@ from pipe.am.body import Body, Asset, Shot, AssetType
 import pipe.gui.select_from_list as sfl
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.write_message as wm
+
 from pipe.tools.houtools.utils.utils import *
+from pipe.tools.houtools.publisher.publisher import Publisher
 
 # # CHECKOUT BREAKS IN NON_GUI MODE
 # import checkout #old pipe file
@@ -602,6 +604,11 @@ class Assembler:
         self.tab_into_correct_place(inside, hda_instance, department)
         hda_instance.allowEditingOfContents()
         hda_instance.setSelected(True, clear_all_selected=True)
+
+        # publish to the department for this body
+        src = node.type().definition().libraryFilePath()
+        publisher = Publisher()
+        dst = publisher.non_gui_publish_hda(node, src, body, department)
 
         return hda_instance
 
