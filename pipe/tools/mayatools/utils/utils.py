@@ -39,41 +39,9 @@ def prepare_scene_file():
     if not filePath:
         filePath = Environment().get_user_workspace()
         filePath = os.path.join(filePath, 'untitled.mb')
-        filePath = version_file(filePath)
+        filePath = pipeline_io.version_file(filePath)
         mc.file(rename=filePath)
         mc.file(save=True)
-
-def version_file(filepath):
-    """
-    versions up the given file based on other files in the same directory. The given filepath
-    should not have a version at the end. e.g. given "/tmp/file.txt" this function will return
-    "/tmp/file000.txt" unless there is already a file000.txt in /tmp, in which case it will
-    return "/tmp/file001.txt". zero_pad specifies how many digits to include in the version
-    number
-    """
-
-    zero_pad = 4
-    dirpath, filename = os.path.split(filepath)
-    base, ext = os.path.splitext(filename)
-    searchpath = os.path.join(dirpath, "*")
-
-    files = glob.glob(searchpath)
-    versions = []
-    for file in files:
-        filename_to_match = os.path.basename(file)
-        if re.match(base+"[0-9]{%d}"%zero_pad+ext, filename_to_match):
-            versions.append(filename_to_match)
-
-    versions.sort()
-    version_num = 0
-    if len(versions) > 0:
-        latest = versions[-1]
-        latest_name = os.path.splitext(latest)[0]
-        idx = len(latest_name) - zero_pad
-        num_str = latest_name[idx:]
-        version_num = int(num_str) + 1
-
-    return os.path.join(dirpath, base+str(version_num).zfill(zero_pad)+ext)
 
 def post_publish(element, user, published=True, comment="No comment."):
     scene_file, created_new_file = get_scene_file()

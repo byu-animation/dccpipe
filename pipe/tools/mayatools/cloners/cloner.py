@@ -78,6 +78,10 @@ class MayaCloner:
 		# make the list a list of strings, not tuples
 		self.sanitized_publish_list = []
 		for publish in self.publishes:
+			path = publish[3]
+			file_ext = path.split('.')[-1]
+			if not file_ext == "mb":
+				continue
 			label = publish[0] + " " + publish[1] + " " + publish[2]
 			self.sanitized_publish_list.append(label)
 
