@@ -25,7 +25,9 @@ return 0
 from pipe.tools.houtools.cloner import cloner
 node = kwargs.get('node', None)
 if node:
+	import hou
 	cloner = cloner.Cloner()
+	hou.session.cloner = cloner
 	cloner.clone_tool(node)
 				]]>
 			</scriptCode>
@@ -53,7 +55,9 @@ return 0
 from pipe.tools.houtools.publisher import publisher
 node = kwargs.get('node', None)
 if node:
+	import hou
 	publisher = publisher.Publisher()
+	hou.session.publisher = publisher
 	publisher.publish_tool(node)
 				]]>
 			</scriptCode>
@@ -82,7 +86,9 @@ return 0
 from pipe.tools.houtools.rollback import rollback
 node = kwargs.get('node', None)
 if node:
+	import hou
 	rollback = rollback.Rollback()
+	hou.session.rollback = rollback
 	rollback.rollback_tool(node)
 				]]>
 			</scriptCode>
@@ -112,7 +118,9 @@ return 0
 from pipe.tools.houtools.cloner import cloner
 node = kwargs.get('node', None)
 if node:
+	import hou
 	cloner = cloner.Cloner()
+	hou.session.cloner = cloner
 	cloner.clone_asset(node)
 				]]>
 			</scriptCode>
@@ -143,7 +151,9 @@ return 0
 from pipe.tools.houtools.publisher import publisher
 node = kwargs.get('node', None)
 if node:
+	import hou
 	publisher = publisher.Publisher()
+	hou.session.publisher = publisher
 	publisher.publish_asset(node)
 				]]>
 			</scriptCode>
@@ -173,7 +183,9 @@ return 0
 from pipe.tools.houtools.rollback import rollback
 node = kwargs.get('node', None)
 if node:
+	import hou
 	rollback = rollback.Rollback()
+	hou.session.rollback = rollback
 	rollback.rollback_asset(node)
 				]]>
 			</scriptCode>
@@ -194,7 +206,9 @@ return 0
 from pipe.tools.houtools.utils import create_tool_hda
 node = kwargs.get('node', None)
 if node:
+	import hou
 	create_tool_hda = create_tool_hda.CreateToolHda()
+	hou.session.create_tool_hda = create_tool_hda
 	create_tool_hda.go(node)
 				]]>
 			</scriptCode>
