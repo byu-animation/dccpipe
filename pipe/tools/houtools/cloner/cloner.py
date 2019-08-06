@@ -1,16 +1,17 @@
-import *  # Something
+#import *  # Something
 from __future__ import print_function
 # Author: Trevor Barrus
 import hou
 import os
 from PySide2 import QtGui, QtWidgets, QtCore
 from pipe.gui.checkout_gui import CheckoutWindow
-from pipe.gui.quick_dialogs import quick_dialogs as qd
+import pipe.gui.quick_dialogs as qd
 
 from pipe.am.project import Project
 from pipe.am.body import Body
 from pipe.am.element import Element
 from pipe.am.environment import Department
+from pipe.am.environment import Environment
 
 class Cloner:
 
@@ -65,9 +66,9 @@ class Cloner:
                 #qd.info('Checkout Successful!', title='Success!')
             else:
                 qd.error('Checkout Failed', title='Failure :()')
-            else:
-                qd.error('Node is not a digital asset')
-                return
+        else:
+            qd.error('Node is not a digital asset')
+            return
 
     def checkout_hda(self, hda, project, environment):
         '''
