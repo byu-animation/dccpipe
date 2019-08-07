@@ -43,28 +43,28 @@ def version_file(filepath):
 	return "/tmp/file001.txt".
 	"""
 
-    zero_padding = 4
-    dirpath, filename = os.path.split(filepath)
-    base, ext = os.path.splitext(filename)
-    searchpath = os.path.join(dirpath, "*")
+	zero_padding = 4
+	dirpath, filename = os.path.split(filepath)
+	base, ext = os.path.splitext(filename)
+	searchpath = os.path.join(dirpath, "*")
 
-    files = glob.glob(searchpath)
-    versions = []
-    for file in files:
-        filename_to_match = os.path.basename(file)
-        if re.match(base+"[0-9]{%d}"%zero_padding+ext, filename_to_match):
-            versions.append(filename_to_match)
+	files = glob.glob(searchpath)
+	versions = []
+	for file in files:
+		filename_to_match = os.path.basename(file)
+		if re.match(base+"[0-9]{%d}"%zero_padding+ext, filename_to_match):
+			versions.append(filename_to_match)
 
-    versions.sort()
-    version_num = 0
-    if len(versions) > 0:
-        latest = versions[-1]
-        latest_name = os.path.splitext(latest)[0]
-        idx = len(latest_name) - zero_padding
-        num_str = latest_name[idx:]
-        version_num = int(num_str) + 1
+	versions.sort()
+	version_num = 0
+	if len(versions) > 0:
+		latest = versions[-1]
+		latest_name = os.path.splitext(latest)[0]
+		idx = len(latest_name) - zero_padding
+		num_str = latest_name[idx:]
+		version_num = int(num_str) + 1
 
-    return os.path.join(dirpath, base+str(version_num).zfill(zero_padding)+ext)
+	return os.path.join(dirpath, base+str(version_num).zfill(zero_padding)+ext)
 
 def version_dir(dirpath, zero_padding=3):
 	"""
