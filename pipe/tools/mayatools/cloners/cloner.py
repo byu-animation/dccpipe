@@ -1,7 +1,6 @@
 # TODO: removing the next line to be able to load departments from a config file down the line. Once config is ready, load depts from there.
 # from pipe.am.environment import Department
-from pipe.gui.checkout_gui import CheckoutWindow
-import pipe.gui.select_from_list as select_gui
+import pipe.gui.select_from_list as sfl
 import pipe.tools.mayatools.utils.utils as maya_utils
 from pipe.am.project import Project
 from pipe.am.body import Body
@@ -56,8 +55,7 @@ class MayaCloner:
 	def go(self):
 		project = Project()
 		asset_list = project.list_assets()
-		# asset_list = ['one', 'two']
-		self.item_gui = select_gui.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window(), title="Select an asset to clone")
+		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window(), title="Select an asset to clone")
 		self.item_gui.submitted.connect(self.results)
 
 	def results(self, value):
@@ -85,7 +83,7 @@ class MayaCloner:
 			label = publish[0] + " " + publish[1] + " " + publish[2]
 			self.sanitized_publish_list.append(label)
 
-		self.item_gui = select_gui.SelectFromList(l=self.sanitized_publish_list, parent=maya_utils.maya_main_window(), title="Select publish to clone")
+		self.item_gui = sfl.SelectFromList(l=self.sanitized_publish_list, parent=maya_utils.maya_main_window(), title="Select publish to clone")
 		self.item_gui.submitted.connect(self.publish_selection_results)
 
 	def publish_selection_results(self, value):
