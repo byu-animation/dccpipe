@@ -91,18 +91,9 @@ class Publisher:
 
         project = Project()
         self.body = project.get_body(chosen_asset)
+        self.publish_hda()
 
-        department_list = self.departments
-
-        self.item_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="Select department for this publish")
-        self.item_gui.submitted.connect(self.department_results)
-
-    def department_results(self, value):
-        chosen_department = value[0]
-
-        self.publish_hda(chosen_department)
-
-    def publish_hda(self, department):
+    def publish_hda(self):
         project = Project()
         environment = Environment()
         user = environment.get_user()
@@ -110,42 +101,74 @@ class Publisher:
         src = self.src
         body = self.body
 
-        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
-        hdaName = selectedHDA.type().name()
+        # hdaName = selectedHDA.type().name()
+
+        inside = selectedHDA.node("inside")
+        modify = inside.node("modify")
+        material = inside.node("material")
+        hair = inside.node("hair")
+        cloth = inside.node("cloth")
+
+        departments_to_publish = []
+
+        if not modify is None:
+            departments_to_publish.append("modify")
+        if not material is None:
+            departments_to_publish.append("material")
+        if not hair is None:
+            departments_to_publish.append("hair")
+        if not cloth is None:
+            departments_to_publish.append("cloth")
+
+        print("inside: ", inside)
+        print("src: ", self.src)
+
+        print("modify: ", modify)
+        print("material: ", material)
 
         if body is None:
             qd.error("Asset not found in pipe.")
             return
 
-        if os.path.exists(src):
-            try:
-                #save node definition--this is the same as the Save Node Type menu option. Just to make sure I remember how this works - We are getting the definition of the selected hda and calling the function on it passing in the selected hda. We are not calling the function on the selected hda.
-                selectedHDA.type().definition().updateFromNode(selectedHDA)
-            except hou.OperationFailed, e:
-                qd.error('There was a problem publishing the HDA to the pipeline.\n')
-                print(str(e))
-                return
+        comment = "publish by " + str(user.get_username()) + " in departments " + str(departments_to_publish)
 
-            try:
-                selectedHDA.matchCurrentDefinition()
-            except hou.OperationFailed, e:
-                qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
-                print(str(e))
+        for department in departments_to_publish:
+            node = inside.node(department)
+            print("in department: ", department)
+            src = node.type().definition().libraryFilePath()
+            print("with src: ", src)
 
-            element = body.get_element(department, Element.DEFAULT_NAME)
-            dst = self.publish_element(element, user, src, comment)
+            if os.path.exists(src):
+                try:
+                    #save node definition--this is the same as the Save Node Type menu option. Just to make sure I remember how this works - We are getting the definition of the selected hda and calling the function on it passing in the selected hda. We are not calling the function on the selected hda.
+                    node.type().definition().updateFromNode(node)
+                except hou.OperationFailed, e:
+                    qd.error('There was a problem publishing the HDA to the pipeline.\n')
+                    print(str(e))
+                    return
 
-            print("dst ", dst)
+                try:
+                    node.matchCurrentDefinition()
+                except hou.OperationFailed, e:
+                    qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
+                    print(str(e))
 
-            hou.hda.installFile(dst)
-            definition = hou.hdaDefinition(selectedHDA.type().category(), selectedHDA.type().name(), dst)
-            definition.setPreferred(True)
-            #hou.hda.uninstallFile(src, change_oplibraries_file=False)
+                element = body.get_element(department, Element.DEFAULT_NAME)
+                dst = self.publish_element(element, user, src, comment)
 
-            return dst
+                print("dst ", dst)
 
-        else:
-            qd.error('File does not exist', details=src)
+                hou.hda.installFile(dst)
+                definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
+                definition.setPreferred(True)
+                #hou.hda.uninstallFile(src, change_oplibraries_file=False)
+
+                print("published to ", dst)
+
+            else:
+                qd.error('File does not exist', details=src)
+
+        return "published to " + str(departments_to_publish)
 
     def publish_element(self, element, user, src, comment="None"):
         dst = element.publish(user.get_username(), src, comment)
@@ -163,7 +186,7 @@ class Publisher:
         self.src = src
         self.body = body
 
-        return self.publish_hda(department)
+        return self.publish_hda()
 
 
 

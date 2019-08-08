@@ -399,7 +399,10 @@ class Element:
         self._datadict[self.APP_EXT] = os.path.splitext(src)[1]
         dst = self.get_app_filepath()
         timestamp = pipeline_io.timestamp()
-        shutil.copyfile(src, dst)
+        try:
+            shutil.copyfile(src, dst)
+        except Exception, e:
+            print(str(e))
 
         new_version = self._datadict[self.LATEST_VERSION] + 1
         self._datadict[self.LATEST_VERSION] = new_version
