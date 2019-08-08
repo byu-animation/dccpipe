@@ -602,16 +602,11 @@ class Assembler:
 
             created_instances.append(hda_instance)
 
-        # TODO: publish to all houdini departments for this body
-        # src = node.type().definition().libraryFilePath()
-        # publisher = Publisher()
-        # dst = publisher.non_gui_publish_hda(node, src, body, department)
-
         return node, created_instances
 
-    def create_hda_attack_of_the_cloner(self, asset_name,department_paths = [], already_tabbed_in_node=None):
+    def create_hda_attack_of_the_cloner(self, body, asset_name, department_paths = {}, already_tabbed_in_node=None):
         # Check if this body is an asset. If not, return error.
-        body = self.body
+        body = body
         if not body.is_asset():
             self.error_message("Must be an asset of type PROP or CHARACTER.")
             return None
@@ -634,6 +629,8 @@ class Assembler:
         created_instances = []
         for department in departments:
             # Create element if does not exist.
+            content_hda_filepath = department_paths[department]
+
             element = body.get_element(department, name=Element.DEFAULT_NAME, force_create=True)
 
             # TODO: Get rid of this ugly hotfix
@@ -654,8 +651,8 @@ class Assembler:
 
             self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
             hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
-            hou.hda.installFile(checkout_file)
-            hda_definition = hou.hdaDefinition(hda_type, operator_name, checkout_file)
+            hou.hda.installFile(content_hda_filepath)
+            hda_definition = hou.hdaDefinition(hda_type, operator_name, content_hda_filepath)
             hda_definition.setPreferred(True)
 
             # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
@@ -676,11 +673,6 @@ class Assembler:
             hda_instance.setSelected(True, clear_all_selected=True)
 
             created_instances.append(hda_instance)
-
-        # TODO: publish to all houdini departments for this body
-        # src = node.type().definition().libraryFilePath()
-        # publisher = Publisher()
-        # dst = publisher.non_gui_publish_hda(node, src, body, department)
 
         return node, created_instances
 
