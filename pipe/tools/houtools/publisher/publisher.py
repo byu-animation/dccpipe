@@ -113,17 +113,13 @@ class Publisher:
         comment = "publish by " + str(user.get_username()) + " in department " + str(department)
         hdaName = selectedHDA.type().name()
 
-        # TODO: UGLY HOTFIX FOR OLD ASSEMBLY & TOOL ASSETS
-        # asset_name = hdaName.replace("_" + department, "") if department not in [Department.ASSEMBLY, Department.HDA] else hdaName.replace("_main", "")
-        # body = project.get_body(asset_name)
-
         if body is None:
             qd.error("Asset not found in pipe.")
             return
 
         if os.path.exists(src):
             try:
-                #save node definition--this is the same as the Save Node Type menu option. Just to make sure I remember how this works - We are getting the definition of the selected hda and calling the function on it passing in the selected hda. We are not calling the funciton on the selected hda.
+                #save node definition--this is the same as the Save Node Type menu option. Just to make sure I remember how this works - We are getting the definition of the selected hda and calling the function on it passing in the selected hda. We are not calling the function on the selected hda.
                 selectedHDA.type().definition().updateFromNode(selectedHDA)
             except hou.OperationFailed, e:
                 qd.error('There was a problem publishing the HDA to the pipeline.\n')
@@ -139,9 +135,6 @@ class Publisher:
             element = body.get_element(department, Element.DEFAULT_NAME)
             dst = self.publish_element(element, user, src, comment)
 
-            # # TODO: UGLY HOTFIX FOR OLD ASSEMBLY ASSETS
-            # saveFile = hdaName + "_" + Element.DEFAULT_NAME + ".hdanc" if department not in [Department.ASSEMBLY, Department.HDA] else asset_name + "_" + department + "_" + Element.DEFAULT_NAME + ".hdanc"
-            # dst = os.path.join(environment.get_hda_dir(), saveFile)
             print("dst ", dst)
 
             hou.hda.installFile(dst)

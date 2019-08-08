@@ -250,22 +250,21 @@ class AlembicExporter:
         chosen_asset = value[0]
 
         project = Project()
-        frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
-        self.frame_range = frame_range
+        self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
 
-        if frame_range is None or frame_range == u'':
+        if self.frame_range is None or self.frame_range == u'':
             self.frame_range = 1
 
-        frame_range = str(frame_range)
-        if not frame_range.isdigit():
+        self.frame_range = str(self.frame_range)
+        if not self.frame_range.isdigit():
             qd.error("Invalid frame range input. Setting to 1.")
 
         self.body = project.get_body(chosen_asset)
-        self.body.set_frame_range(frame_range)
+        self.body.set_frame_range(self.frame_range)
 
         department_list = self.body.default_departments()
 
-        self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export: Always select either modify, material, cloth, or hair along with any other departments.", height=500, width=800)
+        self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export: ")
         self.item_gui.submitted.connect(self.department_results)
 
     def department_results(self, value):
