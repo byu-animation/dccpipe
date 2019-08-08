@@ -609,6 +609,82 @@ class Assembler:
 
         return node, created_instances
 
+    def create_hda_attack_of_the_cloner(self, asset_name,department_paths = [], already_tabbed_in_node=None):
+        # Check if this body is an asset. If not, return error.
+        body = self.body
+        if not body.is_asset():
+            self.error_message("Must be an asset of type PROP or CHARACTER.")
+            return None
+
+        type = body.get_type()
+
+        # Check if it is a set.
+        if type == AssetType.SET:
+            self.error_message("Asset must be a PROP or CHARACTER.")
+            return None
+
+        # Tab in the parent asset that will hold this checked out HDA
+        node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name) #, excluded_departments=[department])
+
+        if type == AssetType.CHARACTER:
+            departments = self.all_departments
+        elif type == AssetType.PROP:
+            departments = self.dcc_geo_departments
+
+        created_instances = []
+        for department in departments:
+            # Create element if does not exist.
+            element = body.get_element(department, name=Element.DEFAULT_NAME, force_create=True)
+
+            # TODO: Get rid of this ugly hotfix
+            # !!! HOTFIX !!!
+            # Material was previously used as an AssetElement, but now is being treated like an HDAElement.
+            # This will convert it's file extension to .hdanc. (Before, it's extension was "").
+            element._datadict[Element.APP_EXT] = element.create_new_dict(Element.DEFAULT_NAME, department, asset_name)[Element.APP_EXT]
+            element._update_pipeline_file()
+            # !!! END HOTFIX !!!
+
+            # Check out the department.
+            username = Project().get_current_username()
+            checkout_file = element.checkout(username)
+
+            # CREATE NEW HDA DEFINITION
+            operator_name = element.get_parent() + "_" + element.get_department()
+            operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
+
+            self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
+            hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
+            hou.hda.installFile(checkout_file)
+            hda_definition = hou.hdaDefinition(hda_type, operator_name, checkout_file)
+            hda_definition.setPreferred(True)
+
+            # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
+            if type == AssetType.CHARACTER and department not in self.dcc_character_departments:
+                inside = node.node("inside/geo/inside")
+            else:
+                inside = node.node("inside")
+
+            # Tab an instance of this new HDA into the asset you are working on
+            try:
+                hda_instance = inside.createNode(asset_name + "_" + department)
+                print('created hda instance')
+            except Exception as e:
+                self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
+            hda_instance.setName(department)
+            self.tab_into_correct_place(inside, hda_instance, department)
+            hda_instance.allowEditingOfContents()
+            hda_instance.setSelected(True, clear_all_selected=True)
+
+            created_instances.append(hda_instance)
+
+        # TODO: publish to all houdini departments for this body
+        # src = node.type().definition().libraryFilePath()
+        # publisher = Publisher()
+        # dst = publisher.non_gui_publish_hda(node, src, body, department)
+
+        return node, created_instances
+
+
     '''
         Updates a content node.
     '''

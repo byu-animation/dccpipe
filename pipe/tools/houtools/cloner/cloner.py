@@ -12,10 +12,16 @@ from pipe.am.element import Element
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
 
+from pipe.tools.houtools.assembler.assembler import Assembler
+
 class Cloner:
 
     def __init__(self):
-		self.item_gui = None
+        self.item_gui = None
+        self.modify_publish = None
+        self.material_publish = None
+        self.hair_publish = None
+        self.cloth_publish = None
 
     def clone_shot():
         filepath = self.hou_clone_dialog.result
@@ -59,57 +65,32 @@ class Cloner:
         project = Project()
         self.body = project.get_body(filename)
 
-        department_list = self.body.default_departments()
+        self.modify_element = self.body.get_element("modify")
+        self.material_element = self.body.get_element("material")
+        self.hair_element = self.body.get_element("hair")
+        self.cloth_element = self.body.get_element("cloth")
 
-        self.item_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="Select department for this publish")
-        self.item_gui.submitted.connect(self.department_results)
-
-    def department_results(self, value):
-        chosen_department = value[0]
-
-        self.element = self.body.get_element(chosen_department)
         self.filepath = self.body.get_filepath()
 
-        self.publishes = self.element.list_publishes();
-        print("publishes: ", self.publishes)
-        print("path: ", self.filepath)
+        modify_publish = self.modify_element.get_last_publish()
+        material_publish = self.material_element.get_last_publish()
+        hair_publish = self.hair_element.get_last_publish()
+        cloth_publish = self.cloth_element.get_last_publish()
 
-        # make the list a list of strings, not tuples
-        self.sanitized_publish_list = []
-        for publish in self.publishes:
-            path = publish[3]
-            file_ext = path.split('.')[-1]
-            if not file_ext == "hda" and not file_ext == "hdanc":
-                continue
-            label = publish[0] + " " + publish[1] + " " + publish[2]
-            self.sanitized_publish_list.append(label)
+        if(modify_publish):
+            self.modify_publish = modify_publish[3]
+            print("modify :", self.modify_publish)
+        if(material_publish):
+            self.material_publish = material_publish[3]
+        if(hair_publish):
+            self.hair_publish = hair_publish[3]
+        if(cloth_publish):
+            self.cloth_publish = cloth_publish[3]
+            print("cloth :", self.cloth_publish)
 
-        self.item_gui = sfl.SelectFromList(l=self.sanitized_publish_list, parent=houdini_main_window(), title="Select hda publish to clone")
-        self.item_gui.submitted.connect(self.publish_selection_results)
+        department_paths = []
 
-    def publish_selection_results(self, value):
-        selected_publish = None
-        for item in self.sanitized_publish_list:
-            if value[0] == item:
-                selected_publish = item
-
-        selected_scene_file = None
-        for publish in self.publishes:
-            label = publish[0] + " " + publish[1] + " " + publish[2]
-            if label == selected_publish:
-                selected_scene_file = publish[3]
-
-        # selected_scene_file is the one that contains the scene file for the selected commit
-        if selected_scene_file is not None:
-            element_path = self.element.checkout(self.user.get_username())
-            print("element_path: ", element_path)
-            print("selected scene file : ", selected_scene_file)
-            something = hou.hda.installFile(selected_scene_file)
-            print("something: ", something)
-            hda = hou.node(selected_scene_file)
-            print("hda: ", hda)
-            item = hou.item(selected_scene_file)
-            print("hda: ", item)
+        #Assembler.create_hda_attack_of_the_cloner()
             # hda = hou.createNode(selected_scene_file)
             # print("hda: ", hda)
 
