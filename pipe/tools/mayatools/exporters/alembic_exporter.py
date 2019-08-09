@@ -263,6 +263,8 @@ class AlembicExporter:
         self.body.set_frame_range(self.frame_range)
 
         department_list = self.body.default_departments()
+        houdini_default_departments = self.body.houdini_default_departments()
+        department_list = [dept for dept in department_list if dept not in houdini_default_departments]
 
         self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export: ")
         self.item_gui.submitted.connect(self.department_results)
