@@ -221,27 +221,28 @@ class Department:
     Class describing departments that work on a project.
     '''
 
-    DESIGN = 'design'
-    MODEL = 'model'
-    RIG = 'rig'
-    ASSEMBLY = 'assembly'
-    LAYOUT = 'layout'
     ANIM = 'anim'
-    TEXTURE = 'texture'
-    MATERIAL = 'material'
+    ASSEMBLY = 'assembly'
     CFX = 'cfx'
-    FX = 'fx'
-    LIGHTING = 'lighting'
-    RENDER = 'render'
-    COMP = 'comp'
-    HDA = 'hda'
-    CYCLES = 'cycles'
-    RIB_ARCHIVE = 'rib_archive'
-    MODIFY = 'modify'
-    HAIR = 'hair'
     CLOTH = 'cloth'
-    ASSET_DEPTS = [DESIGN, MODEL, RIG, TEXTURE, MATERIAL, ASSEMBLY, RIB_ARCHIVE, MODIFY, HAIR, CLOTH]
-    SHOT_DEPTS = [LAYOUT, ANIM, CFX, FX, LIGHTING, RENDER, COMP, RIB_ARCHIVE, HAIR, CLOTH]
+    COMP = 'comp'
+    CYCLES = 'cycles'
+    DESIGN = 'design'
+    FX = 'fx'
+    HAIR = 'hair'
+    HDA = 'hda'
+    LAYOUT = 'layout'
+    LIGHTING = 'lighting'
+    MATERIAL = 'material'
+    MODEL = 'model'
+    MODIFY = 'modify'
+    RENDER = 'render'
+    RIB_ARCHIVE = 'rib_archive'
+    RIG = 'rig'
+    TEXTURE = 'texture'
+    ASSET_DEPTS = [ASSEMBLY, CLOTH, DESIGN, HAIR, MATERIAL, MODEL, MODIFY, RIB_ARCHIVE, RIG, TEXTURE]
+    SHOT_DEPTS = [ANIM, CFX, CLOTH, COMP, FX, HAIR, LAYOUT, LIGHTING, RENDER, RIB_ARCHIVE]
     TOOL_DEPTS = [HDA]
     CROWD_DEPTS = [CYCLES]
-    ALL = [DESIGN, MODEL, RIG, TEXTURE, MATERIAL, ASSEMBLY, LAYOUT, ANIM, CFX, FX, LIGHTING, RENDER, COMP, HDA, RIB_ARCHIVE, MODIFY, HAIR, CLOTH]
+    ALL = [ANIM, ASSEMBLY, CFX, CLOTH, COMP, CYCLES, DESIGN, FX, HAIR, HDA, LAYOUT, LIGHTING, MATERIAL, MODEL, MODIFY, RENDER, RIB_ARCHIVE, RIG, TEXTURE]
+    HOUDINI_DEPTS = [CLOTH, HAIR, MATERIAL, MODIFY]
