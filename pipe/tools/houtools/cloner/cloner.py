@@ -92,4 +92,4 @@ class Cloner:
             self.cloth_publish = cloth_publish[3]
             department_paths['cloth'] = self.cloth_publish
 
-        Assembler().create_hda_attack_of_the_cloner(self.body, filename, department_paths)
+        Assembler().create_hda(self.body, filename, department_paths)

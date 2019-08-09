@@ -526,85 +526,53 @@ class Assembler:
             elif mode == UpdateModes.CLEAN:
                 self.destroy_if_there(inside, department)
 
-
         inside.layoutChildren()
 
         return node
 
     '''
         Creates new content HDAs
+        @param asset_name: name of the asset to assemble/clone
+        @param department_paths: a dictionary of department to existing hda filepaths to clone. None if assembling
+        @param already_tabbed_in_node: an hda where the new content hdas should be created. Typically None
     '''
-    def create_hda(self, asset_name, already_tabbed_in_node=None):
-        # Check if this body is an asset. If not, return error.
-        body = self.body
-        if not body.is_asset():
-            self.error_message("Must be an asset of type PROP or CHARACTER.")
-            return None
+    def create_hda(self, asset_name, department_paths=None, already_tabbed_in_node=None):
+        type = self.check_body(body)
 
-        type = body.get_type()
-
-        # Check if it is a set.
-        if type == AssetType.SET:
-            self.error_message("Asset must be a PROP or CHARACTER.")
+        if type is None:
             return None
 
         # Tab in the parent asset that will hold this checked out HDA
         node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name) #, excluded_departments=[department])
 
-        if type == AssetType.CHARACTER:
-            departments = self.all_departments
-        elif type == AssetType.PROP:
-            departments = self.dcc_geo_departments
+        departments = self.get_departments(type)
 
         created_instances = []
         for department in departments:
-            # Create element if does not exist.
-            element = body.get_element(department, name=Element.DEFAULT_NAME, force_create=True)
+            element = self.get_hda_element(department, asset_name)
+            checkout_file = self.get_checkout_file()
 
-            # TODO: Get rid of this ugly hotfix
-            # !!! HOTFIX !!!
-            # Material was previously used as an AssetElement, but now is being treated like an HDAElement.
-            # This will convert it's file extension to .hdanc. (Before, it's extension was "").
-            element._datadict[Element.APP_EXT] = element.create_new_dict(Element.DEFAULT_NAME, department, asset_name)[Element.APP_EXT]
-            element._update_pipeline_file()
-            # !!! END HOTFIX !!!
-
-            # Check out the department.
-            username = Project().get_current_username()
-            checkout_file = element.checkout(username)
+            if not department_paths is None:
+                content_hda_filepath = department_paths[department]
+            else:
+                content_hda_filepath = None
 
             # CREATE NEW HDA DEFINITION
-            operator_name = element.get_parent() + "_" + element.get_department()
-            operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
+            self.create_new_hda_definition(element, asset_name, department, checkout_file, content_hda_filepath)
 
-            self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
-            hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
-            hou.hda.installFile(checkout_file)
-            hda_definition = hou.hdaDefinition(hda_type, operator_name, checkout_file)
-            hda_definition.setPreferred(True)
-
-            # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-            if type == AssetType.CHARACTER and department not in self.dcc_character_departments:
-                inside = node.node("inside/geo/inside")
-            else:
-                inside = node.node("inside")
+            # get the "inside" node definied in otls/dcc_inside.hda
+            inside = self.get_inside_node(type, department)
 
             # Tab an instance of this new HDA into the asset you are working on
-            try:
-                hda_instance = inside.createNode(asset_name + "_" + department)
-                print('created hda instance')
-            except Exception as e:
-                self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
-            hda_instance.setName(department)
-            self.tab_into_correct_place(inside, hda_instance, department)
-            hda_instance.allowEditingOfContents()
-            hda_instance.setSelected(True, clear_all_selected=True)
-
+            hda_instance = self.assemble_hda_instance(asset_name, department, inside)
             created_instances.append(hda_instance)
 
         return node, created_instances
 
-    def create_hda_attack_of_the_cloner(self, body, asset_name, department_paths = {}, already_tabbed_in_node=None):
+    '''
+        Helper function for create_hda
+    '''
+    def check_body(self, body):
         # Check if this body is an asset. If not, return error.
         body = body
         if not body.is_asset():
@@ -618,64 +586,81 @@ class Assembler:
             self.error_message("Asset must be a PROP or CHARACTER.")
             return None
 
-        # Tab in the parent asset that will hold this checked out HDA
-        node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name) #, excluded_departments=[department])
+        return type
 
+    '''
+        Helper function for create_hda
+    '''
+    def get_departments(self, type):
         if type == AssetType.CHARACTER:
             departments = self.all_departments
         elif type == AssetType.PROP:
             departments = self.dcc_geo_departments
 
-        created_instances = []
-        for department in departments:
-            # Create element if does not exist.
-            content_hda_filepath = department_paths[department]
+    '''
+        Helper function for create_hda
+    '''
+    def get_hda_element(self, department, asset_name):
+        # Create element if does not exist.
+        element = body.get_element(department, name=Element.DEFAULT_NAME, force_create=True)
+        element._datadict[Element.APP_EXT] = element.create_new_dict(Element.DEFAULT_NAME, department, asset_name)[Element.APP_EXT]
+        element._update_pipeline_file()
 
-            element = body.get_element(department, name=Element.DEFAULT_NAME, force_create=True)
+        return element
 
-            # TODO: Get rid of this ugly hotfix
-            # !!! HOTFIX !!!
-            # Material was previously used as an AssetElement, but now is being treated like an HDAElement.
-            # This will convert it's file extension to .hdanc. (Before, it's extension was "").
-            element._datadict[Element.APP_EXT] = element.create_new_dict(Element.DEFAULT_NAME, department, asset_name)[Element.APP_EXT]
-            element._update_pipeline_file()
-            # !!! END HOTFIX !!!
+    '''
+        Helper function for create_hda
+    '''
+    def get_checkout_file(self):
+        username = Project().get_current_username()
+        checkout_file = element.checkout(username)
 
-            # Check out the department.
-            username = Project().get_current_username()
-            checkout_file = element.checkout(username)
+        return checkout_file
 
-            # CREATE NEW HDA DEFINITION
-            operator_name = element.get_parent() + "_" + element.get_department()
-            operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
+    '''
+        Helper function for create_hda
+    '''
+    def create_new_hda_definition(self, element, asset_name, department, checkout_file, content_hda_filepath=None):
+        # CREATE NEW HDA DEFINITION
+        if content_hda_filepath is None:
+            content_hda_filepath = checkout_file
 
-            self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
-            hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
-            hou.hda.installFile(content_hda_filepath)
-            hda_definition = hou.hdaDefinition(hda_type, operator_name, content_hda_filepath)
-            hda_definition.setPreferred(True)
+        operator_name = element.get_parent() + "_" + element.get_department()
+        operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
 
-            # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-            if type == AssetType.CHARACTER and department not in self.dcc_character_departments:
-                inside = node.node("inside/geo/inside")
-            else:
-                inside = node.node("inside")
+        self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
+        hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
+        hou.hda.installFile(content_hda_filepath)
+        hda_definition = hou.hdaDefinition(hda_type, operator_name, content_hda_filepath)
+        hda_definition.setPreferred(True)
 
-            # Tab an instance of this new HDA into the asset you are working on
-            try:
-                hda_instance = inside.createNode(asset_name + "_" + department)
-                print('created hda instance')
-            except Exception as e:
-                self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
-            hda_instance.setName(department)
-            self.tab_into_correct_place(inside, hda_instance, department)
-            hda_instance.allowEditingOfContents()
-            hda_instance.setSelected(True, clear_all_selected=True)
+    '''
+        Helper function for create_hda
+    '''
+    def get_inside_node(self, type, department):
+        # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
+        if type == AssetType.CHARACTER and department not in self.dcc_character_departments:
+            inside = node.node("inside/geo/inside")
+        else:
+            inside = node.node("inside")
 
-            created_instances.append(hda_instance)
+        return inside
 
-        return node, created_instances
+    '''
+        Helper function for create_hda
+    '''
+    def assemble_hda_instance(self, asset_name, department, inside):
+        # Tab an instance of this new HDA into the asset you are working on
+        try:
+            hda_instance = inside.createNode(asset_name + "_" + department)
+            print('created hda instance')
+        except Exception as e:
+            self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
 
+        hda_instance.setName(department)
+        self.tab_into_correct_place(inside, hda_instance, department)
+        hda_instance.allowEditingOfContents()
+        hda_instance.setSelected(True, clear_all_selected=True)
 
     '''
         Updates a content node.
