@@ -46,6 +46,13 @@ class Body:
 		return Department.ALL
 
 	@staticmethod
+	def houdini_default_departments():
+		'''
+		return a list of departments that this body should create on initialization
+		'''
+		return Department.HOUDINI_DEPTS
+
+	@staticmethod
 	def get_parent_dir():
 		'''
 		return the parent directory that bodies of this type are stored in
