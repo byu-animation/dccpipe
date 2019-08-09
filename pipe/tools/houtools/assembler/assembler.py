@@ -658,7 +658,7 @@ class Assembler:
         # Tab an instance of this new HDA into the asset you are working on
         try:
             hda_instance = inside.createNode(asset_name + "_" + department)
-            print('created hda instance')
+            print('created hda instance for ' + asset_name + ' in ' + department)
         except Exception as e:
             self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
 
