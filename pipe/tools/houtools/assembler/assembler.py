@@ -555,7 +555,7 @@ class Assembler:
             element = self.get_hda_element(body, department, asset_name)
             checkout_file = self.get_checkout_file(element)
 
-            if not department_paths is None:
+            if department_paths:
                 content_hda_filepath = department_paths[department]
             else:
                 content_hda_filepath = None

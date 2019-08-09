@@ -120,12 +120,6 @@ class Publisher:
         if not cloth is None:
             departments_to_publish.append("cloth")
 
-        print("inside: ", inside)
-        print("src: ", self.src)
-
-        print("modify: ", modify)
-        print("material: ", material)
-
         if body is None:
             qd.error("Asset not found in pipe.")
             return
@@ -134,9 +128,7 @@ class Publisher:
 
         for department in departments_to_publish:
             node = inside.node(department)
-            print("in department: ", department)
             src = node.type().definition().libraryFilePath()
-            print("with src: ", src)
 
             if os.path.exists(src):
                 try:
@@ -161,9 +153,6 @@ class Publisher:
                 hou.hda.installFile(dst)
                 definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
                 definition.setPreferred(True)
-                #hou.hda.uninstallFile(src, change_oplibraries_file=False)
-
-                print("published to ", dst)
 
             else:
                 qd.error('File does not exist', details=src)

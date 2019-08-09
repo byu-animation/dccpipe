@@ -22,6 +22,8 @@ class Cloner:
         self.material_publish = None
         self.hair_publish = None
         self.cloth_publish = None
+        environment = Environment()
+        self.user = environment.get_user()
 
     def clone_shot():
         filepath = self.hou_clone_dialog.result
@@ -36,10 +38,10 @@ class Cloner:
                 hou.hipFile.load(filepath)
 
     def clone_asset(self, node=None):
-        self.clone_hda_go(hda=node)
+        self.clone_hda(hda=node)
 
     def clone_tool(self, node=None):
-        self.clone_hda_go(hda=node)
+        self.clone_hda(hda=node)
 
     def clone_shot(self):
         project = Project()
@@ -48,11 +50,8 @@ class Cloner:
         self.hou_clone_dialog = cloneWindow(houdini_main_window(), [Department.LIGHTING, Department.FX])
         hou_clone_dialog.finished.connect(clone_shot)
 
-    def clone_hda_go(self, hda=None):
-        #self.clone_window
+    def clone_hda(self, hda=None):
         project = Project()
-        environment = Environment()
-        self.user = environment.get_user()
 
         asset_list = project.list_assets()
         self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to clone")
