@@ -2,7 +2,7 @@
 byu asset management tools
 """
 
-__all__ = ["body", "element", "environment", "pipeline_io", "project", "registry", "byuutil"]
+__all__ = ["body", "element", "environment", "pipeline_io", "project", "registry"]
 
 # from body import *
 # from element import *
