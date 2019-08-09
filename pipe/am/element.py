@@ -252,7 +252,7 @@ class Element:
         return the name of the application file for this element. This is just the basename
         of the file, not the absolute filepath.
         """
-        return self.get_long_name()+self.get_app_ext()
+        return str(self.get_long_name())+str(self.get_app_ext())
 
     def get_app_filepath(self):
         """
