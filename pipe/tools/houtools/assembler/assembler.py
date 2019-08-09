@@ -536,7 +536,10 @@ class Assembler:
         @param department_paths: a dictionary of department to existing hda filepaths to clone. None if assembling
         @param already_tabbed_in_node: an hda where the new content hdas should be created. Typically None
     '''
-    def create_hda(self, asset_name, department_paths=None, already_tabbed_in_node=None):
+    def create_hda(self, asset_name, body=None, department_paths=None, already_tabbed_in_node=None):
+        if body is None:
+            body = self.body
+
         type = self.check_body(body)
 
         if type is None:
@@ -549,8 +552,8 @@ class Assembler:
 
         created_instances = []
         for department in departments:
-            element = self.get_hda_element(department, asset_name)
-            checkout_file = self.get_checkout_file()
+            element = self.get_hda_element(body, department, asset_name)
+            checkout_file = self.get_checkout_file(element)
 
             if not department_paths is None:
                 content_hda_filepath = department_paths[department]
@@ -561,7 +564,7 @@ class Assembler:
             self.create_new_hda_definition(element, asset_name, department, checkout_file, content_hda_filepath)
 
             # get the "inside" node definied in otls/dcc_inside.hda
-            inside = self.get_inside_node(type, department)
+            inside = self.get_inside_node(type, department, node)
 
             # Tab an instance of this new HDA into the asset you are working on
             hda_instance = self.assemble_hda_instance(asset_name, department, inside)
@@ -597,10 +600,12 @@ class Assembler:
         elif type == AssetType.PROP:
             departments = self.dcc_geo_departments
 
+        return departments
+
     '''
         Helper function for create_hda
     '''
-    def get_hda_element(self, department, asset_name):
+    def get_hda_element(self, body, department, asset_name):
         # Create element if does not exist.
         element = body.get_element(department, name=Element.DEFAULT_NAME, force_create=True)
         element._datadict[Element.APP_EXT] = element.create_new_dict(Element.DEFAULT_NAME, department, asset_name)[Element.APP_EXT]
@@ -611,7 +616,7 @@ class Assembler:
     '''
         Helper function for create_hda
     '''
-    def get_checkout_file(self):
+    def get_checkout_file(self, element):
         username = Project().get_current_username()
         checkout_file = element.checkout(username)
 
@@ -637,7 +642,7 @@ class Assembler:
     '''
         Helper function for create_hda
     '''
-    def get_inside_node(self, type, department):
+    def get_inside_node(self, type, department, node):
         # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
         if type == AssetType.CHARACTER and department not in self.dcc_character_departments:
             inside = node.node("inside/geo/inside")
@@ -661,6 +666,8 @@ class Assembler:
         self.tab_into_correct_place(inside, hda_instance, department)
         hda_instance.allowEditingOfContents()
         hda_instance.setSelected(True, clear_all_selected=True)
+
+        return hda_instance
 
     '''
         Updates a content node.
