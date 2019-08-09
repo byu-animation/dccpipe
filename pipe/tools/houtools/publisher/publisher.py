@@ -4,7 +4,7 @@ import os
 
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
-from pipe.am.body import Body
+from pipe.am.body import Body, AssetType
 from pipe.am.project import Project
 from pipe.am.element import Element
 import pipe.gui.quick_dialogs as qd
@@ -15,7 +15,7 @@ from pipe.tools.houtools.utils.utils import *
 class Publisher:
 
     def __init__(self):
-        pass
+        self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
 
     def publish_asset(self, node=None):
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
@@ -100,14 +100,19 @@ class Publisher:
         selectedHDA = self.selectedHDA
         src = self.src
         body = self.body
-
-        # hdaName = selectedHDA.type().name()
+        asset_type = body.get_type()
 
         inside = selectedHDA.node("inside")
         modify = inside.node("modify")
         material = inside.node("material")
         hair = inside.node("hair")
         cloth = inside.node("cloth")
+
+        if asset_type == AssetType.CHARACTER:
+            geo = inside.node("geo")
+            geo_inside = geo.node("inside")
+            modify = geo_inside.node("modify")
+            material = geo_inside.node("material")
 
         departments_to_publish = []
 
@@ -127,6 +132,7 @@ class Publisher:
         comment = "publish by " + str(user.get_username()) + " in departments " + str(departments_to_publish)
 
         for department in departments_to_publish:
+            inside = self.get_inside_node(asset_type, department, selectedHDA)
             node = inside.node(department)
             src = node.type().definition().libraryFilePath()
 
@@ -158,6 +164,15 @@ class Publisher:
                 qd.error('File does not exist', details=src)
 
         return "published to " + str(departments_to_publish)
+
+    def get_inside_node(self, type, department, node):
+        # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
+        if type == AssetType.CHARACTER and department in self.dcc_geo_departments:
+            inside = node.node("inside/geo/inside")
+        else:
+            inside = node.node("inside")
+
+        return inside
 
     def publish_element(self, element, user, src, comment="None"):
         dst = element.publish(user.get_username(), src, comment)
