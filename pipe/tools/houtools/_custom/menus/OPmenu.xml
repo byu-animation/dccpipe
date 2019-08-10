@@ -157,7 +157,7 @@ if node:
 	import hou
 	publisher = publisher.Publisher()
 	hou.session.publisher = publisher
-	publisher.publish_asset(node)
+	publisher.publish_content_hda(node)
 				]]>
 			</scriptCode>
 		</scriptItem>
@@ -172,7 +172,15 @@ node = kwargs.get('node', None)
 if node:
 	if node.type().definition() is not None:
 		node_path = node.path()
+		node_name = node.type().name()
+		index = node_name.rfind('_')
+		node_name = node_name[:index]
+		if not str(node_name) == "dcc":
+			return 0
 		name = node_path.split('/')[2]
+		length = len(node_path.split('/'))
+		if length > 3:
+			return 0
 		name = name.lower()
 		node_body = Project().get_body(name)
 		if node_body:

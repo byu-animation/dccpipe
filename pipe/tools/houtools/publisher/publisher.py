@@ -17,6 +17,23 @@ class Publisher:
     def __init__(self):
         self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
 
+    def publish_content_hda(self, node):
+        node_name = node.type().name()
+        index = node_name.rfind('_')
+        asset_name = node_name[:index]
+        department = node_name[index+1:]
+
+        self.body = Project().get_body(asset_name)
+        src = node.type().definition().libraryFilePath()
+        user = Environment().get_user()
+
+        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+
+        self.publish_src_node_to_department(src, node, department, user, comment)
+
+        success_message = "Success! Published " + asset_name + " to " + str(department)
+        self.print_success_message(success_message)
+
     def publish_asset(self, node=None):
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
         self.publish(selectedHDA=node)
@@ -54,7 +71,7 @@ class Publisher:
 
         #Publish
         user = environment.get_user()
-        src = "something"  # TODO!!!!!!!!!!!!!!!
+        src = "something"  # TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! 
         comment = "publish by " + str(user.get_username()) + " in department " + str(chosen_department)
         dst = publish_element(element, user, src, comment)
 
@@ -136,32 +153,10 @@ class Publisher:
             node = inside.node(department)
             src = node.type().definition().libraryFilePath()
 
-            if os.path.exists(src):
-                try:
-                    #save node definition--this is the same as the Save Node Type menu option. Just to make sure I remember how this works - We are getting the definition of the selected hda and calling the function on it passing in the selected hda. We are not calling the function on the selected hda.
-                    node.type().definition().updateFromNode(node)
-                except hou.OperationFailed, e:
-                    qd.error('There was a problem publishing the HDA to the pipeline.\n')
-                    print(str(e))
-                    return
+            self.publish_src_node_to_department(src, node, department, user, comment)
 
-                try:
-                    node.matchCurrentDefinition()
-                except hou.OperationFailed, e:
-                    qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
-                    print(str(e))
-
-                element = body.get_element(department, Element.DEFAULT_NAME)
-                dst = self.publish_element(element, user, src, comment)
-
-                print("dst ", dst)
-
-                hou.hda.installFile(dst)
-                definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
-                definition.setPreferred(True)
-
-            else:
-                qd.error('File does not exist', details=src)
+        success_message = "Success! Published to " + str(departments_to_publish)
+        self.print_success_message(success_message)
 
         return "published to " + str(departments_to_publish)
 
@@ -174,6 +169,35 @@ class Publisher:
 
         return inside
 
+    def publish_src_node_to_department(self, src, node, department, user, comment):
+        if os.path.exists(src):
+            try:
+                #save node definition--this is the same as the Save Node Type menu option. Just to make sure I remember how this works - We are getting the definition of the selected hda and calling the function on it passing in the selected hda. We are not calling the function on the selected hda.
+                node.type().definition().updateFromNode(node)
+            except hou.OperationFailed, e:
+                qd.error('There was a problem publishing the HDA to the pipeline.\n')
+                print(str(e))
+                return
+
+            try:
+                node.matchCurrentDefinition()  # this function locks the node for editing.
+            except hou.OperationFailed, e:
+                qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
+                print(str(e))
+
+            element = self.body.get_element(department, Element.DEFAULT_NAME)
+            dst = self.publish_element(element, user, src, comment)
+
+            print("dst: ", dst)
+
+            hou.hda.installFile(dst)
+            definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
+            definition.setPreferred(True)
+
+        else:
+            qd.error('File does not exist', details=src)
+
+
     def publish_element(self, element, user, src, comment="None"):
         dst = element.publish(user.get_username(), src, comment)
 
@@ -184,6 +208,9 @@ class Publisher:
             qd.error("Error setting file permissions.")
 
         return dst
+
+    def print_success_message(self, message):
+        qd.info(message)
 
     def non_gui_publish_hda(self, hda, src, body, department):
         self.selectedHDA = hda
