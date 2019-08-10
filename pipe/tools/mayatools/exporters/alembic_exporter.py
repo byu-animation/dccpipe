@@ -15,6 +15,7 @@ from pipe.gui import quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
 from pipe.tools.mayatools.exporters import reference_selection
 
+
 class AlembicExporter:
     def __init__(self, frame_range=1, gui=True, element=None, show_tagger=False):
         self.frame_range = frame_range
@@ -238,9 +239,7 @@ class AlembicExporter:
     		self.installGeometry(element=element)
 
     def go(self):
-
         project = Project()
-
         asset_list = project.list_assets()
 
         self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
