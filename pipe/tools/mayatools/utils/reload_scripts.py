@@ -7,6 +7,7 @@ from pipe.tools.mayatools.exporters import alembic_exporter as alembic_exporter
 from pipe.tools.mayatools.exporters import json_exporter as json_exporter
 from pipe.tools.mayatools.importers import referencer as maya_referencer
 from pipe.tools.mayatools.exporters import tagger as maya_tagger
+from pipe.tools.mayatools.submitters import playblaster as maya_playblaster
 
 
 class ReloadScripts:
@@ -21,3 +22,4 @@ class ReloadScripts:
         reload(json_exporter)
         reload(maya_referencer)
         reload(maya_tagger)
+        reload(maya_playblaster)
