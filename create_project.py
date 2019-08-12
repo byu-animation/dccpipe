@@ -2,6 +2,7 @@ import pipe.am.pipeline_io as pipeline_io
 import os
 import sys
 import json
+import subprocess
 
 
 '''
@@ -43,6 +44,16 @@ def modify_project_config(name, nickname):
         with open(".project", "w") as jsonFile:
             json.dump(data, jsonFile)
 
-create_project()
+def create_project_shortcuts(nickname="test", name="test"):
+    cwd = os.getcwd()
+    icon_script = os.path.join(cwd, 'create_project_shortcuts.sh')
+
+    if(nickname is not None):
+        subprocess.call(['sh', icon_script, '-n', nickname, name, cwd])
+    else:
+        subprocess.call(['sh', icon_script, name, cwd])
+
+# create_project()
+create_project_shortcuts()
 
 # TODO: create the maya and houdini shortcuts using the icons, the maya and houdini launch scripts, and the nickname as the prefix.
