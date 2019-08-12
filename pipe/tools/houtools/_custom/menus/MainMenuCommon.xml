@@ -20,9 +20,9 @@ T.run()
 			</scriptItem>
 			<!-- ============================ End Message Displayer Tool =========================== -->
 
-			<!-- ============================ Start Create Body Tool =========================== -->
+			<!-- ============================ Start Create Prop or Character Tool =========================== -->
 			<scriptItem id="h.createBody">
-				<label>Create Body</label>
+				<label>Create Prop/Character</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.creator import creator
@@ -33,7 +33,7 @@ creator.run()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Create Body Tool =========================== -->
+			<!-- ============================ End Create Prop or Character Tool =========================== -->
 
 			<!-- ============================ Start Assembler Tool =========================== -->
 			<scriptItem id="h.assembler">

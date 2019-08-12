@@ -74,12 +74,74 @@ def input(label, title='Input', text=None):
 	Allows the user to respond with a text input
 	If the okay button is pressed it returns the inputed text, otherwise None
 	'''
-	text = QtWidgets.QInputDialog.getText(None, title, label, text=text)
+	dialog = QtWidgets.QInputDialog()
+	text = dialog.getText(None, title, label, text=text)
 
 	if text[1]:
 		return text[0]
 	else:
 		return None
+
+'''
+	Have to use this instead of input in houdini to avoid black text on black bar
+'''
+class HoudiniInput(QtWidgets.QWidget):
+    '''
+    submitted is a class variable that must be instantiated outside of __init__
+    in order for the Signal to be created correctly.
+    '''
+    submitted = QtCore.Signal(list)
+
+    def __init__(self, parent=None, title="Enter info", width=350, height=75):
+        super(HoudiniInput, self).__init__()
+        if parent:
+            self.parent = parent
+
+        self.setWindowTitle(title)
+        self.setObjectName('HoudiniInput')
+        self.resize(width,height)
+        self.initializeVBox()
+        self.setLayout(self.vbox)
+        self.show()
+
+    def initializeVBox(self):
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.initializeTextBar()
+        self.initializeSubmitButton()
+
+    def initializeTextBar(self):
+		hbox = QtWidgets.QHBoxLayout()
+		self.text_input = QtWidgets.QLineEdit()
+		self.text_input.setStyleSheet("color: white; selection-color: black; selection-background-color: white;")
+		self.text_input.textEdited.connect(self.textEdited)
+		self.text_input.setFocus()
+		hbox.addWidget(self.text_input)
+		self.vbox.addLayout(hbox)
+
+    def initializeSubmitButton(self):
+        # Create the button widget
+        self.button = QtWidgets.QPushButton("Confirm")
+        self.button.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
+        self.button.clicked.connect(self.submit)
+        self.button.setEnabled(False)
+        self.vbox.addWidget(self.button)
+
+    def textEdited(self, newText):
+		if len(newText) > 0:
+			self.button.setEnabled(True)
+		else:
+			self.button.setEnabled(False)
+
+		self.values = newText
+
+    '''
+    	Send the selected values to a function set up in the calling class and
+    	close the window. Use connect() on submitted to set up the receiving func.
+    '''
+    def submit(self):
+		print(self.values)
+		self.submitted.emit(self.values)
+		self.close()
 
 def large_input(label, title='Input', text=None):
 	'''

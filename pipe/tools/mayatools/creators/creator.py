@@ -32,7 +32,6 @@ class Creator:
         self.item_gui.submitted.connect(self.results)
 
     def results(self, value):
-        print("Final value: ", value[0])
         type = value[0]
         name = self.name
 
@@ -47,7 +46,7 @@ class Creator:
             body = project.create_asset(name, asset_type=type)
             if body == None:
                 # print a message about failure/duplicate
-                qd.error("Asset not found, publish failed.")
+                qd.error("Asset with name " + name + " already exists in pipeline.")
             else:
                 prepare_scene_file()
                 # show the gui, get the element. To list elements, get the body and get the department
@@ -60,10 +59,7 @@ class Creator:
                 user = Environment().get_user()
                 post_publish(selected_element, user, published=True, comment="First commit.")  # FIXME: WE NEED TO FIGURE OUT TO WHICH DEPARTMENT(S) WE ACTUALLY NEED TO PUBLISH TO
 
-                # selected_element = body.get_element("model")
-                # post_publish(selected_element, user, published=True, comment="First commit.")
-
-                qd.info("Asset created successfully (but not really, yet).", "Success")
+                qd.info("Asset created successfully!", "Success")
 
         else:
             qd.error("Asset creation failed.")
