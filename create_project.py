@@ -31,6 +31,8 @@ def create_project():
     pipeline_io.mkdir(pipe_dict["users_dir"])
     pipeline_io.mkdir(pipe_dict["hda_dir"])
 
+    create_project_shortcuts(nickname=nickname, name=name)
+
     print("Production project successfully created!")
 
 def modify_project_config(name, nickname):
@@ -53,7 +55,4 @@ def create_project_shortcuts(nickname="test", name="test"):
     else:
         subprocess.call(['sh', icon_script, name, cwd])
 
-# create_project()
-create_project_shortcuts()
-
-# TODO: create the maya and houdini shortcuts using the icons, the maya and houdini launch scripts, and the nickname as the prefix.
+create_project()

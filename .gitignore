@@ -4,10 +4,10 @@
 pipe/tools/houtools/_custom/otls/backup/
 
 # Project file ignores
-# .project
-.desktop
+.project
+*.desktop
 
-# BYU-specific ignores
+# DCC-specific ignores
 production/
 bin/
 .pyside/
