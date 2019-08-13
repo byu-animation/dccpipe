@@ -2,70 +2,76 @@
 import pipe.gui.quick_dialogs as qd
 from pipe.am.environment import Department
 from pipe.am.pipeline_io import *
+import pipe.gui.select_from_list as sfl
+from pipe.tools.mayatools.utils.utils import *
+
 import pymel.core as pm
 from PySide2 import QtWidgets
 import maya.OpenMayaUI as omu
 import os
 import time
-import pipe.gui.select_from_list as sfl
-from pipe.tools.mayatools.utils.utils import *
+
 
 class MayaReferencer:
-    maya_reference_dialog = None
 
-    def post_reference(self, value, useNamespace=False):
-        filepaths = Value
-        print value[0]
-        file_paths = filepaths
-        done = dialog.done
-        isReferenced = dialog.reference
+    def __init__(self):
+        self.item_gui = None
 
-        print "The filePaths are", file_paths
-        print "The reference is", isReferenced
-        if dialog.getDepartment() in Department.CROWD_DEPTS:
-            self.referenceCrowdCycle(file_paths)
-        else:
-            self.reference_asset(file_paths, isReferenced=isReferenced, useNamespace=useNamespace)
+    def go(self):
+        self.project = Project()
+        asset_list = self.project.list_assets()
 
-    def reference(self, useNamespace=True):
-        # filePath = pm.file(q=True, sceneName=True)
-        filePath = pm.system.sceneName()
-        #maya_reference_dialog = ReferenceWindow(parent, filePath, [Department.MODEL, Department.RIG, Department.CYCLES])
-        #maya_reference_dialog.finished.connect(lambda: post_reference(maya_reference_dialog, useNamespace=useNamespace))
-        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="What do you want referenced?")
+        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="What do you want to reference?", multiple_selection=True)
         self.item_gui.submitted.connect(self.post_reference)
 
-    def reference_asset(self, filePaths, isReferenced=True, useNamespace=False):
-        if filePaths is not None and isReferenced:
-            empty = []
-            for path in filePaths:
-                print "This is the path that we are working with", path
-                if os.path.exists(path):
-                    print path, "exists"
-                    #TODO do we want to add multiple references in with different namespaces? You know to get rid of conflicts? Or is our current system for handling that good enough?
-                    # pm.system.createReference(path, namespace="HelloWorld1")
-                    basename = os.path.basename(path)
-                    millis = timestamp()
-                    refNamespace = basename + str(millis)
-                    print basename
-                    print str(millis)
-                    print refNamespace
-                    if useNamespace:
-                        pm.system.createReference(path, namespace=refNamespace)
-                    else:
-                        pm.system.createReference(path)
+    def post_reference(self, value):
+        assets = value
+        asset_filepaths = []
+
+        # TODO: add crowd cycle capability
+        crowd = False  # qd.yes_or_no("Are you referencing a crowd cycle?")
+
+        if crowd:
+            self.reference_crowd_cycle(asset_filepaths)
+        else:
+
+            for asset in assets:
+                body = self.project.get_body(asset)
+
+                model = qd.binary_option("Which department for " + str(asset) + " ?", "Model", "Rig", title="Select department")
+
+                if model:
+                    department = "model"
                 else:
-                    print path, "don't exist"
-                    empty.append(path)
+                    department = "rig"
 
-            if empty:
-                empty_str = '\n'.join(empty)
-                error_dialog = QtWidgets.QErrorMessage(maya_main_window())
-                error_dialog.showMessage("The following elements are empty. Nothing has been published to them, so they can't be referenced.\n"+empty_str)
-        # if not done:
-        #	 go()
+                element = body.get_element(department)
+                publish = element.get_last_publish()
 
-    def referenceCrowdCycle(self, paths):
+                if publish:
+                    filepath = publish[3]
+                    asset_filepaths.append(filepath)
+
+                else:
+                    qd.warning("No publish exists for " + str(asset) + " in " + str(department) + ". Skipping.")
+
+            print("files for reference: ", asset_filepaths)
+            self.reference_asset(asset_filepaths)
+
+    def reference_asset(self, filepath_list):
+        if filepath_list is not None:
+            for path in filepath_list:
+                print("Path: ", path)
+                if os.path.exists(path):
+                    print (path, " exists")
+                    part_one, part_two = path.split("assets/")
+                    asset = part_two.split("/")[0]
+
+                    pm.system.createReference(path, namespace=asset)
+                else:
+                    qd.warning(path, " doesn't exist")
+
+    def reference_crowd_cycle(self, paths):  # TODO: this needs work. I haven't looked over or tested this yet.
         pm.loadPlugin('AbcImport')
         for cycle in paths:
             if not os.path.exists(cycle):
@@ -88,8 +94,8 @@ class MayaReferencer:
 
             for i in range(refCount):
                 time.sleep(1) # sleep for a bit to make sure out namespace is unique
-                millis = timestamp()
-                namespace = cycleName + str(millis)
+                time = timestamp()
+                namespace = cycleName + str(time)
 
                 cycleRefGroup = namespace + 'RNgroup'
                 cycleControls = namespace + '_controls'
@@ -136,7 +142,6 @@ class MayaReferencer:
                 if group.hasAttr(crowdAgentFlag):
                     group.deleteAttr(crowdAgentFlag)
                 group.addAttr(crowdAgentFlag, at=bool, hidden=False, dv=True, k=True)
-
 
                 # When passing in arguments to connectAttr remember that attr 1 controls attr 2
                 pm.connectAttr(controlAlembicOffset, refAlembicOffset)
