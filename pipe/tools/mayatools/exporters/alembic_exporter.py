@@ -341,7 +341,7 @@ class AlembicExporter:
             #Maybe this is a bad distinction but None is if it was canceled or something and empty is if it went but there weren't any alembics
             if files is None:
                 return
-            qd.error('No alembics were exported')
+            qd.error('No alembics were exported. Make sure the top-level group is tagged.')
             return
 
         for abcFile in files:
