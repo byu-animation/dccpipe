@@ -98,7 +98,7 @@ class Environment:
     def get_hda_dir(self):
         '''
         return the absolute filepath to the assembly directory of the current project
-        (in a houdini pipeline, this is the otls directory)
+        (in a houdini pipeline, this is the hda directory)
         '''
         return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "hda_dir"))
 
@@ -109,6 +109,11 @@ class Environment:
         '''
         return os.path.join(self._project_dir, "pipe/tools/houtools/_custom/otls/")
 
+    def get_reference_geo_dir(self):
+        '''
+        return the absolute filepath to the reference geometry directory of the current project
+        '''
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "reference_dir"))
 
     def get_users_dir(self):
         '''

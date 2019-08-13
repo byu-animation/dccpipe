@@ -68,6 +68,14 @@
 			"annotation":"Reload python scripts",
 			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go()"
+		}, {
+			"itemType":"separator"
+		}, {
+			"itemType":"button",
+			"icon":"import-ref.svg",
+			"annotation":"Import reference character",
+			"tool":"mayatools.importers.reference_importer",
+			"function":"ReferenceImporter.go()"
 		}
 	]
 }
