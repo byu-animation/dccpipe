@@ -13,7 +13,6 @@ from pipe.am.body import AssetType
 from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
-from pipe.tools.mayatools.exporters import reference_selection
 
 
 class AlembicExporter:
@@ -410,10 +409,7 @@ class AlembicExporter:
 #For each of those parent nodes export the tagged geo within
 
     def exportReferences(self, destination, tag=None, selectionMode=False, startFrame=1, endFrame=1):
-        if selectionMode:
-            selection = reference_selection.getSelectedReferences()
-        else:
-            selection = reference_selection.getLoadedReferences()
+        selection = get_loaded_references()
 
         if selection is None:
             return
