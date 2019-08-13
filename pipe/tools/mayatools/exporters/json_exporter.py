@@ -1,41 +1,32 @@
-from pipe.gui import quick_dialogs
-from pipe.gui.select_from_list import SelectFromList
-
 import os, sys
 import shutil
 import json
-
-from pipe.tools.mayatools.utils.utils import *
 
 import pymel.core as pm
 import maya.cmds as mc
 import maya.mel as mel
 
-from pipe.am import *
+from pipe.gui import quick_dialogs
+from pipe.gui.select_from_list import SelectFromList
+from pipe.tools.mayatools.utils.utils import *
 from pipe.am.project import Project
-from pipe.am import pipeline_io
-
-# import reference_selection
-# from byugui import selection_gui, message_gui, item_list
 from pipe.am.body import AssetType
 from pipe.am.environment import Environment, Department  # , Status
-# import publish
-# from byugui.publish_gui import PublishWindow
 
 from PySide2 import QtCore
 from PySide2 import QtWidgets
 from PySide2.QtCore import Signal, Slot
 
-
-# Gets list of all referenced objects in the current scene
-# Exports list to JSON file with the following info for each asset:
-# asset name
-# version number
-# Translation/Position [X,Y,Z]
-# Scale [X, Y, Z]
-# Rotation [X, Y, Z]
-# Each scene asset is a JSON object in a JSON array
-
+'''
+    Gets list of all referenced objects in the current scene
+    Exports list to JSON file with the following info for each asset:
+    asset name
+    version number
+    Translation/Position [X,Y,Z]
+    Scale [X, Y, Z]
+    Rotation [X, Y, Z]
+    Each scene asset is a JSON object in a JSON array
+'''
 class JSONExporter:
 
     def __init__(self):
