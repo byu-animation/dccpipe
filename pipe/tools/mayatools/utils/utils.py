@@ -12,27 +12,24 @@ from pipe.am.element import Element
 
 import pipe.gui.quick_dialogs as qd
 
-from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter as alembic_exporter
-from pipe.tools.mayatools.exporters.json_exporter import JSONExporter as json_exporter
+from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter
+from pipe.tools.mayatools.exporters.json_exporter import JSONExporter
 
 import maya.cmds as mc
 
 
+'''
+    Function used whenever a more complex gui is called within Maya
+'''
 def maya_main_window():
     for obj in QtWidgets.qApp.topLevelWidgets():
         if obj.objectName() == 'MayaWindow':
             return obj
     raise RuntimeError('Could not find MayaWindow instance')
 
-def get_scene_file():
-    filename = pm.system.sceneName()
-    if not filename:
-        filename = os.environ['HOME']
-        filename = os.path.join(filename, 'untitled.mb')
-        return filename, True
-    else:
-        return filename, False
-
+'''
+    Prepare the scene for a publish. Called from creator and publisher.
+'''
 def prepare_scene_file():
     filePath = mc.file(q=True, sceneName=True)
 
@@ -43,6 +40,9 @@ def prepare_scene_file():
         mc.file(rename=filePath)
         mc.file(save=True)
 
+'''
+    Publish the asset. Called from creator and publisher.
+'''
 def post_publish(element, user, published=True, comment="No comment."):
     scene_file, created_new_file = get_scene_file()
 
@@ -50,8 +50,9 @@ def post_publish(element, user, published=True, comment="No comment."):
         if not mc.file(q=True, sceneName=True) == '':
             mc.file(save=True, force=True) #save file
 
-        username = user.get_username()
+        scene_prep()
 
+        username = user.get_username()
         dst = element.publish(username, scene_file, comment)
 
         #Ensure file has correct permissions
@@ -60,38 +61,61 @@ def post_publish(element, user, published=True, comment="No comment."):
         except:
             print("Setting file permissions failed badly.")
 
-        #freeze transformations and clear history
-        clear_construction_history()
-        try:
-            freeze_transformations()
-        except:
-            cmds.confirmDialog(title="Freeze Transformations Error", message=freeze_error_msg)
-            print("Freeze transform failed. There may be 1+ keyframed values in object. Remove all keyframed values and expressions from object.")
-
-        # TODO: Export a playblast
-
-        # Export Alembics
-        print('Publish Complete. Begin Exporting Alembic, or JSON if set')
+        # Export JSON
+        print('Publish Complete. Begin Exporting JSON if set.')
         body = Project().get_body(element.get_parent())
 
-        #except:
-        #    print("alembic export failed.")
-
-        json = json_exporter()
+        json_export = JSONExporter()
         if body and body.is_asset():
-            json.go(body, body.get_type())
+            json_export.go(body, body.get_type())
 
         convert_to_education()
 
-def save_scene_file():
-    filename, untitled = get_scene_file()
-    if untitled:
-        pm.system.renameFile(filename)
-    return pm.system.saveFile()
+'''
+    Helper function for post_publish()
+'''
+def get_scene_file():
+    filename = pm.system.sceneName()
+    if not filename:
+        filename = os.environ['HOME']
+        filename = os.path.join(filename, 'untitled.mb')
+        return filename, True
+    else:
+        return filename, False
 
+'''
+    Helper function for post_publish()
+'''
+def scene_prep():
+    try:
+        clear_construction_history()
+    except:
+        qd.warning("Clear construction history failed. There may be something unusual in the history that's causing this.")
+
+    try:
+        freeze_transformations()
+    except:
+        qd.warning("Freeze transform failed. There may be 1+ keyframed values in object. Remove all keyframed values and expressions from object.")
+
+    try:
+        delete_image_planes()
+    except:
+        qd.warning("Delete image planes failed.")
+
+    try:
+        group_top_level()
+    except:
+        qd.warning("Group top level failed.")
+
+'''
+    Helper function for scene_prep()
+'''
 def clear_construction_history():
     pm.delete(constructionHistory=True, all=True)
 
+'''
+    Helper function for scene_prep()
+'''
 def freeze_transformations():
     failed = []
     objects = pm.ls(transforms=True)
@@ -102,12 +126,18 @@ def freeze_transformations():
             failed.append(scene_object)
     return failed
 
+'''
+    Helper function for post_publish()
+'''
 def convert_to_education():
     pm.FileInfo()['license'] = 'education'
     fileName = pm.sceneName()
     pm.saveFile()
     # qd.info('This Maya file has been converted to an education licence')
 
+'''
+    Helper function for group_top_level()
+'''
 def get_top_level_nodes():
     assemblies = pm.ls(assemblies=True)
     pm.select(pm.listCameras(), replace=True)
@@ -115,6 +145,9 @@ def get_top_level_nodes():
     pm.select([])
     return [assembly for assembly in assemblies if assembly not in cameras]
 
+'''
+    Helper function for scene_prep()
+'''
 def group_top_level():
     top_level_nodes = get_top_level_nodes()
     for top_level_node in top_level_nodes:
@@ -125,17 +158,22 @@ def group_top_level():
     if len(top_level_nodes) > 1:
         pm.group(top_level_nodes)
 
+'''
+    Helper function for scene_prep()
+'''
 def delete_image_planes():
     objects = pm.ls()
     for scene_object in objects:
         if isinstance(scene_object, pm.nodetypes.ImagePlane):
             pm.delete(scene_object)
 
+'''
+    Helper for JSONExporter and AlembicExporter
+'''
 def get_loaded_references():
-    print("here?")
     references = pm.ls(references=True, transforms=True)
-    print(references)
     loaded=[]
+
     for ref in references:
         print "Checking status of " + ref
         try:
@@ -143,26 +181,50 @@ def get_loaded_references():
                 loaded.append(ref)
         except:
             print "Warning: " + ref + " was not associated with a reference file"
-    print(loaded)
+
+    print("loaded: ", loaded)
     return loaded
 
+'''
+    Helper for JSONExporter
+'''
+def ref_path_to_ref_name(path):
+    pathItems = str(path).split("/")
+
+    for i in range(len(pathItems)):
+        if pathItems[i - 1] == "assets":
+            return pathItems[i]
+
+'''
+    Helper for get_body_from_reference()
+'''
 def extract_reference_data(ref):
     refPath = pm.referenceQuery(unicode(ref), filename=True)
-    refName = refPathToRefName(refPath)
+    refName = ref_path_to_ref_name(refPath)
     start = refPath.find('{')
     end = refPath.find('}')
+
     if start == -1 or end == -1:
         vernum = ''
     else:
         vernum = refPath[start+1:end]
+
     return refName, vernum
 
+'''
+    Helper for JSONExporter
+'''
 def strip_reference(input):
     i = input.rfind(":")
+
     if i == -1:
         return input
+
     return input[i + 1:]
 
+'''
+    Helper for JSONExporter
+'''
 def find_first_mesh(rootNode):
     firstMesh = None
     path = ""
@@ -185,20 +247,28 @@ def find_first_mesh(rootNode):
         for child in curr.getChildren():
             stack.append(child)
 
+    return firstMesh, path
+
+'''
+    Helper for JSONExporter
+'''
 def get_anchor_points(mesh):
     verts = mesh.vtx
     vertpos1 = verts[0].getPosition(space='world')
     vertpos2 = verts[1].getPosition(space='world')
     vertpos3 = verts[2].getPosition(space='world')
-    return {
-        "a" : vertpos1,
-        "b" : vertpos2,
-        "c" : vertpos3
-    }
 
+    return vertpos1, vertpos2, vertpos3
+
+'''
+    Helper for JSONExporter
+'''
 def get_body_from_reference(ref):
     return Project().get_body(extract_reference_data(ref)[0])
 
+'''
+    Helper for JSONExporter
+'''
 def get_root_node_from_reference(ref):
     refPath = pm.referenceQuery(unicode(ref), filename=True)
     refNodes = pm.referenceQuery(unicode(refPath), nodes=True )
@@ -206,7 +276,28 @@ def get_root_node_from_reference(ref):
     return rootNode
 
 '''
-    Tagging nodes with flags
+    Helper for JSONExporter
+'''
+def has_parent_set(rootNode):
+    project = Project()
+    parent_is_set = False
+    parent_node = rootNode.getParent()
+
+    while parent_node is not None:
+        parent_body = get_body_from_reference(parent_node)
+
+        if parent_body is not None and parent_body.is_asset() and parent_body.get_type() == AssetType.SET:
+            parent_is_set = True
+            break
+        parent_node = parent_node.parent_node()
+
+    if parent_is_set:
+        return True
+
+    return False
+
+'''
+    Helpers for Tagging nodes with flags
 '''
 
 def tag_node_with_flag(node, flag):
@@ -239,30 +330,11 @@ def get_first_child_with_flag(node, flag):
         for child in curr.getChildren():
             stack.append(child)
 
-
-def has_parent_set(rootNode):
-    project = Project()
-    parent_is_set = False
-    parent_node = rootNode.getParent()
-    while parent_node is not None:
-        asset_name, _ = getReferenceName(parent_node)
-        parent_body = project.get_body(asset_name)
-        if parent_body is not None and parent_body.is_asset() and parent_body.get_type() == AssetType.SET:
-            parent_is_set = True
-            break
-        parent_node = parent_node.parent_node()
-    if parent_is_set:
-        return True
-    return False
-
-def get_reference_as_string(ref):
-    name, version_number = extract_reference_data(ref)
-    return name + "_" + str(version_number)
-
-def get_references_as_list():
-    return [reference_as_string(ref) for ref in get_loaded_references()]
-
-def get_references_as_node_dict():
-    result = {}
-    for ref in get_loaded_references():
-        result[reference_as_string(ref)] = get_root_node_from_reference(ref)
+'''
+    Save the scene file. Called from education.py shelf tool.
+'''
+def save_scene_file():
+    filename, untitled = get_scene_file()
+    if untitled:
+        pm.system.renameFile(filename)
+    return pm.system.saveFile()

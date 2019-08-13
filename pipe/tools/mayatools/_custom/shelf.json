@@ -68,27 +68,6 @@
 			"annotation":"Reload python scripts",
 			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go()"
-		}, {
-			"itemType": "separator"
-		}, {
-			"itemType":"button",
-			"icon":"2_set.png",
-			"annotation":"Export JSON Set File",
-			"tool":"mayatools.exporters.json_exporter",
-			"function":"JSONExporter.export()"
-		}, {
-			"itemType":"button",
-			"icon":"2_shot.png",
-			"annotation":"Export JSON Shot File",
-			"tool":"mayatools.exporters.json_exporter",
-			"function":"JSONExporter.export()"
-		}, {
-			"itemType":"button",
-			"icon":"2_prop.png",
-			"annotation":"Export JSON Prop File",
-			"tool":"mayatools.exporters.json_exporter",
-			"function":"JSONExporter.export()"
 		}
-
 	]
 }
