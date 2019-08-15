@@ -30,6 +30,7 @@ def create_project():
     pipeline_io.mkdir(pipe_dict["tools_dir"])
     pipeline_io.mkdir(pipe_dict["users_dir"])
     pipeline_io.mkdir(pipe_dict["hda_dir"])
+    pipeline_io.mkdir(pipe_dict["reference_dir"])
 
     create_project_shortcuts(nickname=nickname, name=name)
 
