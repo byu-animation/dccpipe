@@ -408,7 +408,7 @@ class AlembicExporter:
                     print 'We did not find a tag on', node
 #For each of those parent nodes export the tagged geo within
 
-    def exportReferences(self, destination, tag=None, selectionMode=False, startFrame=1, endFrame=1):
+    def exportReferences(self, destination, tag="DCC_Alembic_Export_Flag", selectionMode=False, startFrame=1, endFrame=1):
         selection = get_loaded_references()
 
         if selection is None:
@@ -419,11 +419,8 @@ class AlembicExporter:
         for ref in selection:
             # refNodes = cmds.referenceQuery(unicode(ref), nodes=True)
             refPath = pm.referenceQuery(unicode(ref), filename=True)
-            print 'the refpath', refPath
             refNodes = pm.referenceQuery(unicode(refPath), nodes=True )
-            print 'the refNode', refNodes
             rootNode = pm.ls(refNodes[0])[0]
-            print 'rootNode', rootNode
             refAbcFilePath = os.path.join(destination, self.getFilenameForReference(rootNode))
             print refAbcFilePath
 
