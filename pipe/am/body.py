@@ -12,7 +12,7 @@ from pipe.am.registry import Registry
 body module
 '''
 
-class Body:
+class Body(object):
 	'''
 	Abstract class describing bodies that make up a project.
 	'''
@@ -69,6 +69,13 @@ class Body:
 		if not os.path.exists(self._pipeline_file):
 			raise EnvironmentError('not a valid body: ' + self._pipeline_file + ' does not exist')
 		self._datadict = pipeline_io.readfile(self._pipeline_file)
+
+	def __str__(self):
+		name = self.get_name()
+		filepath = self.get_filepath()
+		type = self.get_type()
+
+		return "<Body Object of TYPE " + str(type) + " with NAME " + str(name) + " AT " + str(filepath) + ">"
 
 	def get_name(self):
 
@@ -253,6 +260,9 @@ class Asset(Body):
 		datadict = Body.create_new_dict(name)
 		return datadict
 
+	def __str__(self):
+		return super(Asset, self).__str__()
+
 	def is_tool(self):
 		return False
 
@@ -269,6 +279,9 @@ class Shot(Body):
 	def create_new_dict(name):
 		datadict = Body.create_new_dict(name)
 		return datadict
+
+	def __str__(self):
+		return super(Shot, self).__str__()
 
 	def is_tool(self):
 		return False
@@ -292,6 +305,9 @@ class Tool(Body):
 	# def default_departments():
 	#
 	# 	return Department.TOOL_DEPTS
+
+	def __str__(self):
+		return super(Tool, self).__str__()
 
 	def is_shot(self):
 
@@ -319,6 +335,9 @@ class CrowdCycle(Body):
 
 		datadict = Body.create_new_dict(name)
 		return datadict
+
+	def __str__(self):
+		return super(CrowdCycle, self).__str__()
 
 	# @staticmethod
 	# def default_departments():
