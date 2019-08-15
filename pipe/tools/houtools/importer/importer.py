@@ -5,6 +5,7 @@ from pipe.am.environment import Department, Environment
 from pipe.am.element import Element
 from pipe.am.body import Body, Asset, Shot, AssetType
 from pipe.tools.houtools.assembler.assembler import Assembler
+from pipe.tools.houtools.cloner.cloner import Cloner
 from pipe.tools.houtools.utils.utils import *
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
@@ -115,7 +116,23 @@ class Importer:
                 continue
 
             try:
-                character_node = Assembler().dcc_character(hou.node("/obj"), character["asset_name"],shot=shot_name)
+                # get the most recent data for this reference
+                asset_name = character["asset_name"]
+                character_node, instances = Cloner().asset_results([asset_name])
+                # Assembler().update_contents_character(character_node, asset_name, shot=shot_name)
+
+                # character_node = cloned_subnet.copyTo(inside)
+                # cloned_subnet.destroy()
+                # character_node = Assembler().dcc_character(hou.node("/obj"), character["asset_name"],shot=shot_name)
+
+                # TODO: add the shot name in the dcc_geo inside dcc_character
+                inside = character_node.node("inside")
+                geo = inside.node("geo")
+                geo.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
+                geo.parm("space").set("anim")
+                geo.parm("asset_department").set("rig")
+                geo.parm("shot").set(shot_name)
+
                 character_nodes.append(character_node)
             except:
                 print "Error with {0}".format(character)
