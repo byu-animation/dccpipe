@@ -9,9 +9,8 @@ from pipe.am import *
 from pipe.am.environment import Environment
 from pipe.am.project import Project
 from pipe.am.element import Element
-
+from pipe.am.body import Body, AssetType
 import pipe.gui.quick_dialogs as qd
-
 from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter
 from pipe.tools.mayatools.exporters.json_exporter import JSONExporter
 
@@ -65,9 +64,10 @@ def post_publish(element, user, published=True, comment="No comment."):
         print('Publish Complete. Begin Exporting JSON if set.')
         body = Project().get_body(element.get_parent())
 
-        json_export = JSONExporter()
         if body and body.is_asset():
-            json_export.go(body, body.get_type())
+            if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
+                json_export = JSONExporter()
+                json_export.go(body, body.get_type())
 
         convert_to_education()
 
