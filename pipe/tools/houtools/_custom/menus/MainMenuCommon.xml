@@ -5,10 +5,10 @@
 		<!-- if calling a tool that uses gui, need to reference the tool with hou.session to keep the tool in memory -->
 
 
-		<!-- ============================ Start Message Displayer Tool =========================== -->
-		<!-- <subMenu id="tools_menu">
+		<subMenu id="tools_menu">
 			<label>DCCPipe</label>
-			<scriptItem id="h.message_displayer">
+			<!-- ============================ Start Message Displayer Tool =========================== -->
+			<!-- 	<scriptItem id="h.message_displayer">
 					<label>Message Displayer</label>
 					<scriptCode scriptType="python">
 						<![CDATA[
