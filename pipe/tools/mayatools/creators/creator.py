@@ -26,7 +26,7 @@ class Creator:
         if self.name is None:
             return
 
-        asset_type_list = AssetType().list_asset_types()
+        asset_type_list = AssetType().list_maya_types()
 
         self.item_gui = sfl.SelectFromList(l=asset_type_list, parent=maya_main_window(), title="What are you creating?", width=250, height=120)
         self.item_gui.submitted.connect(self.results)
