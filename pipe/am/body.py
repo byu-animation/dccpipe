@@ -243,12 +243,16 @@ class AssetType:
 	TOOL = 'tool'
 	SHOT = 'shot'
 	ALL = [CHARACTER, PROP, SET, SHOT, TOOL]
+	MAYA = [CHARACTER, PROP, SET, SHOT]
 
 	def __init__(self):
 		pass
 
 	def list_asset_types(self):
 		return self.ALL
+
+	def list_maya_types(self):
+		return self.MAYA
 
 class Asset(Body):
 	'''
