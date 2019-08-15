@@ -12,7 +12,6 @@ from pipe.am.element import Element
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
 
-from pipe.tools.houtools.assembler.assembler import Assembler
 
 class Cloner:
 
@@ -76,7 +75,10 @@ class Cloner:
         hair_publish = self.hair_element.get_last_publish()
         cloth_publish = self.cloth_element.get_last_publish()
 
-        department_paths = {}
+        if not modify_publish and not material_publish and not hair_publish and not cloth_publish:
+            department_paths = None
+        else:
+            department_paths = {}
 
         if(modify_publish):
             self.modify_publish = modify_publish[3]
@@ -91,4 +93,6 @@ class Cloner:
             self.cloth_publish = cloth_publish[3]
             department_paths['cloth'] = self.cloth_publish
 
-        Assembler().create_hda(filename, body=self.body, department_paths=department_paths)
+        print("department paths: ", department_paths)
+        from pipe.tools.houtools.assembler.assembler import Assembler
+        return Assembler().create_hda(filename, body=self.body, department_paths=department_paths)

@@ -91,10 +91,10 @@ import pipe.gui.write_message as wm
 
 from pipe.tools.houtools.utils.utils import *
 from pipe.tools.houtools.publisher.publisher import Publisher
-
-# # CHECKOUT BREAKS IN NON_GUI MODE
-# import checkout #old pipe file
-# import publish #old pipe file
+try:
+    from pipe.tools.houtools.cloner.cloner import Cloner
+except:
+    print("Cloner already loaded. Skipping.")
 
 
 class UpdateModes:
@@ -251,7 +251,8 @@ class Assembler:
     def update_contents_set(self, node, set_name, mode=UpdateModes.SMART):
         # TODO: instead of tabbing in the contents of the json, we need to run it through create_hda (like cloner does) to get the more recent versions
         # TODO: in fact, we can just call clone for each asset inside to get the more recent versions. That, or abstract the functionality out to utils
-        # TODO: Also, we need to create a template HDA for dcc_assembly that we can use to store the vertex positions (or something) 
+        # TODO: Also, we need to create a template HDA for dcc_assembly that we can use to store the vertex positions (or something)
+        # TODO: Actually, we'll try to just use the JSON file to store translated positions
 
         # Check if reference file exists
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
@@ -268,7 +269,6 @@ class Assembler:
         data = node.parm("data").evalAsJSONMap()
         data["asset_name"] = set_name
         node.parm("data").set(data)
-
         inside = node.node("inside")
 
         # Grab current DCC Dynamic Content Subnets that have been tabbed in
@@ -276,15 +276,12 @@ class Assembler:
 
         # Smart updating will only destroy assets that no longer exist in the Set's JSON list
         if mode == UpdateModes.SMART:
-
             non_matching = [child for child in current_children if len([reference for reference in set_data if matches_reference(child, reference)]) == 0]
             for non_match in non_matching:
                 non_match.destroy()
 
         # Clean updating will destroy all children.
         elif mode == UpdateModes.CLEAN:
-
-            # Clear all child nodes.
             inside.deleteItems(inside.children())
 
         # Grab current children again
@@ -292,7 +289,6 @@ class Assembler:
 
         # Tab-in/update all assets in list
         for reference in set_data:
-
             body = Project().get_body(reference["asset_name"])
 
             if body is None:
@@ -301,12 +297,12 @@ class Assembler:
             if not body.is_asset() or body.get_type() == AssetType.SET:
                 continue
 
-            # Tab the subnet in if it doesn't exist, otherwise update_contents
-            subnet = next((child for child in current_children if matches_reference(child, reference)), None)
-            if subnet is None:
-                subnet = self.dcc_geo(inside, reference["asset_name"])
-            else:
-                self.update_contents(subnet, reference["asset_name"], mode)
+            # get the most recent data for this reference
+            cloned_subnet, instances = Cloner().asset_results([reference["asset_name"]])
+
+            # move the cloned asset inside the set node and delete the one on the top level
+            subnet = cloned_subnet.copyTo(inside)
+            cloned_subnet.destroy()
 
             # Try to not override parameters in the set
             if mode == UpdateModes.SMART:
@@ -322,11 +318,9 @@ class Assembler:
                 newparms = {"asset_name" : reference["asset_name"], "version_number" : reference["version_number"] }
                 subnet.setParms(newparms)
 
-            # Set the set accordingly
-
+            # Build the set accordingly
             subnet.parm("space").set("set")
             subnet.parm("set").set(set_name)
-            #subnet.parm("update_mode").setExpression("ch(\"../../update_mode\")", language=hou.exprLanguage.Hscript)
             subnet.parm("update_mode").set(UpdateModes.list_modes().index(mode))
             # Set the data
             subnet.parm("data").set({
@@ -631,14 +625,22 @@ class Assembler:
         if content_hda_filepath is None:
             content_hda_filepath = checkout_file
 
-        operator_name = element.get_parent() + "_" + element.get_department()
-        operator_label = (asset_name.replace("_", " ") + " " + element.get_department()).title()
+        print("content hda filepath: ", content_hda_filepath)
+
+        operator_name = str(element.get_parent() + "_" + element.get_department())
+        operator_label = str((asset_name.replace("_", " ") + " " + element.get_department()).title())
 
         self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
         hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(content_hda_filepath)
+        print("hda type: ", hda_type)
+        print("operator_name: ", operator_name)
+        print("content_hda_filepath : ", content_hda_filepath)
         hda_definition = hou.hdaDefinition(hda_type, operator_name, content_hda_filepath)
-        hda_definition.setPreferred(True)
+        try:
+            hda_definition.setPreferred(True)
+        except:
+            print("hda definition was not created")
 
     '''
         Helper function for create_hda
