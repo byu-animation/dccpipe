@@ -137,12 +137,19 @@ class Assembler:
 
     def run(self):
         # step 1: Select the body
-        # step 2: select the element to assemble
-        # step 3: assemble the element
+        # step 2: assemble the element
+
         project = Project()
         asset_list = project.list_assets()
 
-        self.asset_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to assemble")
+        non_shot_list = []
+
+        for item in asset_list:
+            asset = project.get_asset(item)
+            if not asset.get_type() == AssetType.SHOT:
+                non_shot_list.append(item)
+
+        self.asset_gui = sfl.SelectFromList(l=non_shot_list, parent=houdini_main_window(), title="Select a prop, character, or set to assemble")
         self.asset_gui.submitted.connect(self.asset_results)
 
     def asset_results(self, asset):
@@ -154,23 +161,6 @@ class Assembler:
         parent, instances = self.create_hda(self.selected_asset)
         print("created ", instances, " in ", parent)
 
-    def error_message(self, message):
-        qd.error(message)
-
-    def lineno(self):
-        return inspect.currentframe().f_back.f_lineno
-
-    def method_name(self):
-        return sys._getframe(1).f_code.co_name
-
-    def super_print(self, message):
-        with open(os.path.join(Project().get_users_dir(), Project().get_current_username(), "houdini_log.txt"), "a+") as f:
-            print(message)
-            sys.stdout.flush()
-            f.write("\n" + str(datetime.datetime.now()) + "\n")
-            f.write(message)
-            f.flush()
-
     '''
         Easily callable method, meant for tool scripts
     '''
@@ -178,7 +168,7 @@ class Assembler:
         print "Creating node for {0}".format(asset_name)
         body = Project().get_body(asset_name)
         if body is None or not body.is_asset():
-            self.error_message("Pipeline error: This asset either doesn't exist or isn't an asset.")
+            qd.error("Pipeline error: This asset either doesn't exist or isn't an asset.")
             return
         if body.get_type() == AssetType.CHARACTER:
             return self.dcc_character(parent, asset_name, already_tabbed_in_node, excluded_departments)
@@ -187,7 +177,7 @@ class Assembler:
         elif body.get_type() == AssetType.SET:
             return self.dcc_set(parent, asset_name, already_tabbed_in_node)
         else:
-            self.error_message("Pipeline error: this asset isn't a character, prop or set.")
+            qd.error("Pipeline error: this asset isn't a character, prop or set.")
             return
 
     '''
@@ -204,7 +194,7 @@ class Assembler:
     def subnet_type(self, asset_name):
         body = Project().get_body(asset_name)
         if body is None or not body.is_asset():
-            self.error_message("Pipeline error: This asset either doesn't exist or isn't an asset.")
+            qd.error("Pipeline error: This asset either doesn't exist or isn't an asset.")
             return
         if body.get_type() == AssetType.CHARACTER:
             return "dcc_character"
@@ -213,7 +203,7 @@ class Assembler:
         elif body.get_type() == AssetType.SET:
             return "dcc_set"
         else:
-            self.error_message("Pipeline error: this asset isn't a character, prop or set.")
+            qd.error("Pipeline error: this asset isn't a character, prop or set.")
             return
 
 
@@ -227,7 +217,7 @@ class Assembler:
         # Check if it's a set and that it exists
         body = Project().get_body(set_name)
         if not body.is_asset() or not body.get_type() == AssetType.SET:
-            self.error_message("Must be a set.")
+            qd.error("Must be a set.")
 
         node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("dcc_set")
         try:
@@ -259,6 +249,9 @@ class Assembler:
         Updates the contents of a set
     '''
     def update_contents_set(self, node, set_name, mode=UpdateModes.SMART):
+        # TODO: instead of tabbing in the contents of the json, we need to run it through create_hda (like cloner does) to get the more recent versions
+        # TODO: in fact, we can just call clone for each asset inside to get the more recent versions. That, or abstract the functionality out to utils
+        # TODO: Also, we need to create a template HDA for dcc_assembly that we can use to store the vertex positions (or something) 
 
         # Check if reference file exists
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
@@ -268,7 +261,7 @@ class Assembler:
             with open(set_file) as f:
                 set_data = json.load(f)
         except Exception as error:
-            self.error_message("No valid JSON file for " + set_name)
+            qd.error("No valid JSON file for " + set_name)
             return
 
         node.parm("asset_name").set(set_name)
@@ -388,7 +381,7 @@ class Assembler:
         # Set up the body/elements and make sure it's a character
         body = Project().get_body(asset_name)
         if not body.is_asset() or not body.get_type() == AssetType.CHARACTER:
-            self.error_message("Must be a character.")
+            qd.error("Must be a character.")
             return None
 
         # If there's an already tabbed in node, set it to that node
@@ -416,7 +409,7 @@ class Assembler:
         # Set up the body/elements and make sure it's a character. Just do some simple error checking.
         body = Project().get_body(asset_name)
         if not body.is_asset() or body.get_type() != AssetType.CHARACTER or "dcc_character" not in node.type().name():
-            self.error_message("Must be a character.")
+            qd.error("Must be a character.")
             return None
 
         # Reset the data parm
@@ -470,7 +463,7 @@ class Assembler:
         # Set up the body/elements and check if it's an asset.
         body = Project().get_body(asset_name)
         if not body.is_asset():
-            self.error_message("Must be an asset.")
+            qd.error("Must be an asset.")
             return None
 
         # Set up the nodes, name geo
@@ -501,10 +494,10 @@ class Assembler:
         # Set up the body/elements and make sure it's not a character. Just do some simple error checking.
         body = Project().get_body(asset_name)
         if body is None:
-            self.error_message("Asset doesn't exist.")
+            qd.error("Asset doesn't exist.")
             return None
         if not body.is_asset() or body.get_type() == AssetType.SET or "dcc_geo" not in node.type().name():
-            self.error_message("Must be a prop or character.")
+            qd.error("Must be a prop or character.")
             return None
 
         # Get interior nodes
@@ -530,6 +523,13 @@ class Assembler:
 
         return node
 
+    def assemble_set(self, node):
+        instances = []
+
+
+
+        return instances
+
     '''
         Creates new content HDAs
         @param asset_name: name of the asset to assemble/clone
@@ -543,10 +543,14 @@ class Assembler:
         type = self.check_body(body)
 
         if type is None:
+            qd.error("Invalid body type specified.")
             return None
 
         # Tab in the parent asset that will hold this checked out HDA
         node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name) #, excluded_departments=[department])
+
+        if type == AssetType.SET:
+            return node, self.assemble_set(node)
 
         departments = self.get_departments(type)
 
@@ -579,15 +583,10 @@ class Assembler:
         # Check if this body is an asset. If not, return error.
         body = body
         if not body.is_asset():
-            self.error_message("Must be an asset of type PROP or CHARACTER.")
+            qd.error("Must be an asset of type PROP, CHARACTER or SET.")
             return None
 
         type = body.get_type()
-
-        # Check if it is a set.
-        if type == AssetType.SET:
-            self.error_message("Asset must be a PROP or CHARACTER.")
-            return None
 
         return type
 
@@ -598,6 +597,8 @@ class Assembler:
         if type == AssetType.CHARACTER:
             departments = self.all_departments
         elif type == AssetType.PROP:
+            departments = self.dcc_geo_departments
+        else:
             departments = self.dcc_geo_departments
 
         return departments
@@ -660,7 +661,7 @@ class Assembler:
             hda_instance = inside.createNode(asset_name + "_" + department)
             print('created hda instance for ' + asset_name + ' in ' + department)
         except Exception as e:
-            self.error_message("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
+            qd.error("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
 
         hda_instance.setName(department)
         self.tab_into_correct_place(inside, hda_instance, department)
@@ -814,7 +815,7 @@ class Assembler:
             # Hair and Cloth assets should be connected to geo. If it doesn't exist, throw an error.
             geo = inside.node("geo")
             if geo is None:
-                error_message("There should be a geo network. Something went wrong.")
+                qd.error("There should be a geo network. Something went wrong.")
                 return
 
             # Attach the Hair or Cloth asset to the geo network.
@@ -827,7 +828,7 @@ class Assembler:
             geo = inside.node("geo")
             shot_modeling = inside.node("shot_modeling")
             if shot_modeling is None or geo is None:
-                self.error_message("There should be a shot_modeling and geo network. Something went wrong.")
+                qd.error("There should be a shot_modeling and geo network. Something went wrong.")
                 return None
 
             # If we're inserting a modify node, do the following
@@ -922,7 +923,7 @@ class Assembler:
 
         # Don't go on unless there's a valid network box
         if len(boxes) < 1:
-            self.error_message("There aren't any network boxes created by the conversion script.")
+            qd.error("There aren't any network boxes created by the conversion script.")
             return
 
         for box in boxes:
@@ -949,7 +950,7 @@ class Assembler:
             with open(shot_file) as f:
                 shot_data = json.load(f)
         except Exception as error:
-            self.error_message("No valid JSON file for " + shot_name)
+            qd.error("No valid JSON file for " + shot_name)
             return
 
         for asset in shot_data:

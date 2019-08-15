@@ -241,7 +241,7 @@ class AlembicExporter:
         project = Project()
         asset_list = project.list_assets()
 
-        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to publish to")
+        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to export to")
         self.item_gui.submitted.connect(self.asset_results)
 
     def asset_results(self, value):
@@ -325,9 +325,9 @@ class AlembicExporter:
             endFrame += 5
             endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', selectionMode=True, startFrame=startFrame, endFrame=endFrame)
-            result = qd.yes_or_no('Are there any crowds that need to be exported?')
-            if result:
-                self.exportCrowd(abcFilePath, 'DCC_Crowd_Agent_Flag', tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
+            # result = qd.yes_or_no('Are there any crowds that need to be exported?')
+            # if result:
+            #     self.exportCrowd(abcFilePath, 'DCC_Crowd_Agent_Flag', tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
         elif body.is_asset():
             if body.get_type() == AssetType.SET:
                 files = self.exportReferences(abcFilePath)
@@ -361,7 +361,7 @@ class AlembicExporter:
             print("abc file path 2: ", abcFilePath)
 
             try:
-                command = self.buildTaggedAlembicCommand(node, abcFilePath, tag, startFrame, endFrame)
+                command = self.buildTaggedAlembicCommand(abcFilePath, tag, startFrame, endFrame)
                 print 'Command:', command
             except:
                 if disregardNoTags:
@@ -426,18 +426,20 @@ class AlembicExporter:
             print 'rootNode', rootNode
             refAbcFilePath = os.path.join(destination, self.getFilenameForReference(rootNode))
             print refAbcFilePath
-            try:
-                if tag is None:
-                    command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[rootNode])
-                else:
-                    command = self.buildTaggedAlembicCommand(rootNode, refAbcFilePath, tag, startFrame, endFrame)
-                print 'Command:', command
-            except:
-                qd.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
-                return
+
+            # try:
+            if tag is None:
+                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[rootNode])
+            else:
+                command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
+            # except:
+            #     qd.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
+            #     return
+
             print 'Export Alembic command: ', command
             pm.Mel.eval(command)
             abcFiles.append(refAbcFilePath)
+
         return abcFiles
 
     def getFilenameForReference(self, ref):
@@ -453,16 +455,14 @@ class AlembicExporter:
             copyNum = refPath[start+1:end]
         return os.path.basename(refPath).split('.')[0] + str(copyNum) + '.abc'
 
-    def buildTaggedAlembicCommand(self, rootNode, filepath, tag, startFrame, endFrame, step=0.25):
+    def buildTaggedAlembicCommand(self, filepath, tag, startFrame, endFrame, step=0.25):
         # First check and see if the reference has a tagged node on it.
-        taggedNodes = self.getTaggedNodes(rootNode, tag)
+        taggedNodes = self.get_all_tagged_nodes(tag)
 
         if not taggedNodes:
             print("No tagged nodes")
-
-            # Visualize References and tags
-        print rootNode
-        print 'Tagged:', taggedNodes
+        else:
+            print('Tagged: ', taggedNodes)
 
         return self.buildAlembicCommand(filepath, startFrame, endFrame, step=step, geoList=taggedNodes)
 
@@ -473,7 +473,7 @@ class AlembicExporter:
         # Each of these should be in a list, so it should know how many to add the -root tag to the alembic.
         for alem_obj in geoList:
             print 'alem_obj: ' + alem_obj
-            roots_string += ('-root |%s'%(alem_obj))
+            roots_string += ('-root |%s '%(alem_obj))
         print 'roots_string: ' + roots_string
 
         # Then here is the actual Alembic Export command for Mel.
@@ -481,6 +481,18 @@ class AlembicExporter:
         command = 'AbcExport -j "-frameRange %s %s -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), roots_string, outFilePath)
         print 'Command', command
         return command
+
+    def get_all_tagged_nodes(self, tag="DCC_Alembic_Export_Flag"):
+        list = []
+
+        nodes = pm.ls(assemblies=True, ca=False)
+        print("Nodes: ", nodes)
+
+        for node in nodes:
+            print("Extending for: ", node)
+            list.extend(self.getTaggedNodes(node, tag))
+
+        return list
 
     def getTaggedNodes(self, node, tag):
         # Looks for a tagged node that has the DCC Alembic Export flag on it.
@@ -493,6 +505,6 @@ class AlembicExporter:
         #Otherwise search all the children for any nodes with the flag
         tagged_children = []
         for child in node.listRelatives(c=True):
-            tagged_children.extend(getTaggedNodes(child, tag))
+            tagged_children.extend(self.getTaggedNodes(child, tag))
 
         return tagged_children

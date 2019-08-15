@@ -117,6 +117,7 @@ class JSONExporter:
         for ref in refsSelection:
             rootNode = get_root_node_from_reference(ref)
             body = get_body_from_reference(rootNode)
+            currRefName, currRefVerNum = extract_reference_data(ref)
 
             if not body or not body.is_asset():
                 print "Asset \"{0}\" does not exist.".format(currRefName)
@@ -179,11 +180,17 @@ class JSONExporter:
             f.write(jsonRefs)
             f.close()
 
-    def exportPropJSON(self, filePath, rootNode, isReference=True, name="", version_number=None):
+    def exportPropJSON(self, filePath, rootNode, isReference=True, name="", version_number=None):  # TODO: look here for why the set json isn't created properly
         if isReference:
             body = get_body_from_reference(rootNode)
         else:
             body = Project().get_body(name)
+
+        name = body.get_name()
+
+        print("Body: ", str(body))
+        print("filepath: ", filePath)
+        print("rootNode: ", rootNode)
 
         if not body or not body.is_asset() or body.get_type() != AssetType.PROP:
             print "The asset %s does not exist as a prop, skipping.".format(name)
@@ -203,6 +210,8 @@ class JSONExporter:
                      "a" : [vertpos1.x, vertpos1.y, vertpos1.z],
                      "b" : [vertpos2.x, vertpos2.y, vertpos2.z],
                      "c" : [vertpos3.x, vertpos3.y, vertpos3.z] }
+
+        print("json data: ", json_data)
 
         # Write JSON to fill
         jsonRef = json.dumps(json_data)
