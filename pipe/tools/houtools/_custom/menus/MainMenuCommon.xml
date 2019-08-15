@@ -6,7 +6,7 @@
 
 
 		<!-- ============================ Start Message Displayer Tool =========================== -->
-		<subMenu id="tools_menu">
+		<!-- <subMenu id="tools_menu">
 			<label>DCCPipe</label>
 			<scriptItem id="h.message_displayer">
 					<label>Message Displayer</label>
@@ -17,7 +17,7 @@ T = Tool("houtools.message_displayer.tool", gui=True)
 T.run()
 						]]>
 					</scriptCode>
-			</scriptItem>
+			</scriptItem> -->
 			<!-- ============================ End Message Displayer Tool =========================== -->
 
 			<!-- ============================ Start Create Prop or Character Tool =========================== -->
@@ -37,7 +37,7 @@ creator.run()
 
 			<!-- ============================ Start Assembler Tool =========================== -->
 			<scriptItem id="h.assembler">
-				<label>Assemble</label>
+				<label>Assemble Asset</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.assembler import assembler
@@ -51,26 +51,21 @@ assembler.run()
 			<!-- ============================ End Assembler Tool =========================== -->
 
 
-			<!-- ============================ Start Import subMenu =========================== -->
-			<!-- TODO: Should importer be a divisoin of assembler instead? -->
-			<subMenu id="import_menu">
-				<label>Import</label>
-				<!-- ============================ Start Shot Importer Tool =========================== -->
-				<scriptItem id="h.import_shot">
-					<label>Shot</label>
-					<scriptCode scriptType="python">
-						<![CDATA[
+			<!-- ============================ Start Shot Importer Tool =========================== -->
+			<scriptItem id="h.import_shot">
+				<label>Import Shot</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
 from pipe.tools.houtools.importer import importer
 import hou
 importer = importer.Importer()
 hou.session.importer = importer
-importer.import_shot()
-						]]>
-					</scriptCode>
-				</scriptItem>
-				<!-- ============================ End Shot Importer Tool =========================== -->
-			</subMenu>
-		<!-- ============================ End Import subMenu =========================== -->
+importer.run()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Shot Importer Tool =========================== -->
+
 
 		<!-- ============================ Start cloner subMenu =========================== -->
 		<subMenu id="cloner_menu">
