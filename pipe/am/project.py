@@ -238,7 +238,16 @@ class Project:
 				e.g. (Shot.FRAME_RANGE, operator.gt, 100). Only returns shots whose
 				given attribute has the relation to the given desired value. Defaults to None.
 		'''
-		return self._list_bodies_in_dir(self._env.get_shots_dir(), filter)
+		list = self.list_assets()
+
+		shot_list = []
+
+		for item in list:
+			asset = self.get_asset(item)
+			if asset.get_type() == AssetType.SHOT:
+				shot_list.append(item)
+
+		return shot_list
 
 	def list_tools(self):
 		'''
@@ -256,8 +265,29 @@ class Project:
 		'''
 		returns a list of strings containing the names of all sets in this project
 		'''
-		import operator
-		return self._list_bodies_in_dir(self._env.get_assets_dir(), (Asset.TYPE, operator.eq, AssetType.SET))
+		list = self.list_assets()
+		set_list = []
+
+		for item in list:
+			asset = self.get_asset(item)
+			if asset.get_type() == AssetType.SET:
+				set_list.append(item)
+
+		return set_list
+
+	def list_props_and_characters(self):
+		'''
+		returns a list of strings containing the names of all props/characters in this project
+		'''
+		list = self.list_assets()
+		pc_list = []
+
+		for item in list:
+			asset = self.get_asset(item)
+			if asset.get_type() == AssetType.PROP or asset.get_type() == AssetType.CHARACTER:
+				pc_list.append(item)
+
+		return pc_list
 
 	def list_bodies(self):
 		'''
