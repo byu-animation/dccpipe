@@ -1,5 +1,5 @@
 """
 Python libraries for pipeline scripts
-@author BYU Animation
+@author Brigham Young University
 """
 __all__ = ['am', 'gui', 'launch', 'tools']

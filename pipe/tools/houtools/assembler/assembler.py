@@ -1,5 +1,5 @@
 '''
-    Big thanks to Hunter Tinney!
+    Big thanks to Hunter Tinney for creating most of the v2 HDAs
     ================
     Intro to Pipe V2
     ================

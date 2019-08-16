@@ -1,7 +1,7 @@
 
 """
 byu mini gui tools
-@author Hunter Tinney
+@author Brigham Young University
 """
 
 __all__ = ["checkbox_options", "quick_dialogs", "select_from_list", "write_message"]
