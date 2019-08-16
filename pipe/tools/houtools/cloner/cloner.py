@@ -93,6 +93,8 @@ class Cloner:
             self.cloth_publish = cloth_publish[3]
             department_paths['cloth'] = self.cloth_publish
 
-        print("department paths: ", department_paths)
-        from pipe.tools.houtools.assembler.assembler import Assembler
-        return Assembler().create_hda(filename, body=self.body, department_paths=department_paths)
+        from pipe.tools.houtools.assembler.assembler import Assembler  # put import here to remove cross import issue FIXME
+        node, created_instances =  Assembler().create_hda(filename, body=self.body, department_paths=department_paths)
+        layout_object_level_nodes()
+
+        return node, created_instances

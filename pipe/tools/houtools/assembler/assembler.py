@@ -160,9 +160,7 @@ class Assembler:
 
         parent, instances = self.create_hda(self.selected_asset)
 
-        # layout all /obj level nodes so none are stacked
-        node = hou.node("/obj")
-        node.layoutChildren()
+        layout_object_level_nodes()
 
         print("created ", instances, " in ", parent)
 
