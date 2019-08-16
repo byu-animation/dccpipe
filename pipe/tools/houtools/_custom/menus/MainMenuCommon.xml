@@ -70,9 +70,9 @@ importer.run()
 		<!-- ============================ Start cloner subMenu =========================== -->
 		<subMenu id="cloner_menu">
 			<label>Clone</label>
-			<!-- ============================ Start Asset cloner Tool =========================== -->
-			<scriptItem id="h.checkcout_asset">
-				<label>Asset</label>
+			<!-- ============================ Start Prop/Character cloner Tool =========================== -->
+			<scriptItem id="h.checkout_asset">
+				<label>Prop/Character</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.cloner import cloner
@@ -83,7 +83,22 @@ cloner.clone_asset()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Asset cloner Tool =========================== -->
+			<!-- ============================ End Prop/Character cloner Tool =========================== -->
+
+			<!-- ============================ Start Set cloner Tool =========================== -->
+			<scriptItem id="h.checkout_set">
+				<label>Set</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.assembler import assembler
+import hou
+assembler = assembler.Assembler()
+hou.session.assembler = assembler
+assembler.run()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Set cloner Tool =========================== -->
 
 			<!-- ============================ Start Tool cloner Tool =========================== -->
 			<scriptItem id="h.cloner_tool">
@@ -120,9 +135,9 @@ cloner.clone_shot()
 		<!-- ============================ Start Publish subMenu =========================== -->
 		<subMenu id="publish_menu">
 			<label>Publish</label>
-			<!-- ============================ Start Asset Publish Tool =========================== -->
+			<!-- ============================ Start Prop/Character Publish Tool =========================== -->
 			<scriptItem id="h.publishAsset">
-				<label>Asset</label>
+				<label>Prop/Character</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.publisher import publisher
@@ -133,7 +148,22 @@ publisher.publish_asset()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Asset Publish Tool =========================== -->
+			<!-- ============================ End Prop/Character Publish Tool =========================== -->
+
+			<!-- ============================ Start Set Publish Tool =========================== -->
+			<scriptItem id="h.publishSet">
+				<label>Set</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.publisher import publisher
+import hou
+publisher = publisher.Publisher()
+hou.session.publisher = publisher
+publisher.publish_set()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Set Publish Tool =========================== -->
 
 			<!-- ============================ Start Tool Publish Tool =========================== -->
 			<scriptItem id="h.publish_tool">
