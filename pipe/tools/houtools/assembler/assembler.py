@@ -252,11 +252,6 @@ class Assembler:
         Updates the contents of a set
     '''
     def update_contents_set(self, node, set_name, mode=UpdateModes.SMART):
-        # TODO: instead of tabbing in the contents of the json, we need to run it through create_hda (like cloner does) to get the more recent versions
-        # TODO: in fact, we can just call clone for each asset inside to get the more recent versions. That, or abstract the functionality out to utils
-        # TODO: Also, we need to create a template HDA for dcc_assembly that we can use to store the vertex positions (or something)
-        # TODO: Actually, we'll try to just use the JSON file to store translated positions
-
         # Check if reference file exists
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
 
