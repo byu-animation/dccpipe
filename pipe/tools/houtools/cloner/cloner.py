@@ -52,7 +52,7 @@ class Cloner:
     def clone_hda(self, hda=None):
         project = Project()
 
-        asset_list = project.list_assets()
+        asset_list = project.list_props_and_characters()
         self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to clone")
         self.item_gui.submitted.connect(self.asset_results)
 

@@ -18,15 +18,7 @@ class Importer:
 
     def run(self):
         project = Project()
-        list = project.list_assets()
-
-        shot_list = []
-
-        for item in list:
-            asset = project.get_asset(item)
-            if asset.get_type() == AssetType.SHOT:
-                shot_list.append(item)
-
+        shot_list = project.list_shots()
         print("shot list: ", shot_list)
 
         self.select_from_list_dialog = sfl.SelectFromList(l=shot_list, parent=houdini_main_window(), title="Select a shot to import")
