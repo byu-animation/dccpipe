@@ -1,6 +1,6 @@
 import hou
 import os
-# from byugui import PublishWindow
+import json
 
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
@@ -16,6 +16,7 @@ class Publisher:
 
     def __init__(self):
         self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
+        self.item_gui = None
 
     def publish_content_hda(self, node):
         node_name = node.type().name()
@@ -41,6 +42,92 @@ class Publisher:
     def publish_tool(self, node=None):
         self.departments = [Department.HDA]
         self.publish(selectedHDA=node)
+
+    def publish_set(self, node=None):
+        self.departments = [Department.ASSEMBLY]
+
+        # TODO: GOING TO HAVE TO GO INTO EACH PROP WITHIN THE SET > INSIDE AND GET THE SHOT_MODELING Node
+        # TODO: THEN, TAKE THE TRANSFORM DATA THERE AND SOMEHOW SAVE IT TO THE JSON SET FILE THAT STORES THE LOCATIONS
+        project = Project()
+        set_list = project.list_sets()
+        self.item_gui = sfl.SelectFromList(l=set_list, parent=houdini_main_window(), title="Select a set to publish to")
+        self.item_gui.submitted.connect(self.set_results)
+
+    def set_results(self, value):
+        set_name = value[0]
+
+        project = Project()
+        self.body = project.get_body(set_name)
+
+        obj = hou.node("/obj")
+        set = obj.node(set_name)
+
+        if set is None:
+            qd.error("No set found with that name. Please check naming and try again.")
+            return
+
+        set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
+        print("set file: ", set_file)
+
+        try:
+            with open(set_file) as f:
+                set_data = json.load(f)
+        except Exception as error:
+            qd.error("No valid JSON file for " + str(set_name))
+            return
+
+        print("set data: ", set_data)
+
+        # TODO: for each child, make sure that it exists in whole_set.json
+
+        print("set: ", set)
+        inside = set.node("inside")
+
+        children = inside.children()
+
+        for child in children:
+            print("child: ", child)
+
+            # get transform parms: t is translate, r rotate and s scale (with associated x,y,z vals)
+            tx = child.parm("tx")
+            ty = child.parm("ty")
+            tz = child.parm("tz")
+            rx = child.parm("rx")
+            ry = child.parm("ry")
+            rz = child.parm("rz")
+            sx = child.parm("sx")
+            sy = child.parm("sy")
+            sz = child.parm("sz")
+
+            child_path = child.path()
+            name = child_path.split('/')[-1]
+            print("name: ", name)
+            name = name.lower()
+
+
+            # TODO: for each child, update their json file with transform info
+            prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_0.json")
+            print("file: ", prop_file)
+
+            prop_data = None
+
+            try:
+                with open(prop_file) as f:
+                    prop_data = json.load(f)
+            except Exception as error:
+                qd.warning("No valid JSON file for " + str(name) + ". Skipping changes made to this asset.")
+                continue
+
+            print("prop data: ", prop_data)
+            a = prop_data['a']
+            b = prop_data['b']
+            c = prop_data['c']
+
+            # TODO: UPDATE THE PROP DATA FILES
+
+
+
+
 
     def publish_shot(self):
         scene = hou.hipFile.name()
@@ -71,7 +158,7 @@ class Publisher:
 
         #Publish
         user = environment.get_user()
-        src = "something"  # TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! 
+        src = "something"  # TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!!
         comment = "publish by " + str(user.get_username()) + " in department " + str(chosen_department)
         dst = publish_element(element, user, src, comment)
 
@@ -95,7 +182,7 @@ class Publisher:
 
         if selectedHDA.type().definition() is not None:
             self.src = selectedHDA.type().definition().libraryFilePath()
-            asset_list = project.list_assets()
+            asset_list = project.list_props_and_characters()
             self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to publish to")
             self.item_gui.submitted.connect(self.asset_results)
 
