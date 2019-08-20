@@ -13,7 +13,7 @@ if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
 			node_path = node.path()
-			name = node_path.split('/')[2]
+			name = node_path.split('/')[-1]
 			name = name.lower()
 			if name in Project().list_tools():
 				return 1
@@ -44,7 +44,7 @@ if node:
 	if not node.isLockedHDA():
 		if node.type().definition() is not None:
 			node_path = node.path()
-			name = node_path.split('/')[2]
+			name = node_path.split('/')[-1]
 			name = name.lower()
 			if name in Project().list_tools():
 				return 1
@@ -74,7 +74,7 @@ if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
 			node_path = node.path()
-			name = node_path.split('/')[2]
+			name = node_path.split('/')[-1]
 			name = name.lower()
 			if name in Project().list_tools():
 				return 1
@@ -177,10 +177,7 @@ if node:
 		node_name = node_name[:index]
 		if not str(node_name) == "dcc":
 			return 0
-		name = node_path.split('/')[2]
-		length = len(node_path.split('/'))
-		if length > 3:
-			return 0
+		name = node_path.split('/')[-1]
 		name = name.lower()
 		node_body = Project().get_body(name)
 		if node_body:
@@ -212,7 +209,7 @@ if node:
 	if node.isLockedHDA():
 		if node.type().definition() is not None:
 			node_path = node.path()
-			name = node_path.split('/')[2]
+			name = node_path.split('/')[-1]
 			name = name.lower()
 			node_body = Project().get_body(name)
 			if node_body:

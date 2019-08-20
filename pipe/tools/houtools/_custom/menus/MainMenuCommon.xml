@@ -94,7 +94,7 @@ from pipe.tools.houtools.assembler import assembler
 import hou
 assembler = assembler.Assembler()
 hou.session.assembler = assembler
-assembler.run()
+assembler.clone_set()
 					]]>
 				</scriptCode>
 			</scriptItem>

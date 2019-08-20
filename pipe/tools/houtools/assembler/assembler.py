@@ -152,6 +152,13 @@ class Assembler:
         self.asset_gui = sfl.SelectFromList(l=non_shot_list, parent=houdini_main_window(), title="Select a prop, character, or set to assemble")
         self.asset_gui.submitted.connect(self.asset_results)
 
+    def clone_set(self):
+        project = Project()
+        asset_list = project.list_sets()
+
+        self.asset_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select a set to clone")
+        self.asset_gui.submitted.connect(self.asset_results)
+
     def asset_results(self, asset):
         self.selected_asset = asset[0]
 
