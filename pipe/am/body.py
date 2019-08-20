@@ -126,6 +126,31 @@ class Body(object):
 		self._datadict[Body.FRAME_RANGE] = frame_range
 		pipeline_io.writefile(self._pipeline_file, self._datadict)
 
+	def get_latest_json_version(self, asset_name, department="model"):
+		element = self.get_element(department)
+
+		cache_dir = element.get_cache_dir()
+		files = os.listdir(cache_dir)
+
+		matches = []
+		for file in files:
+			root, ext = os.path.splitext(file)
+			version = root[-1:]
+			name = root[:-2]
+
+			if str(name) == str(asset_name):
+				# matches the asset
+				matches.append([name, version, file])
+
+		latest_version = 0
+		latest_file = None
+		for match in matches:
+			if int(match[1]) >= latest_version:
+				latest_version = int(match[1])
+				latest_file = match[2]
+
+		return latest_file, latest_version
+
 	# def get_parent_dir(self):
 	# 	'''
 	# 	return the parent directory that bodies of this type are stored in

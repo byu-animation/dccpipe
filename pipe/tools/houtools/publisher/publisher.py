@@ -46,8 +46,6 @@ class Publisher:
     def publish_set(self, node=None):
         self.departments = [Department.ASSEMBLY]
 
-        # TODO: GOING TO HAVE TO GO INTO EACH PROP WITHIN THE SET > INSIDE AND GET THE SHOT_MODELING Node
-        # TODO: THEN, TAKE THE TRANSFORM DATA THERE AND SOMEHOW SAVE IT TO THE JSON SET FILE THAT STORES THE LOCATIONS
         project = Project()
         set_list = project.list_sets()
         self.item_gui = sfl.SelectFromList(l=set_list, parent=houdini_main_window(), title="Select a set to publish")
@@ -55,7 +53,6 @@ class Publisher:
 
     def set_results(self, value):
         set_name = value[0]
-
         project = Project()
         self.body = project.get_body(set_name)
 
@@ -66,11 +63,12 @@ class Publisher:
             qd.error("No set found with that name. Please check naming and try again.")
             return
 
+        print("set: ", set)
+        inside = set.node("inside")
+        children = inside.children()
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
-        print("set file: ", set_file)
 
         set_data = []
-
         try:
             with open(set_file) as f:
                 set_data = json.load(f)
@@ -78,47 +76,51 @@ class Publisher:
             qd.error("No valid JSON file for " + str(set_name))
             return
 
-        print("set data: ", set_data)
-
         items_in_set = []
         for item in set_data:
             item_name = item['asset_name']
             item_version = item['version_number']
-
             items_in_set.append(item_name)
 
-        # TODO: for each child, make sure that it exists in whole_set.json
+        # TODO: for each child, make sure that it exists in whole_set.json, or add it if it doesn't, or remove it if it does not
+        child_names = []
+        for child in children:
+            child_path = child.path()
+            name = child_path.split('/')[-1].lower()
+            child_names.append(name)
 
-        print("set: ", set)
-        inside = set.node("inside")
-
-        children = inside.children()
+        for item in set_data:
+            if str(item['asset_name']) not in child_names:
+                set_data.remove(item)
 
         for child in children:
             print("child: ", child)
-
             inside = child.node("inside")
+            out = inside.node("OUT")
             set_transform = inside.node("set_dressing_transform")
+            child_path = child.path()
+            name = child_path.split('/')[-1].lower()
+
+            child_body = project.get_body(name)
+            if child_body is None:
+                qd.warning(str(name) + " not found in pipe. Please check that node is named correctly.")
+                continue
 
             # get transform parms: t is translate, r rotate and s scale (with associated x,y,z vals)
             tx, ty, tz = self.get_transform(set_transform, "tx", "ty", "tz")
             rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
             sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
 
-            print("tx, ty, tz: ", tx, ty, tz)
+            latest_file, latest_version = self.body.get_latest_json_version(name)
+            if latest_version == int(9):
+                new_version = 0
+            else:
+                new_version = int(latest_version) + 1
 
-            child_path = child.path()
-            name = child_path.split('/')[-1]
-            print("name: ", name)
-            name = name.lower()
-
-            prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_0.json")
-            print("file: ", prop_file)
-            prop_data = None
+            prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_" + str(latest_version) + ".json")
 
             if name in items_in_set:
                 print("set contains asset: " + str(name))
-
                 try:
                     with open(prop_file) as f:
                         prop_data = json.load(f)
@@ -126,63 +128,91 @@ class Publisher:
                     qd.warning("No valid JSON file for " + str(name) + ". Skipping changes made to this asset.")
                     continue
 
+                for set_item in set_data:
+                    if str(set_item['asset_name']) == str(name):
+                        set_item['version_number'] = new_version
+                        break
+
             else:
                 print(str(name) + " not found in set file.")
-                prop_data = {"asset_name": name, "version_number": 0, "path" : str(name) + "/test_path", "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
+                path = self.get_prim_path(out)
+                prop_data = {"asset_name": name, "version_number": 0, "path" : str(path), "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
+                set_data.append({"asset_name": str(name), "version_number": 0})
+                new_version = 0
 
-            a = prop_data['a']  # each is an array of size 3, repping x y z data
+            new_prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_" + str(new_version) + ".json")
+
+            # get a b and c from prop_data file. Each is an array of size 3, representing x,y,z coords
+            a = prop_data['a']
             b = prop_data['b']
             c = prop_data['c']
 
-            out = inside.node("OUT")
-            geo = out.geometry()
-            point_a = geo.iterPoints()[0]
-            point_b = geo.iterPoints()[1]
-            point_c = geo.iterPoints()[2]
+            self.update_points_by_geo(out, a, b, c)
 
-            a_x = point_a.position()[0]
-            a_y = point_a.position()[1]
-            a_z = point_a.position()[2]
-            b_x = point_b.position()[0]
-            b_y = point_b.position()[1]
-            b_z = point_b.position()[2]
-            c_x = point_c.position()[0]
-            c_y = point_c.position()[1]
-            c_z = point_c.position()[2]
-
-            # a is the first point of this object in geo spreadsheet, b is second, c third.
-            a[0] = a_x
-            a[1] = a_y
-            a[2] = a_z
-            b[0] = b_x
-            b[1] = b_y
-            b[2] = b_z
-            c[0] = c_x
-            c[1] = c_y
-            c[2] = c_z
-
+            # put the updated coords back into prop_data
             prop_data['a'] = a
             prop_data['b'] = b
             prop_data['c'] = c
 
-            # TODO: increment version number and save new file, add a commit and a publish for this set
+            # TODO: add a commit and a publish for this set
 
             print("prop data (updated): ", prop_data)
 
             updated_prop_data = json.dumps(prop_data)
-            outfile = open(prop_file, "w")
+            outfile = open(new_prop_file, "w")
             outfile.write(updated_prop_data)
             outfile.close()
 
             print("prop file updated for " + str(name))
 
-            # TODO: reload the prop file in the import node, and remove the translate parameters
             self.clear_transform(set_transform)
+            self.update_version_number(child, new_version)
             import_node = child.node("import")
             read_from_json = import_node.node("read_from_json")
             read_from_json.parm("reload").pressButton()
 
+        outfile = open(set_file, "w")
+        print("set data: ", set_data)
+        updated_set_data = json.dumps(set_data)
+        outfile.write(updated_set_data)
+        outfile.close()
+
         qd.info("Set " + str(set_name) + " published successfully!")
+
+    def update_version_number(self, child, version_number):
+        version_parm = child.parm("version_number").evalAsInt()
+        child.parm("version_number").set(version_number)
+
+    def get_prim_path(self, out):
+        geo = out.geometry()
+        return geo.findPrimAttrib("path").strings()[0]
+
+    def update_points_by_geo(self, out, a, b, c):
+        geo = out.geometry()
+        point_a = geo.iterPoints()[0]
+        point_b = geo.iterPoints()[1]
+        point_c = geo.iterPoints()[2]
+
+        a_x = point_a.position()[0]
+        a_y = point_a.position()[1]
+        a_z = point_a.position()[2]
+        b_x = point_b.position()[0]
+        b_y = point_b.position()[1]
+        b_z = point_b.position()[2]
+        c_x = point_c.position()[0]
+        c_y = point_c.position()[1]
+        c_z = point_c.position()[2]
+
+        # a is the first point of this object in geo spreadsheet, b is second, c third.
+        a[0] = a_x
+        a[1] = a_y
+        a[2] = a_z
+        b[0] = b_x
+        b[1] = b_y
+        b[2] = b_z
+        c[0] = c_x
+        c[1] = c_y
+        c[2] = c_z
 
     def get_transform(self, child, parm1, parm2, parm3):
         x = child.parm(parm1).evalAsFloat()
