@@ -264,7 +264,13 @@ def get_anchor_points(mesh):
     Helper for JSONExporter
 '''
 def get_body_from_reference(ref):
-    return Project().get_body(extract_reference_data(ref)[0])
+    try:
+        body = Project().get_body(extract_reference_data(ref)[0])
+        return body
+    except:
+        print(str(ref) + " is not a body")
+
+    return None
 
 '''
     Helper for JSONExporter
@@ -284,12 +290,19 @@ def has_parent_set(rootNode):
     parent_node = rootNode.getParent()
 
     while parent_node is not None:
+        print("parent node: ", parent_node)
         parent_body = get_body_from_reference(parent_node)
+        print("parent body: ", parent_body)
 
         if parent_body is not None and parent_body.is_asset() and parent_body.get_type() == AssetType.SET:
             parent_is_set = True
             break
-        parent_node = parent_node.parent_node()
+
+        try:
+            parent_node = parent_node.parent_node()
+        except:
+            print(str(parent_node) + " is top level")
+            parent_node = None
 
     if parent_is_set:
         return True

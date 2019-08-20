@@ -115,6 +115,7 @@ class JSONExporter:
         sets = []
 
         for ref in refsSelection:
+            print("ref: ", ref)
             rootNode = get_root_node_from_reference(ref)
             body = get_body_from_reference(rootNode)
             currRefName, currRefVerNum = extract_reference_data(ref)
@@ -124,9 +125,14 @@ class JSONExporter:
                 continue
 
             if body.get_type() == AssetType.PROP:
+                parent_is_set = has_parent_set(rootNode)
+                if parent_is_set:
+                    continue
                 props.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
+
             elif body.get_type() == AssetType.CHARACTER:
                 characters.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
+
             else:
                 parent_is_set = has_parent_set(rootNode)
                 if parent_is_set:
