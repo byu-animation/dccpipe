@@ -50,7 +50,7 @@ class Publisher:
         # TODO: THEN, TAKE THE TRANSFORM DATA THERE AND SOMEHOW SAVE IT TO THE JSON SET FILE THAT STORES THE LOCATIONS
         project = Project()
         set_list = project.list_sets()
-        self.item_gui = sfl.SelectFromList(l=set_list, parent=houdini_main_window(), title="Select a set to publish to")
+        self.item_gui = sfl.SelectFromList(l=set_list, parent=houdini_main_window(), title="Select a set to publish")
         self.item_gui.submitted.connect(self.set_results)
 
     def set_results(self, value):
@@ -69,6 +69,8 @@ class Publisher:
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
         print("set file: ", set_file)
 
+        set_data = []
+
         try:
             with open(set_file) as f:
                 set_data = json.load(f)
@@ -77,6 +79,13 @@ class Publisher:
             return
 
         print("set data: ", set_data)
+
+        items_in_set = []
+        for item in set_data:
+            item_name = item['asset_name']
+            item_version = item['version_number']
+
+            items_in_set.append(item_name)
 
         # TODO: for each child, make sure that it exists in whole_set.json
 
@@ -88,46 +97,110 @@ class Publisher:
         for child in children:
             print("child: ", child)
 
+            inside = child.node("inside")
+            set_transform = inside.node("set_dressing_transform")
+
             # get transform parms: t is translate, r rotate and s scale (with associated x,y,z vals)
-            tx = child.parm("tx")
-            ty = child.parm("ty")
-            tz = child.parm("tz")
-            rx = child.parm("rx")
-            ry = child.parm("ry")
-            rz = child.parm("rz")
-            sx = child.parm("sx")
-            sy = child.parm("sy")
-            sz = child.parm("sz")
+            tx, ty, tz = self.get_transform(set_transform, "tx", "ty", "tz")
+            rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
+            sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
+
+            print("tx, ty, tz: ", tx, ty, tz)
 
             child_path = child.path()
             name = child_path.split('/')[-1]
             print("name: ", name)
             name = name.lower()
 
-
-            # TODO: for each child, update their json file with transform info
             prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_0.json")
             print("file: ", prop_file)
-
             prop_data = None
 
-            try:
-                with open(prop_file) as f:
-                    prop_data = json.load(f)
-            except Exception as error:
-                qd.warning("No valid JSON file for " + str(name) + ". Skipping changes made to this asset.")
-                continue
+            if name in items_in_set:
+                print("set contains asset: " + str(name))
 
-            print("prop data: ", prop_data)
-            a = prop_data['a']
+                try:
+                    with open(prop_file) as f:
+                        prop_data = json.load(f)
+                except Exception as error:
+                    qd.warning("No valid JSON file for " + str(name) + ". Skipping changes made to this asset.")
+                    continue
+
+            else:
+                print(str(name) + " not found in set file.")
+                prop_data = {"asset_name": name, "version_number": 0, "path" : str(name) + "/test_path", "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
+
+            a = prop_data['a']  # each is an array of size 3, repping x y z data
             b = prop_data['b']
             c = prop_data['c']
 
-            # TODO: UPDATE THE PROP DATA FILES
+            out = inside.node("OUT")
+            geo = out.geometry()
+            point_a = geo.iterPoints()[0]
+            point_b = geo.iterPoints()[1]
+            point_c = geo.iterPoints()[2]
 
+            a_x = point_a.position()[0]
+            a_y = point_a.position()[1]
+            a_z = point_a.position()[2]
+            b_x = point_b.position()[0]
+            b_y = point_b.position()[1]
+            b_z = point_b.position()[2]
+            c_x = point_c.position()[0]
+            c_y = point_c.position()[1]
+            c_z = point_c.position()[2]
 
+            # a is the first point of this object in geo spreadsheet, b is second, c third.
+            a[0] = a_x
+            a[1] = a_y
+            a[2] = a_z
+            b[0] = b_x
+            b[1] = b_y
+            b[2] = b_z
+            c[0] = c_x
+            c[1] = c_y
+            c[2] = c_z
 
+            prop_data['a'] = a
+            prop_data['b'] = b
+            prop_data['c'] = c
 
+            # TODO: increment version number and save new file, add a commit and a publish for this set
+
+            print("prop data (updated): ", prop_data)
+
+            updated_prop_data = json.dumps(prop_data)
+            outfile = open(prop_file, "w")
+            outfile.write(updated_prop_data)
+            outfile.close()
+
+            print("prop file updated for " + str(name))
+
+            # TODO: reload the prop file in the import node, and remove the translate parameters
+            self.clear_transform(set_transform)
+            import_node = child.node("import")
+            read_from_json = import_node.node("read_from_json")
+            read_from_json.parm("reload").pressButton()
+
+        qd.info("Set " + str(set_name) + " published successfully!")
+
+    def get_transform(self, child, parm1, parm2, parm3):
+        x = child.parm(parm1).evalAsFloat()
+        y = child.parm(parm2).evalAsFloat()
+        z = child.parm(parm3).evalAsFloat()
+
+        return x, y, z
+
+    def clear_transform(self, child):
+        parm_scale_list = ["sx", "sy", "sz"]
+        parm_list = ["tx", "ty", "tz", "rx", "ry", "rz", "sx", "sy", "sz"]
+
+        for parm in parm_list:
+            if parm not in parm_scale_list:
+                child.parm(parm).set(0.0)
+            else:
+                child.parm(parm).set(1.0)
+            child.parm(parm).eval()
 
     def publish_shot(self):
         scene = hou.hipFile.name()
