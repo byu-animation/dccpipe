@@ -273,7 +273,7 @@ def get_body_from_reference(ref):
     return None
 
 '''
-    Helper for JSONExporter
+    Helper for JSONExporter and AlembicExporter
 '''
 def get_root_node_from_reference(ref):
     refPath = pm.referenceQuery(unicode(ref), filename=True)

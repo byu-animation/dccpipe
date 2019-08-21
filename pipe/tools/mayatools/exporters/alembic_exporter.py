@@ -324,7 +324,7 @@ class AlembicExporter:
             endFrame = int(endFrame)
             endFrame += 5
             endFrame = str(endFrame)
-            files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', selectionMode=True, startFrame=startFrame, endFrame=endFrame)
+            files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
             # result = qd.yes_or_no('Are there any crowds that need to be exported?')
             # if result:
             #     self.exportCrowd(abcFilePath, 'DCC_Crowd_Agent_Flag', tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
@@ -408,7 +408,18 @@ class AlembicExporter:
                     print 'We did not find a tag on', node
 #For each of those parent nodes export the tagged geo within
 
-    def exportReferences(self, destination, tag="DCC_Alembic_Export_Flag", selectionMode=False, startFrame=1, endFrame=1):
+    '''
+        @destination: directory where the alembic(s) should be exported to
+        @tag: unused
+        @startFrame: beginning frame to export
+        @endFrame: ending frame to export \
+
+        @return: a list of exported alembic files
+
+        Gets all loaded references, then loops through them and if it's a top level reference
+        i.e. a character, set, or animated prop, exports an alembic file to the destination specified
+    '''
+    def exportReferences(self, destination, tag="DCC_Alembic_Export_Flag", startFrame=1, endFrame=1):
         selection = get_loaded_references()
 
         if selection is None:
@@ -417,20 +428,18 @@ class AlembicExporter:
         abcFiles = []
 
         for ref in selection:
-            # TODO: here is the reason as to why there's a separate abc file for each reference in the scene.
-            # In Houdini, when importing a shot, sets and characters are imported differently anyway, so for each character
-            # we want a separate abc file just for that character. Then if we save them with good names for the abc files,
-            # it should be an easy step to add that to the import node.
-            refPath = pm.referenceQuery(unicode(ref), filename=True)
-            refNodes = pm.referenceQuery(unicode(refPath), nodes=True )
-            rootNode = pm.ls(refNodes[0])[0]
-            refAbcFilePath = os.path.join(destination, self.getFilenameForReference(rootNode))
-            print refAbcFilePath
+            rootNode = get_root_node_from_reference(ref)
+            name = str(ref.associatedNamespace(baseName=True))
+            parent = ref.parentReference()
 
-            if tag is None:
-                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[rootNode])
+            if not parent:
+                # then this is either an animated prop, a char, or a set. Export an alembic for each accordingly, with the correct file name
+                refAbcFilePath = os.path.join(destination, name + ".abc")
+                p = rootNode.listRelatives(p=True)[0]
+                root = str(p) + "|" + str(rootNode)
+                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[root])
             else:
-                command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
+                continue
 
             print 'Export Alembic command: ', command
             pm.Mel.eval(command)
@@ -445,10 +454,12 @@ class AlembicExporter:
         refPath = refPath = pm.referenceQuery(unicode(ref), filename=True)
         start = refPath.find('{')
         end = refPath.find('}')
+
         if start == -1 or end == -1:
             copyNum = ''
         else:
             copyNum = refPath[start+1:end]
+
         return os.path.basename(refPath).split('.')[0] + str(copyNum) + '.abc'
 
     def buildTaggedAlembicCommand(self, filepath, tag, startFrame, endFrame, step=0.25):
