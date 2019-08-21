@@ -46,7 +46,7 @@ class Creator:
             body = project.create_asset(name, asset_type=type)
             if body == None:
                 # print a message about failure/duplicate
-                qd.error("Asset with name " + name + " already exists in pipeline.")
+                qd.error("Asset with name " + str(name) + " already exists in pipeline.")
             else:
                 prepare_scene_file()
                 # show the gui, get the element. To list elements, get the body and get the department
