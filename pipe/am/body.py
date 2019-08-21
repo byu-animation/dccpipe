@@ -53,6 +53,34 @@ class Body(object):
 		return Department.HOUDINI_DEPTS
 
 	@staticmethod
+	def prop_export_departments():
+		'''
+		return a list of departments that this body should create on initialization
+		'''
+		return Department.PROP_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def char_export_departments():
+		'''
+		return a list of departments that this body should create on initialization
+		'''
+		return Department.CHARACTER_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def set_export_departments():
+		'''
+		return a list of departments that this body should create on initialization
+		'''
+		return Department.SET_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def shot_export_departments():
+		'''
+		return a list of departments that this body should create on initialization
+		'''
+		return Department.SHOT_EXPORT_DEPARTMENTS
+
+	@staticmethod
 	def get_parent_dir():
 		'''
 		return the parent directory that bodies of this type are stored in
