@@ -237,7 +237,7 @@ class Publisher:
         self.departments = [Department.HDA, Department.LIGHTING, Department.FX]
 
         project = Project()
-        asset_list = project.list_assets()
+        asset_list = project.list_shots()
         self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select a shot to publish to")
         self.item_gui.submitted.connect(self.shot_results)
 
@@ -247,24 +247,19 @@ class Publisher:
         project = Project()
         self.body = project.get_body(chosen_asset)
 
-        department_list = self.departments
-
-        self.item_gui = sfl.SelectFromList(l=department_list, parent=houdini_main_window(), title="Select department for this publish")
-        self.item_gui.submitted.connect(self.shot_department_results)
-
-    def shot_department_results(self, value):
-        chosen_department = value[0]
-
-        element = self.body.get_element(chosen_department)  #, Element.DEFAULT_NAME)
+        department = Department.LIGHTING
+        element = self.body.get_element(department)  #, Element.DEFAULT_NAME)
 
         hou.hipFile.save()
+        src = hou.hipFile.name()
 
         #Publish
-        user = environment.get_user()
-        src = "something"  # TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!! TODO!!!!!!!!!!!!!!!
-        comment = "publish by " + str(user.get_username()) + " in department " + str(chosen_department)
-        dst = publish_element(element, user, src, comment)
+        user = Environment().get_user()
+        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+        dst = self.publish_element(element, user, src, comment)
 
+        message = "Successfully published " + str(self.body.get_name()) + "!"
+        self.print_success_message(message)
 
     def publish(self, selectedHDA=None):  #, departments=[Department.HDA, Department.ASSEMBLY, Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]):
         project = Project()
