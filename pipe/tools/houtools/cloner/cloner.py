@@ -24,18 +24,6 @@ class Cloner:
         environment = Environment()
         self.user = environment.get_user()
 
-    def clone_shot():
-        filepath = self.hou_clone_dialog.result
-        if filepath is not None:
-            if not os.path.exists(filepath):
-                print('Filepath doesn\'t exist')
-                filepath += '.hipnc'
-                hou.hipFile.clear()
-                hou.hipFile.setName(filepath)
-                hou.hipFile.save()
-            else:
-                hou.hipFile.load(filepath)
-
     def clone_asset(self, node=None):
         self.clone_hda(hda=node)
 
@@ -44,10 +32,53 @@ class Cloner:
 
     def clone_shot(self):
         project = Project()
-        environment = Environment()
 
-        self.hou_clone_dialog = cloneWindow(houdini_main_window(), [Department.LIGHTING, Department.FX])
-        hou_clone_dialog.finished.connect(clone_shot)
+        asset_list = project.list_shots()
+        self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select a shot to clone")
+        self.item_gui.submitted.connect(self.shot_results)
+
+    def shot_results(self, value):
+        shot_name = value[0]
+        project = Project()
+
+        body = project.get_body(shot_name)
+        element = body.get_element("lighting")
+
+        self.publishes = element.list_publishes();
+        print("publishes: ", self.publishes)
+
+        # make the list a list of strings, not tuples
+        self.sanitized_publish_list = []
+        for publish in self.publishes:
+            path = publish[3]
+            file_ext = path.split('.')[-1]
+            if not file_ext == "hip" and not file_ext == "hipnc":
+                continue
+            label = publish[0] + " " + publish[1] + " " + publish[2]
+            self.sanitized_publish_list.append(label)
+
+        self.item_gui = sfl.SelectFromList(l=self.sanitized_publish_list, parent=houdini_main_window(), title="Select publish to clone")
+        self.item_gui.submitted.connect(self.publish_selection_results)
+
+    def publish_selection_results(self, value):
+
+        selected_publish = None
+        for item in self.sanitized_publish_list:
+            if value[0] == item:
+                selected_publish = item
+
+        selected_scene_file = None
+        for publish in self.publishes:
+            label = publish[0] + " " + publish[1] + " " + publish[2]
+            if label == selected_publish:
+                selected_scene_file = publish[3]
+
+        if selected_scene_file is not None:
+            if not os.path.exists(selected_scene_file):
+                qd.error('Filepath doesn\'t exist')
+                return
+            else:
+                hou.hipFile.load(selected_scene_file)
 
     def clone_hda(self, hda=None):
         project = Project()
