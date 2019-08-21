@@ -272,7 +272,7 @@ class AlembicExporter:
 
         selection=None
         startFrame=1
-        endFrame=1
+        endFrame= self.frame_range
 
         for dept in department_list:  # export to all departments selected
             element = self.body.get_element(dept)
@@ -417,21 +417,20 @@ class AlembicExporter:
         abcFiles = []
 
         for ref in selection:
-            # refNodes = cmds.referenceQuery(unicode(ref), nodes=True)
+            # TODO: here is the reason as to why there's a separate abc file for each reference in the scene.
+            # In Houdini, when importing a shot, sets and characters are imported differently anyway, so for each character
+            # we want a separate abc file just for that character. Then if we save them with good names for the abc files,
+            # it should be an easy step to add that to the import node.
             refPath = pm.referenceQuery(unicode(ref), filename=True)
             refNodes = pm.referenceQuery(unicode(refPath), nodes=True )
             rootNode = pm.ls(refNodes[0])[0]
             refAbcFilePath = os.path.join(destination, self.getFilenameForReference(rootNode))
             print refAbcFilePath
 
-            # try:
             if tag is None:
                 command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[rootNode])
             else:
                 command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
-            # except:
-            #     qd.error('Unable to locate Alembic Export tag for ' + str(ref), title='No Alembic Tag Found')
-            #     return
 
             print 'Export Alembic command: ', command
             pm.Mel.eval(command)
