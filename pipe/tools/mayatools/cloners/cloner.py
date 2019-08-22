@@ -1,6 +1,7 @@
 # TODO: removing the next line to be able to load departments from a config file down the line. Once config is ready, load depts from there.
 # from pipe.am.environment import Department
 import pipe.gui.select_from_list as sfl
+import pipe.gui.quick_dialogs as qd
 import pipe.tools.mayatools.utils.utils as maya_utils
 from pipe.am.project import Project
 from pipe.am.body import Body
@@ -25,22 +26,6 @@ class MayaCloner:
 		else:
 			# TODO: make this method work
 			self.non_gui_open(file_path, asset_name)
-
-	def open_file(self):
-		filepath = self.maya_checkout_dialog.result
-
-		if filepath is not None:
-			if not mc.file(q=True, sceneName=True) == '':
-				mc.file(save=True, force=True) #save file
-
-			if not os.path.exists(filepath):
-				mc.file(new=True, force=True)
-				mc.file(rename=filepath)
-				mc.file(save=True, force=True)
-				print "new file "+filepath
-			else:
-				mc.file(filepath, open=True, force=True)
-				print "open file "+filepath
 
 	def non_gui_open(self, filePath=None, assetName='Temp'):
 		if filePath == None:
@@ -101,8 +86,12 @@ class MayaCloner:
 
 		# selected_scene_file is the one that contains the scene file for the selected commit
 		if selected_scene_file is not None:
-			if not mc.file(q=True, sceneName=True) == '':
-				mc.file(save=True, force=True) #save file
+			unsaved_changes = mc.file(q=True, modified=True)
+
+			if unsaved_changes:
+				response = qd.yes_or_no("You have unsaved changes to the current scene. Would you like to save before you clone?")
+				if response:
+					mc.file(save=True, force=True) #save file
 
 			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)
