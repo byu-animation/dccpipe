@@ -54,9 +54,11 @@ class MayaPublisher:
 
         prepare_scene_file()
 
+        print("value: ", value)
+        print("dept: ", chosen_department)
+
         # get the element for the model dept and the user, and using that publish
         selected_element = self.body.get_element(chosen_department)
-
         user = Environment().get_user()
 
         # get the comment
@@ -68,15 +70,8 @@ class MayaPublisher:
 
         qd.info("Asset published successfully.", "Success")
 
-    # TODO: SET UP A FUNCTION FOR PUBLISH WITHOUT GUI
-    # def non_gui_publish(element, user, src, comment):
-    # 	dst = element.publish(user, src, comment)
-    # 	#Ensure file has correct permissions
-    # 	try:
-    # 		os.chmod(dst, 0660)
-    # 	except:
-    # 		pass
-    #
-    # 	# TODO: export playblast
-    #
-    #     print element.get_name()
+    def non_gui_publish(self, asset_name, department):
+        project = Project()
+        self.body = project.get_body(asset_name)
+
+        self.department_results([department])
