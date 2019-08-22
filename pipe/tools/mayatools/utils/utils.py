@@ -69,6 +69,10 @@ def post_publish(element, user, published=True, comment="No comment."):
                 json_export = JSONExporter()
                 json_export.go(body, body.get_type())
 
+        print("begin alembic export")
+        alembic = AlembicExporter()
+        alembic.auto_export(body.get_name())
+
         convert_to_education()
 
 '''

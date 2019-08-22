@@ -237,6 +237,9 @@ class AlembicExporter:
     	if self.generateGeometry(element=element):
     		self.installGeometry(element=element)
 
+    def auto_export(self, asset_name):
+        self.get_body_and_export(asset_name, export_all=True)
+
     def go(self):
         project = Project()
         asset_list = project.list_assets()
@@ -246,25 +249,31 @@ class AlembicExporter:
 
     def asset_results(self, value):
         chosen_asset = value[0]
+        self.get_body_and_export(chosen_asset)
 
+    def get_body_and_export(self, chosen_asset, export_all=False):
         project = Project()
-        self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
+        self.body = project.get_body(chosen_asset)
+        type = self.body.get_type()
 
-        if self.frame_range is None or self.frame_range == u'':
+        if str(type) == str("shot"):
+            self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
+
+            if self.frame_range is None or self.frame_range == u'':
+                self.frame_range = 1
+
+            self.frame_range = str(self.frame_range)
+            if not self.frame_range.isdigit():
+                qd.error("Invalid frame range input. Setting to 1.")
+        else:
             self.frame_range = 1
 
-        self.frame_range = str(self.frame_range)
-        if not self.frame_range.isdigit():
-            qd.error("Invalid frame range input. Setting to 1.")
-
-        self.body = project.get_body(chosen_asset)
         self.body.set_frame_range(self.frame_range)
 
         department_list = []
         asset_type = self.body.get_type()
         if str(asset_type) == 'prop':
             department_list = self.body.prop_export_departments()
-            self.department_results(department_list)
         elif str(asset_type) == 'character':
             department_list = self.body.char_export_departments()
         elif str(asset_type) == 'set':
@@ -272,8 +281,14 @@ class AlembicExporter:
         elif str(asset_type) == 'shot':
             department_list = self.body.shot_export_departments()
 
-        self.item_gui = sfl.SelectFromList(l=department_list, multiple_selection=True, parent=maya_main_window(), title="Select department(s) for this export: ")
-        self.item_gui.submitted.connect(self.department_results)
+        if export_all:
+            # tag top level nodes
+            nodes = get_top_level_nodes()
+            print("top level: ", nodes)
+            for node in nodes:
+                tag_node_with_flag(node, "DCC_Alembic_Export_Flag")
+
+        self.department_results(department_list)
 
     def department_results(self, value):
         department_list = value
@@ -357,7 +372,6 @@ class AlembicExporter:
         #TODO install the geometry
         print 'These are the files that we are returning', files
         return files
-
 
     def exportSelected(self, selection, destination, tag=None, startFrame=1, endFrame=1, disregardNoTags=False):
         endFrame = self.frame_range
