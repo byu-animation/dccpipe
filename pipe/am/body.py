@@ -121,6 +121,8 @@ class Body(object):
 		matches = []
 		for file in files:
 			root, ext = os.path.splitext(file)
+			# version = root[-3:]
+			# name = root[:-4]
 			version = root[-1:]
 			name = root[:-2]
 
@@ -136,12 +138,6 @@ class Body(object):
 				latest_file = match[2]
 
 		return latest_file, latest_version
-
-	# def get_parent_dir(self):
-	# 	'''
-	# 	return the parent directory that bodies of this type are stored in
-	# 	'''
-	# 	raise NotImplementedError('subclass must implement get_parent_dir')
 
 	def get_element(self, department, name=Element.DEFAULT_NAME, force_create=False):
 		'''

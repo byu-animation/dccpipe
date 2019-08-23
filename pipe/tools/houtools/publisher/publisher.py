@@ -118,7 +118,10 @@ class Publisher:
             rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
             sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
 
+            # FIXME
             latest_file, latest_version = self.body.get_latest_json_version(name)
+            # if latest_version == int(999):
+            #     new_version = 999
             if latest_version == int(9):
                 new_version = 0
             else:
