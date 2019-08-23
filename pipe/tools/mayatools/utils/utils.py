@@ -171,13 +171,13 @@ def get_departments_by_type(asset_type):
     department_list = []
     project = Project()
 
-    if str(asset_type) == 'prop':
+    if asset_type == AssetType.PROP:
         department_list = project.prop_export_departments()
-    elif str(asset_type) == 'character':
+    elif asset_type == AssetType.ACTOR:
         department_list = project.char_export_departments()
-    elif str(asset_type) == 'set':
+    elif asset_type == AssetType.SET:
         department_list = project.set_export_departments()
-    elif str(asset_type) == 'shot':
+    elif asset_type == AssetType.SHOT:
         department_list = project.shot_export_departments()
 
     return department_list

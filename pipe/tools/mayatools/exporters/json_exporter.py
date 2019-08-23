@@ -111,7 +111,7 @@ class JSONExporter:
     def export_shot(self, filePath):
         refsSelection = get_loaded_references()
         props = []
-        characters = []
+        actors = []
         sets = []
 
         for ref in refsSelection:
@@ -130,8 +130,8 @@ class JSONExporter:
                     continue
                 props.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
 
-            elif body.get_type() == AssetType.CHARACTER:
-                characters.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
+            elif body.get_type() == AssetType.ACTOR:
+                actors.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
 
             else:
                 parent_is_set = has_parent_set(rootNode)
@@ -139,13 +139,13 @@ class JSONExporter:
                     continue
                 sets.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
 
-        print "props: {0}\ncharacters: {1}\nsets: {2}".format(props, characters, sets)
+        print "props: {0}\nactors: {1}\nsets: {2}".format(props, actors, sets)
 
-        jsonCharacters = json.dumps(characters)
-        path = os.path.join(filePath, "characters.json")
+        jsonActors = json.dumps(actors)
+        path = os.path.join(filePath, "actors.json")
 
         with open(path, "w") as f:
-            f.write(jsonCharacters)
+            f.write(jsonActors)
             f.close()
 
         jsonSets = json.dumps(sets)
@@ -239,7 +239,7 @@ class JSONExporter:
         elif type == AssetType.SET:
             self.confirmWriteSetReferences(body)
         else:
-            print("No JSON exported because this is a character.")
+            print("No JSON exported because this is a actor.")
 
 
     # def export_prop(self):
@@ -255,9 +255,9 @@ class JSONExporter:
     #
     # def export_char(self):
     #     if self.publish_data["gui"]:
-    #         quick_dialogs.warning("Exporting JSON files for static characters is not supported at this time.")
+    #         quick_dialogs.warning("Exporting JSON files for static actors is not supported at this time.")
     #     else:
-    #         print "{0} is a character. No JSON was exported.".format(self.body.get_name())
+    #         print "{0} is a actor. No JSON was exported.".format(self.body.get_name())
     #
     # def export_set(self):
     #     json_cache_dir = self.json_cache_dir(self.body)
@@ -288,12 +288,12 @@ class JSONExporter:
     #             continue
     #         if reference_body.get_type() == AssetType.SET and not maya_utils.has_parent_set(node):
     #             sets_json_data.append(self.general_JSON_data(name, version_number))
-    #         elif reference_body.get_type() == AssetType.CHARACTER and maya_utils.children_tagged_with_flag(node, ExportFlags.EXPORT):
+    #         elif reference_body.get_type() == AssetType.ACTOR and maya_utils.children_tagged_with_flag(node, ExportFlags.EXPORT):
     #             chars_json_data.append(self.general_JSON_data(name, version_number))
     #         elif reference_body.get_type() == AssetType.PROP and maya_utils.children_tagged_with_flag(node, ExportFlags.EXPORT):
     #             props_json_data.append(self.prop_JSON_data(node, name, version_number))
     #     sets_json_cache_filepath = os.path.join(json_cache_dir, "sets.json")
-    #     chars_json_cache_filepath = os.path.join(json_cache_dir, "characters.json")
+    #     chars_json_cache_filepath = os.path.join(json_cache_dir, "actors.json")
     #     props_json_cache_filepath = os.path.join(json_cache_dir, "animated_props.json")
     #
     #     with open(sets_json_cache_filepath, "w") as f:

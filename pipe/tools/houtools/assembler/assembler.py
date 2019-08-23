@@ -20,8 +20,8 @@
     Content HDAs is found in the "Content HDAs" section.
         NAME         Subnet Type    Description
      ----------------------------------------------------------------------------------------------------------------------------
-    | DCC Geo          OBJ>SOP    Houses the other nodes at the most basic level, good enough for props and character meshs.     |
-    | DCC Character    OBJ>OBJ    Houses a DCC Geo, a Hair asset and a Cloth asset. It's our verion of a character group.        |
+    | DCC Geo          OBJ>SOP    Houses the other nodes at the most basic level, good enough for props and actor meshs.     |
+    | DCC Character    OBJ>OBJ    Houses a DCC Geo, a Hair asset and a Cloth asset. It's our verion of a actor group.        |
     | DCC Set          OBJ>OBJ    Reads from a JSON file (exported from Maya) that contains positions of assets in a set. It     |
     |                                 tabs them all in as DCC Geos, and then offsets them to their correct                       |
     |                                 positions/scales/rotates.                                                                  |
@@ -51,9 +51,9 @@
      ----------------------------------------------------------------------------------------------------------------------------
     | DCC Material     SOP         Holds a Primvars, Mat. Assign and Shopnet Functional HDA. Intended for shading.                |
     | DCC Modify       SOP         Modifies incoming geometry, intended for any geometry fixes that need to be done in Houdini.   |
-    | DCC Hair         OBJ>OBJ     Holds all hair subnets for a given character. It should take a DCC Geo as an input. It should  |
+    | DCC Hair         OBJ>OBJ     Holds all hair subnets for a given actor. It should take a DCC Geo as an input. It should  |
     |                                  also have simulation parameters promoted to the top-level, which is done by the artist.    |
-    | DCC Cloth        OBJ>OBJ     Holds all cloth subnets for a given character. It should take a DCC Geo as an input. It should |
+    | DCC Cloth        OBJ>OBJ     Holds all cloth subnets for a given actor. It should take a DCC Geo as an input. It should |
     |                                  also have simulation parameters promoted to the top-level, which is done by the artist.    |
      ----------------------------------------------------------------------------------------------------------------------------
     ============
@@ -73,7 +73,7 @@
     Updating
     ========
     The different update modes have different meanings.
-        smart: Sets will add new components, and delete old ones. Props and characters will update everything except checked out items and shot_modeling.
+        smart: Sets will add new components, and delete old ones. Props and actors will update everything except checked out items and shot_modeling.
         clean: Everything is deleted and re-tabbed in, ensuring it is 100% synced. Does not allow for overrides.
         frozen: Nothing happens.
 '''
@@ -117,7 +117,7 @@ class Assembler:
 
         # The order in which these nodes appear is the order they will be created in
         self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
-        self.dcc_character_departments = [Department.HAIR, Department.CLOTH]
+        self.dcc_actor_departments = [Department.HAIR, Department.CLOTH]
         self.all_departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
 
         # The source HDA's are currently stored inside the pipe source code.
@@ -149,7 +149,7 @@ class Assembler:
             if not asset.get_type() == AssetType.SHOT:
                 non_shot_list.append(item)
 
-        self.asset_gui = sfl.SelectFromList(l=non_shot_list, parent=houdini_main_window(), title="Select a prop, character, or set to assemble")
+        self.asset_gui = sfl.SelectFromList(l=non_shot_list, parent=houdini_main_window(), title="Select a prop, actor, or set to assemble")
         self.asset_gui.submitted.connect(self.asset_results)
 
     def clone_set(self):
@@ -180,14 +180,14 @@ class Assembler:
         if body is None or not body.is_asset():
             qd.error("Pipeline error: This asset either doesn't exist or isn't an asset.")
             return
-        if body.get_type() == AssetType.CHARACTER:
-            return self.dcc_character(parent, asset_name, already_tabbed_in_node, excluded_departments)
+        if body.get_type() == AssetType.ACTOR:
+            return self.dcc_actor(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.PROP:
             return self.dcc_geo(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.SET:
             return self.dcc_set(parent, asset_name, already_tabbed_in_node)
         else:
-            qd.error("Pipeline error: this asset isn't a character, prop or set.")
+            qd.error("Pipeline error: this asset isn't a actor, prop or set.")
             return
 
     '''
@@ -197,7 +197,7 @@ class Assembler:
         if node.type().name() == "dcc_set":
             self.update_contents_set(node, asset_name, mode=mode)
         elif node.type().name() == "dcc_character":
-            self.update_contents_character(node, asset_name, mode=mode)
+            self.update_contents_actor(node, asset_name, mode=mode)
         elif node.type().name() == "dcc_geo":
             self.update_contents_geo(node, asset_name, mode=mode)
 
@@ -206,14 +206,14 @@ class Assembler:
         if body is None or not body.is_asset():
             qd.error("Pipeline error: This asset either doesn't exist or isn't an asset.")
             return
-        if body.get_type() == AssetType.CHARACTER:
+        if body.get_type() == AssetType.ACTOR:
             return "dcc_character"
         elif body.get_type() == AssetType.PROP:
             return "dcc_geo"
         elif body.get_type() == AssetType.SET:
             return "dcc_set"
         else:
-            qd.error("Pipeline error: this asset isn't a character, prop or set.")
+            qd.error("Pipeline error: this asset isn't a actor, prop or set.")
             return
 
 
@@ -372,15 +372,15 @@ class Assembler:
 
 
     '''
-        This function tabs in a DCC Character node and fills its contents with the appropriate character name.
+        This function tabs in a DCC Character node and fills its contents with the appropriate actor name.
         Departments is a mask because sometimes we tab this asset in when we want to work on Hair or Cloth, and don't want the old ones to be there.
     '''
-    def dcc_character(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], mode=UpdateModes.CLEAN, shot=None):
+    def dcc_actor(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], mode=UpdateModes.CLEAN, shot=None):
 
-        # Set up the body/elements and make sure it's a character
+        # Set up the body/elements and make sure it's a actor
         body = Project().get_body(asset_name)
-        if not body.is_asset() or not body.get_type() == AssetType.CHARACTER:
-            qd.error("Must be a character.")
+        if not body.is_asset() or not body.get_type() == AssetType.ACTOR:
+            qd.error("Must be a actor.")
             return None
 
         # If there's an already tabbed in node, set it to that node
@@ -396,19 +396,19 @@ class Assembler:
         data["asset_name"] = asset_name
         node.parm("data").set(data)
 
-        # Set the contents to the character's nodes
-        self.update_contents_character(node, asset_name, excluded_departments, mode, shot)
+        # Set the contents to the actor's nodes
+        self.update_contents_actor(node, asset_name, excluded_departments, mode, shot)
         return node
 
     '''
         This function sets the inner contents of a DCC Character node.
     '''
-    def update_contents_character(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART, shot=None):
+    def update_contents_actor(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART, shot=None):
 
-        # Set up the body/elements and make sure it's a character. Just do some simple error checking.
+        # Set up the body/elements and make sure it's a actor. Just do some simple error checking.
         body = Project().get_body(asset_name)
-        if not body.is_asset() or body.get_type() != AssetType.CHARACTER or "dcc_character" not in node.type().name():
-            qd.error("Must be a character.")
+        if not body.is_asset() or body.get_type() != AssetType.ACTOR or "dcc_character" not in node.type().name():
+            qd.error("Must be a actor.")
             return None
 
         # Reset the data parm
@@ -426,12 +426,12 @@ class Assembler:
 
             elif mode == UpdateModes.CLEAN:
                 geo.destroy()
-                geo = self.dcc_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
+                geo = self.dcc_geo(inside, asset_name, excluded_departments=excluded_departments, actor=True)
         else:
-            geo = self.dcc_geo(inside, asset_name, excluded_departments=excluded_departments, character=True)
+            geo = self.dcc_geo(inside, asset_name, excluded_departments=excluded_departments, actor=True)
 
         # Tab in each content HDA based on department
-        for department in self.dcc_character_departments:
+        for department in self.dcc_actor_departments:
             # If the department is not excluded, tab-in/update the content node like normal
             if department not in excluded_departments:
 
@@ -447,7 +447,7 @@ class Assembler:
 
         geo.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
 
-        # If this character is being animated, set parms accordingly
+        # If this actor is being animated, set parms accordingly
         if shot is not None:
             geo.parm("space").set("anim")
             geo.parm("asset_department").set("rig")
@@ -458,7 +458,7 @@ class Assembler:
     '''
         This function tabs in a DCC Geo node and fills its contents according to the appropriate asset name.
     '''
-    def dcc_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], character=False, mode=UpdateModes.CLEAN):
+    def dcc_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], actor=False, mode=UpdateModes.CLEAN):
         # Set up the body/elements and check if it's an asset.
         body = Project().get_body(asset_name)
         if not body.is_asset():
@@ -467,7 +467,7 @@ class Assembler:
 
         # Set up the nodes, name geo
         node = already_tabbed_in_node if already_tabbed_in_node else parent.createNode("dcc_geo")
-        if character:
+        if actor:
             node.setName("geo")
         else:
             try:
@@ -490,13 +490,13 @@ class Assembler:
     '''
     def update_contents_geo(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART):
 
-        # Set up the body/elements and make sure it's not a character. Just do some simple error checking.
+        # Set up the body/elements and make sure it's not a actor. Just do some simple error checking.
         body = Project().get_body(asset_name)
         if body is None:
             qd.error("Asset doesn't exist.")
             return None
         if not body.is_asset() or body.get_type() == AssetType.SET or "dcc_geo" not in node.type().name():
-            qd.error("Must be a prop or character.")
+            qd.error("Must be a prop or actor.")
             return None
 
         # Get interior nodes
@@ -582,7 +582,7 @@ class Assembler:
         # Check if this body is an asset. If not, return error.
         body = body
         if not body.is_asset():
-            qd.error("Must be an asset of type PROP, CHARACTER or SET.")
+            qd.error("Must be an asset of type PROP, ACTOR or SET.")
             return None
 
         type = body.get_type()
@@ -593,7 +593,7 @@ class Assembler:
         Helper function for create_hda
     '''
     def get_departments(self, type):
-        if type == AssetType.CHARACTER:
+        if type == AssetType.ACTOR:
             departments = self.all_departments
         elif type == AssetType.PROP:
             departments = self.dcc_geo_departments
@@ -636,7 +636,7 @@ class Assembler:
         operator_label = str((asset_name.replace("_", " ") + " " + element.get_department()).title())
 
         self.hda_definitions[department].copyToHDAFile(checkout_file, operator_name, operator_label)
-        hda_type = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
+        hda_type = hou.objNodeTypeCategory() if department in self.dcc_actor_departments else hou.sopNodeTypeCategory()
         hou.hda.installFile(content_hda_filepath)
         print("hda type: ", hda_type)
         print("operator_name: ", operator_name)
@@ -651,8 +651,8 @@ class Assembler:
         Helper function for create_hda
     '''
     def get_inside_node(self, type, department, node):
-        # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-        if type == AssetType.CHARACTER and department not in self.dcc_character_departments:
+        # If it's a actor and it's not a hair or cloth asset, we need to reach one level deeper.
+        if type == AssetType.ACTOR and department not in self.dcc_actor_departments:
             inside = node.node("inside/geo/inside")
         else:
             inside = node.node("inside")
@@ -736,7 +736,7 @@ class Assembler:
     '''
     def published_definition(self, asset_name, department):
         # Set the node type correctly
-        category = hou.objNodeTypeCategory() if department in self.dcc_character_departments else hou.sopNodeTypeCategory()
+        category = hou.objNodeTypeCategory() if department in self.dcc_actor_departments else hou.sopNodeTypeCategory()
         hou.hda.reloadAllFiles()
 
         # Get the HDA File Path
@@ -817,7 +817,7 @@ class Assembler:
     def tab_into_correct_place(self, inside, node, department):
 
         # If the node belongs inside a DCC Character, do the following
-        if department in self.dcc_character_departments:
+        if department in self.dcc_actor_departments:
 
             # Hair and Cloth assets should be connected to geo. If it doesn't exist, throw an error.
             geo = inside.node("geo")

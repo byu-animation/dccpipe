@@ -45,10 +45,10 @@ class Importer:
         cache_dir = element.get_cache_dir()
 
         sets_json = []
-        characters_json = []
+        actors_json = []
         animated_props_json = []
 
-        # open the json files for sets characters and animated props
+        # open the json files for sets actors and animated props
         try:
             with open(os.path.join(cache_dir, "sets.json")) as f:
                 sets_json = json.load(f)
@@ -56,10 +56,10 @@ class Importer:
             print "{0}/sets.json not found.".format(cache_dir)
 
         try:
-            with open(os.path.join(cache_dir, "characters.json")) as f:
-                characters_json = json.load(f)
+            with open(os.path.join(cache_dir, "actors.json")) as f:
+                actors_json = json.load(f)
         except Exception as error:
-            print "{0}/characters.json not found.".format(cache_dir)
+            print "{0}/actors.json not found.".format(cache_dir)
 
         try:
             with open(os.path.join(cache_dir, "animated_props.json")) as f:
@@ -68,7 +68,7 @@ class Importer:
             print "{0}/animated_props.json not found.".format(cache_dir)
 
         set_nodes = []
-        character_nodes = []
+        actor_nodes = []
         animated_prop_nodes = []
 
         print("Loading sets:")
@@ -98,65 +98,65 @@ class Importer:
                         prop.parm("shot").set(shot_name)
                         animated_prop_nodes.append(prop)
 
-        print("Loading characters: ")
-        for character in characters_json:
-            print("Character: ", character)
+        print("Loading actors: ")
+        for actor in actors_json:
+            print("Actor: ", actor)
 
-            if character["asset_name"] == "dcc_camera":
+            if actor["asset_name"] == "dcc_camera":
                 camera_node = self.tab_in_camera(shot_name)
-                character_nodes.append(camera_node)
+                actor_nodes.append(camera_node)
                 continue
 
             try:
                 # get the most recent data for this reference
-                asset_name = character["asset_name"]
-                character_node, instances = Cloner().asset_results([asset_name])
-                # Assembler().update_contents_character(character_node, asset_name, shot=shot_name)
+                asset_name = actor["asset_name"]
+                actor_node, instances = Cloner().asset_results([asset_name])
+                # Assembler().update_contents_actor(actor_node, asset_name, shot=shot_name)
 
-                # character_node = cloned_subnet.copyTo(inside)
+                # actor_node = cloned_subnet.copyTo(inside)
                 # cloned_subnet.destroy()
-                # character_node = Assembler().dcc_character(hou.node("/obj"), character["asset_name"],shot=shot_name)
+                # actor_node = Assembler().dcc_actor(hou.node("/obj"), actor["asset_name"],shot=shot_name)
 
-                # TODO: add the shot name in the dcc_geo inside dcc_character
-                inside = character_node.node("inside")
+                # TODO: add the shot name in the dcc_geo inside dcc_actor
+                inside = actor_node.node("inside")
                 geo = inside.node("geo")
                 geo.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
                 geo.parm("space").set("anim")
                 geo.parm("asset_department").set("rig")
                 geo.parm("shot").set(shot_name)
 
-                character_nodes.append(character_node)
+                actor_nodes.append(actor_node)
             except:
-                print "Error with {0}".format(character)
+                print "Error with {0}".format(actor)
                 continue
-            #shot_parm = character_node.parm("shot")
+            #shot_parm = actor_node.parm("shot")
             #shot_parm.set(shot_name)
 
-            data_parm = character_node.parm("data")
+            data_parm = actor_node.parm("data")
             data = data_parm.evalAsJSONMap()
-            data["version_number"] = str(character["version_number"])
+            data["version_number"] = str(actor["version_number"])
             data_parm.set(data)
 
-            version_number_parm = character_node.parm("version_number")
-            version_number_parm.set(character["version_number"])
+            version_number_parm = actor_node.parm("version_number")
+            version_number_parm.set(actor["version_number"])
 
         # create network box in houdini and fill it with all objects in the shot
         box = hou.node("/obj").createNetworkBox()
         box.setComment(shot_name)
         for set_node in set_nodes:
             box.addItem(set_node)
-        for character_node in character_nodes:
-            box.addItem(character_node)
+        for actor_node in actor_nodes:
+            box.addItem(actor_node)
         for animated_prop_node in animated_prop_nodes:
             box.addItem(animated_prop_node)
 
         # move all the imported objects to a non-overlaid position in the node editor
         for set_node in set_nodes:
             set_node.moveToGoodPosition()
-        for character_node in character_nodes:
-            character_node.moveToGoodPosition()
+        for actor_node in actor_nodes:
+            actor_node.moveToGoodPosition()
         for animated_prop_node in animated_prop_nodes:
-            character_node.moveToGoodPosition()
+            actor_node.moveToGoodPosition()
 
     def tab_in_camera(self, shot_name):
         camera_node = hou.node("/obj").createNode("dcc_camera")

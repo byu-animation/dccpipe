@@ -78,7 +78,7 @@ def version_dir(dirpath, zero_padding=3):
 
 def alphanumeric(name):
 	"""
-	returns a string of the same length as the given name with all the non-alphanumeric characters
+	returns a string of the same length as the given name with all the non-alphanumeric actors
 	replaced by underscores and all uppercase letters replaced by lowercase letters
 	name -- string to make alphanumeric
 	"""

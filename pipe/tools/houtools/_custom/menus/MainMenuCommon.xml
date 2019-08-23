@@ -20,9 +20,9 @@ T.run()
 			</scriptItem> -->
 			<!-- ============================ End Message Displayer Tool =========================== -->
 
-			<!-- ============================ Start Create Prop or Character Tool =========================== -->
+			<!-- ============================ Start Create Prop or Actor Tool =========================== -->
 			<scriptItem id="h.createBody">
-				<label>Create Prop/Character</label>
+				<label>Create Prop/Actor</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.creator import creator
@@ -33,7 +33,7 @@ creator.run()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Create Prop or Character Tool =========================== -->
+			<!-- ============================ End Create Prop or Actor Tool =========================== -->
 
 			<!-- ============================ Start Assembler Tool =========================== -->
 			<scriptItem id="h.assembler">
@@ -70,9 +70,9 @@ importer.run()
 		<!-- ============================ Start cloner subMenu =========================== -->
 		<subMenu id="cloner_menu">
 			<label>Clone</label>
-			<!-- ============================ Start Prop/Character cloner Tool =========================== -->
+			<!-- ============================ Start Prop/Actor cloner Tool =========================== -->
 			<scriptItem id="h.checkout_asset">
-				<label>Prop/Character</label>
+				<label>Prop/Actor</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.cloner import cloner
@@ -83,7 +83,7 @@ cloner.clone_asset()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Prop/Character cloner Tool =========================== -->
+			<!-- ============================ End Prop/Actor cloner Tool =========================== -->
 
 			<!-- ============================ Start Set cloner Tool =========================== -->
 			<scriptItem id="h.checkout_set">
@@ -135,9 +135,9 @@ cloner.clone_shot()
 		<!-- ============================ Start Publish subMenu =========================== -->
 		<subMenu id="publish_menu">
 			<label>Publish</label>
-			<!-- ============================ Start Prop/Character Publish Tool =========================== -->
+			<!-- ============================ Start Prop/Actor Publish Tool =========================== -->
 			<scriptItem id="h.publishAsset">
-				<label>Prop/Character</label>
+				<label>Prop/Actor</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.publisher import publisher
@@ -148,7 +148,7 @@ publisher.publish_asset()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Prop/Character Publish Tool =========================== -->
+			<!-- ============================ End Prop/Actor Publish Tool =========================== -->
 
 			<!-- ============================ Start Set Publish Tool =========================== -->
 			<scriptItem id="h.publishSet">

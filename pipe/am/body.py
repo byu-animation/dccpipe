@@ -248,13 +248,13 @@ class AssetType:
 	Class describing types of assets.
 	'''
 
-	CHARACTER = 'character'
+	ACTOR = 'actor'
 	SET = 'set'
 	PROP = 'prop'
 	TOOL = 'tool'
 	SHOT = 'shot'
-	ALL = [CHARACTER, PROP, SET, SHOT, TOOL]
-	MAYA = [CHARACTER, PROP, SET, SHOT]
+	ALL = [ACTOR, PROP, SET, SHOT, TOOL]
+	MAYA = [ACTOR, PROP, SET, SHOT]
 
 	def __init__(self):
 		pass

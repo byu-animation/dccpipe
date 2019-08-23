@@ -256,7 +256,7 @@ class AlembicExporter:
         self.body = project.get_body(chosen_asset)
         type = self.body.get_type()
 
-        if str(type) == str("shot"):
+        if type == AssetType.SHOT:
             self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
 
             if self.frame_range is None or self.frame_range == u'':
@@ -431,7 +431,7 @@ class AlembicExporter:
         @return: a list of exported alembic files
 
         Gets all loaded references, then loops through them and if it's a top level reference
-        i.e. a character, set, or animated prop, exports an alembic file to the destination specified
+        i.e. a actor, set, or animated prop, exports an alembic file to the destination specified
     '''
     def exportReferences(self, destination, tag="DCC_Alembic_Export_Flag", startFrame=1, endFrame=1):
         selection = get_loaded_references()

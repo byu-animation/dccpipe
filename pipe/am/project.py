@@ -46,7 +46,7 @@ class Project:
 		'''
 		return a list of departments that chars are exported to
 		'''
-		return Department.CHARACTER_EXPORT_DEPARTMENTS
+		return Department.ACTOR_EXPORT_DEPARTMENTS
 
 	@staticmethod
 	def set_export_departments():
@@ -268,7 +268,7 @@ class Project:
 		'''
 		returns a list of strings containing the names of all assets in this project
 		filter -- a tuple containing an attribute (string) relation (operator) and value
-		          e.g. (Asset.TYPE, operator.eq, AssetType.CHARACTER). Only returns assets whose
+		          e.g. (Asset.TYPE, operator.eq, AssetType.ACTOR). Only returns assets whose
 		          given attribute has the relation to the given desired value. Defaults to None.
 		'''
 		return self._list_bodies_in_dir(self._env.get_assets_dir(), filter)
@@ -317,16 +317,16 @@ class Project:
 
 		return set_list
 
-	def list_props_and_characters(self):
+	def list_props_and_actors(self):
 		'''
-		returns a list of strings containing the names of all props/characters in this project
+		returns a list of strings containing the names of all props/actors in this project
 		'''
 		list = self.list_assets()
 		pc_list = []
 
 		for item in list:
 			asset = self.get_asset(item)
-			if asset.get_type() == AssetType.PROP or asset.get_type() == AssetType.CHARACTER:
+			if asset.get_type() == AssetType.PROP or asset.get_type() == AssetType.ACTOR:
 				pc_list.append(item)
 
 		return pc_list

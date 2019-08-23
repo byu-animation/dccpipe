@@ -47,20 +47,20 @@ class MayaCloner:
 	def get_element_option(self, type, body):
 		element = None
 
-		if str(type) == "prop":
+		if type == AssetType.PROP:
 			element = body.get_element("model")
 
-		elif str(type) == "character":
+		elif type == AssetType.ACTOR:
 			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "rig")
 			if response:
 				element = body.get_element("model")
 			else:
 				element = body.get_element("rig")
 
-		elif str(type) == "set":
+		elif type == AssetType.SET:
 			element = body.get_element("model")
 
-		elif str(type) == "shot":
+		elif type == AssetType.SHOT:
 			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "anim")
 			if response:
 				element = body.get_element("model")
@@ -124,12 +124,17 @@ class MayaCloner:
 					# instead of saving, publish.
 					scene = mc.file(q=True, sceneName=True)
 					dir_path = scene.split("assets/")
-					asset_path = dir_path[1].split("/")
+					print("dir path: ", dir_path)
+					try:
+						asset_path = dir_path[1].split("/")
+					except:
+						# scene path is stored in the user directory instead of assets. We can't get the asset name, so they must publish manually.
+						qd.error("Publish failed. Please publish manually before cloning the new asset.")
+						return
 					asset_name = asset_path[0]
 					# asset = Project().get_body(asset_name)
 					self.publisher = Publisher()
 					self.publisher.non_gui_publish(asset_name, "model")
-					# FIXME: because gui is asynchronous, we'll need to publish without pulling up the guis. That means we need to know the department beforehand. Adding model for now.
 
 			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)

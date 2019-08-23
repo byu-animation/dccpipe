@@ -280,7 +280,7 @@ class Publisher:
 
         if selectedHDA.type().definition() is not None:
             self.src = selectedHDA.type().definition().libraryFilePath()
-            asset_list = project.list_props_and_characters()
+            asset_list = project.list_props_and_actors()
             self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to publish to")
             self.item_gui.submitted.connect(self.asset_results)
 
@@ -310,7 +310,7 @@ class Publisher:
         hair = inside.node("hair")
         cloth = inside.node("cloth")
 
-        if asset_type == AssetType.CHARACTER:
+        if asset_type == AssetType.ACTOR:
             geo = inside.node("geo")
             geo_inside = geo.node("inside")
             modify = geo_inside.node("modify")
@@ -346,8 +346,8 @@ class Publisher:
         return "published to " + str(departments_to_publish)
 
     def get_inside_node(self, type, department, node):
-        # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-        if type == AssetType.CHARACTER and department in self.dcc_geo_departments:
+        # If it's a actor and it's not a hair or cloth asset, we need to reach one level deeper.
+        if type == AssetType.ACTOR and department in self.dcc_geo_departments:
             inside = node.node("inside/geo/inside")
         else:
             inside = node.node("inside")
