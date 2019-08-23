@@ -42,8 +42,11 @@ class MayaReferencer:
 
                 if model:
                     department = "model"
-                else:
+                elif model is not None:
                     department = "rig"
+                else:
+                    qd.warning("Skipping " + str(asset))
+                    continue
 
                 element = body.get_element(department)
                 publish = element.get_last_publish()

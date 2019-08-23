@@ -54,8 +54,10 @@ class MayaCloner:
 			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "rig")
 			if response:
 				element = body.get_element("model")
-			else:
+			elif response is not None:
 				element = body.get_element("rig")
+			else:
+				return None
 
 		elif type == AssetType.SET:
 			element = body.get_element("model")
@@ -64,8 +66,10 @@ class MayaCloner:
 			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "anim")
 			if response:
 				element = body.get_element("model")
-			else:
+			elif response is not None:
 				element = body.get_element("anim")
+			else:
+				return None
 
 		print("element: ", element)
 
@@ -79,6 +83,10 @@ class MayaCloner:
 		body = project.get_body(filename)
 		type = body.get_type()
 		element = self.get_element_option(type, body)
+
+		if element is None:
+			qd.warning("Nothing was cloned.")
+			return
 
 		self.publishes = element.list_publishes()
 		print("publishes: ", self.publishes)
