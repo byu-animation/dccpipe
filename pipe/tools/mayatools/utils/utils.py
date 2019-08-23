@@ -154,13 +154,17 @@ def get_top_level_nodes():
 '''
 def group_top_level():
     top_level_nodes = get_top_level_nodes()
-    for top_level_node in top_level_nodes:
-        # If the top level has a mesh, group it.
-        if top_level_node.getShape() is not None:
-            pm.group(top_level_nodes)
+    print("top level nodes: ", top_level_nodes)
     # If the top level has more than one node, group it.
+    # Also, if there's only one top level, and it's not a group, group it.
+
     if len(top_level_nodes) > 1:
         pm.group(top_level_nodes)
+    elif len(top_level_nodes) == 1:
+        node = top_level_nodes[0]
+        shapes = node.listRelatives(shapes=True)
+        if not shapes and "group" not in str(node):
+            pm.group(top_level_nodes)
 
 '''
     Helper function for scene_prep()
