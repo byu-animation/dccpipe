@@ -42,8 +42,11 @@ class MayaReferencer:
 
                 if model:
                     department = "model"
-                else:
+                elif model is not None:
                     department = "rig"
+                else:
+                    qd.warning("Skipping " + str(asset))
+                    continue
 
                 element = body.get_element(department)
                 publish = element.get_last_publish()
@@ -80,7 +83,7 @@ class MayaReferencer:
                 print os.path.exists(str(cycle)), 'this is another shot'
                 return
             fileName = os.path.basename(cycle)
-            #The file is going to be an alembic so we can drop the last four characters '.abc' to get the file name
+            #The file is going to be an alembic so we can drop the last four actors '.abc' to get the file name
             cycleName = fileName[:len(fileName)-4]
 
             invalidInput = True

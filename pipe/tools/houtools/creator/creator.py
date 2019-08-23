@@ -13,8 +13,10 @@ class Creator:
 
     def __init__(self):
         self.name = None
+        self.type = None
 
-    def run(self):
+    def run(self, type=None):
+        self.type = type
         self.create_body()
 
     '''
@@ -31,6 +33,10 @@ class Creator:
             return
 
         asset_type_list = AssetType().list_asset_types()
+
+        if self.type:
+            self.results([self.type])
+            return
 
         self.item_gui = sfl.SelectFromList(l=asset_type_list, parent=houdini_main_window(), title="What are you creating?", width=250, height=160)
         self.item_gui.submitted.connect(self.results)

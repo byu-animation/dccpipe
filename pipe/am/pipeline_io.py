@@ -39,8 +39,8 @@ def version_file(filepath):
 	"""
 	versions up the given file based on other files in the same directory. The given filepath
 	should not have a version at the end. e.g. given "/tmp/file.txt" this function will return
-	"/tmp/file000.txt" unless there is already a file000.txt in /tmp, in which case it will
-	return "/tmp/file001.txt".
+	"/tmp/file0000.txt" unless there is already a file0000.txt in /tmp, in which case it will
+	return "/tmp/file0001.txt".
 	"""
 
 	zero_padding = 4
@@ -78,7 +78,7 @@ def version_dir(dirpath, zero_padding=3):
 
 def alphanumeric(name):
 	"""
-	returns a string of the same length as the given name with all the non-alphanumeric characters
+	returns a string of the same length as the given name with all the non-alphanumeric actors
 	replaced by underscores and all uppercase letters replaced by lowercase letters
 	name -- string to make alphanumeric
 	"""

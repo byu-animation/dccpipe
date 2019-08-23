@@ -39,48 +39,6 @@ class Body(object):
 		return datadict
 
 	@staticmethod
-	def default_departments():
-		'''
-		return a list of departments that this body should create on initialization
-		'''
-		return Department.ALL
-
-	@staticmethod
-	def houdini_default_departments():
-		'''
-		return a list of departments that this body should create on initialization
-		'''
-		return Department.HOUDINI_DEPTS
-
-	@staticmethod
-	def prop_export_departments():
-		'''
-		return a list of departments that this body should create on initialization
-		'''
-		return Department.PROP_EXPORT_DEPARTMENTS
-
-	@staticmethod
-	def char_export_departments():
-		'''
-		return a list of departments that this body should create on initialization
-		'''
-		return Department.CHARACTER_EXPORT_DEPARTMENTS
-
-	@staticmethod
-	def set_export_departments():
-		'''
-		return a list of departments that this body should create on initialization
-		'''
-		return Department.SET_EXPORT_DEPARTMENTS
-
-	@staticmethod
-	def shot_export_departments():
-		'''
-		return a list of departments that this body should create on initialization
-		'''
-		return Department.SHOT_EXPORT_DEPARTMENTS
-
-	@staticmethod
 	def get_parent_dir():
 		'''
 		return the parent directory that bodies of this type are stored in
@@ -163,6 +121,8 @@ class Body(object):
 		matches = []
 		for file in files:
 			root, ext = os.path.splitext(file)
+			# version = root[-3:]
+			# name = root[:-4]
 			version = root[-1:]
 			name = root[:-2]
 
@@ -178,12 +138,6 @@ class Body(object):
 				latest_file = match[2]
 
 		return latest_file, latest_version
-
-	# def get_parent_dir(self):
-	# 	'''
-	# 	return the parent directory that bodies of this type are stored in
-	# 	'''
-	# 	raise NotImplementedError('subclass must implement get_parent_dir')
 
 	def get_element(self, department, name=Element.DEFAULT_NAME, force_create=False):
 		'''
@@ -290,13 +244,13 @@ class AssetType:
 	Class describing types of assets.
 	'''
 
-	CHARACTER = 'character'
+	ACTOR = 'actor'
 	SET = 'set'
 	PROP = 'prop'
 	TOOL = 'tool'
 	SHOT = 'shot'
-	ALL = [CHARACTER, PROP, SET, SHOT, TOOL]
-	MAYA = [CHARACTER, PROP, SET, SHOT]
+	ALL = [ACTOR, PROP, SET, SHOT, TOOL]
+	MAYA = [ACTOR, PROP, SET, SHOT]
 
 	def __init__(self):
 		pass
@@ -358,11 +312,6 @@ class Tool(Body):
 		datadict = Body.create_new_dict(name)
 		return datadict
 
-	# @staticmethod
-	# def default_departments():
-	#
-	# 	return Department.TOOL_DEPTS
-
 	def __str__(self):
 		return super(Tool, self).__str__()
 
@@ -395,11 +344,6 @@ class CrowdCycle(Body):
 
 	def __str__(self):
 		return super(CrowdCycle, self).__str__()
-
-	# @staticmethod
-	# def default_departments():
-	#
-	# 	return Department.CROWD_DEPTS
 
 	def is_shot(self):
 

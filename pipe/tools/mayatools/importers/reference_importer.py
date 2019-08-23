@@ -15,7 +15,7 @@ class ReferenceImporter:
         reference_dir = environment.get_reference_geo_dir()
         files = os.listdir(reference_dir)
 
-        self.item_gui = sfl.SelectFromList(l=files, parent=maya_main_window(), title="Select reference character(s) to import", multiple_selection=True)
+        self.item_gui = sfl.SelectFromList(l=files, parent=maya_main_window(), title="Select reference actor(s) to import", multiple_selection=True)
         self.item_gui.submitted.connect(self.results)
 
     def results(self, files):

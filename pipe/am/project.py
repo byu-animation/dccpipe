@@ -20,6 +20,48 @@ class Project:
 		'''
 		self._env = Environment()
 
+	@staticmethod
+	def default_departments():
+		'''
+		return a list of all departments
+		'''
+		return Department.ALL
+
+	@staticmethod
+	def houdini_default_departments():
+		'''
+		return a list of houdini-specific departments
+		'''
+		return Department.HOUDINI_DEPTS
+
+	@staticmethod
+	def prop_export_departments():
+		'''
+		return a list of departments that props are exported to
+		'''
+		return Department.PROP_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def char_export_departments():
+		'''
+		return a list of departments that chars are exported to
+		'''
+		return Department.ACTOR_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def set_export_departments():
+		'''
+		return a list of departments that sets are exported to
+		'''
+		return Department.SET_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def shot_export_departments():
+		'''
+		return a list of departments that shots are exported to
+		'''
+		return Department.SHOT_EXPORT_DEPARTMENTS
+
 	def get_name(self):
 		'''
 		return the name of the this project
@@ -159,7 +201,7 @@ class Project:
 		datadict = bodyobj.create_new_dict(name)
 		pipeline_io.writefile(os.path.join(filepath, bodyobj.PIPELINE_FILENAME), datadict)
 		new_body = bodyobj(filepath)
-		for dept in bodyobj.default_departments():
+		for dept in self.default_departments():
 			pipeline_io.mkdir(os.path.join(filepath, dept))
 			new_body.create_element(dept, Element.DEFAULT_NAME)
 
@@ -226,7 +268,7 @@ class Project:
 		'''
 		returns a list of strings containing the names of all assets in this project
 		filter -- a tuple containing an attribute (string) relation (operator) and value
-		          e.g. (Asset.TYPE, operator.eq, AssetType.CHARACTER). Only returns assets whose
+		          e.g. (Asset.TYPE, operator.eq, AssetType.ACTOR). Only returns assets whose
 		          given attribute has the relation to the given desired value. Defaults to None.
 		'''
 		return self._list_bodies_in_dir(self._env.get_assets_dir(), filter)
@@ -275,16 +317,16 @@ class Project:
 
 		return set_list
 
-	def list_props_and_characters(self):
+	def list_props_and_actors(self):
 		'''
-		returns a list of strings containing the names of all props/characters in this project
+		returns a list of strings containing the names of all props/actors in this project
 		'''
 		list = self.list_assets()
 		pc_list = []
 
 		for item in list:
 			asset = self.get_asset(item)
-			if asset.get_type() == AssetType.PROP or asset.get_type() == AssetType.CHARACTER:
+			if asset.get_type() == AssetType.PROP or asset.get_type() == AssetType.ACTOR:
 				pc_list.append(item)
 
 		return pc_list

@@ -7,6 +7,7 @@ from PySide2 import QtWidgets
 
 from pipe.am import *
 from pipe.am.environment import Environment
+from pipe.am.environment import Department
 from pipe.am.project import Project
 from pipe.am.element import Element
 from pipe.am.body import Body, AssetType
@@ -154,13 +155,32 @@ def get_top_level_nodes():
 '''
 def group_top_level():
     top_level_nodes = get_top_level_nodes()
-    for top_level_node in top_level_nodes:
-        # If the top level has a mesh, group it.
-        if top_level_node.getShape() is not None:
-            pm.group(top_level_nodes)
+    print("top level nodes: ", top_level_nodes)
     # If the top level has more than one node, group it.
+    # Also, if there's only one top level, and it's not a group, group it.
+
     if len(top_level_nodes) > 1:
         pm.group(top_level_nodes)
+    elif len(top_level_nodes) == 1:
+        node = top_level_nodes[0]
+        shapes = node.listRelatives(shapes=True)
+        if not shapes and "group" not in str(node):
+            pm.group(top_level_nodes)
+
+def get_departments_by_type(asset_type):
+    department_list = []
+    project = Project()
+
+    if asset_type == AssetType.PROP:
+        department_list = project.prop_export_departments()
+    elif asset_type == AssetType.ACTOR:
+        department_list = project.char_export_departments()
+    elif asset_type == AssetType.SET:
+        department_list = project.set_export_departments()
+    elif asset_type == AssetType.SHOT:
+        department_list = project.shot_export_departments()
+
+    return department_list
 
 '''
     Helper function for scene_prep()

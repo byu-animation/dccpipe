@@ -17,6 +17,7 @@ class Publisher:
     def __init__(self):
         self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
         self.item_gui = None
+        self.node_name = None
 
     def publish_content_hda(self, node):
         node_name = node.type().name()
@@ -35,8 +36,14 @@ class Publisher:
         success_message = "Success! Published " + asset_name + " to " + str(department)
         self.print_success_message(success_message)
 
-    def publish_asset(self, node=None):
+    def publish_asset(self, node=None, name=None):
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
+
+        if node:
+            self.node_name = name
+            print("node: ", node)
+            print("name: ", name)
+
         self.publish(selectedHDA=node)
 
     def publish_tool(self, node=None):
@@ -111,7 +118,10 @@ class Publisher:
             rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
             sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
 
+            # FIXME
             latest_file, latest_version = self.body.get_latest_json_version(name)
+            # if latest_version == int(999):
+            #     new_version = 999
             if latest_version == int(9):
                 new_version = 0
             else:
@@ -280,13 +290,19 @@ class Publisher:
 
         if selectedHDA.type().definition() is not None:
             self.src = selectedHDA.type().definition().libraryFilePath()
-            asset_list = project.list_props_and_characters()
+
+            if self.node_name:
+                self.asset_results([self.node_name])
+                return
+
+            asset_list = project.list_props_and_actors()
             self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to publish to")
             self.item_gui.submitted.connect(self.asset_results)
 
         else:
             qd.error('The selected node is not a digital asset')
-            return
+
+        return
 
     def asset_results(self, value):
         chosen_asset = value[0]
@@ -310,7 +326,7 @@ class Publisher:
         hair = inside.node("hair")
         cloth = inside.node("cloth")
 
-        if asset_type == AssetType.CHARACTER:
+        if asset_type == AssetType.ACTOR:
             geo = inside.node("geo")
             geo_inside = geo.node("inside")
             modify = geo_inside.node("modify")
@@ -346,8 +362,8 @@ class Publisher:
         return "published to " + str(departments_to_publish)
 
     def get_inside_node(self, type, department, node):
-        # If it's a character and it's not a hair or cloth asset, we need to reach one level deeper.
-        if type == AssetType.CHARACTER and department in self.dcc_geo_departments:
+        # If it's a actor and it's not a hair or cloth asset, we need to reach one level deeper.
+        if type == AssetType.ACTOR and department in self.dcc_geo_departments:
             inside = node.node("inside/geo/inside")
         else:
             inside = node.node("inside")
