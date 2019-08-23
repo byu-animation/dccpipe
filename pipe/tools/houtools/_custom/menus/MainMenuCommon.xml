@@ -7,20 +7,41 @@
 
 		<subMenu id="tools_menu">
 			<label>DCCPipe</label>
-			<!-- ============================ Start Create Prop or Actor Tool =========================== -->
-			<scriptItem id="h.createBody">
-				<label>Create Prop/Actor</label>
+
+		<!-- ============================ Start creator subMenu =========================== -->
+		<subMenu id="creator_menu">
+			<label>Create</label>
+			<!-- ============================ Start Create Prop Tool =========================== -->
+			<scriptItem id="h.createProp">
+				<label>Prop</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
 from pipe.tools.houtools.creator import creator
 import hou
 creator = creator.Creator()
 hou.session.creator = creator
-creator.run()
+creator.run(type="prop")
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Create Prop or Actor Tool =========================== -->
+			<!-- ============================ End Create Prop Tool =========================== -->
+
+			<!-- ============================ Start Create Actor Tool =========================== -->
+			<scriptItem id="h.createActor">
+				<label>Actor</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.creator import creator
+import hou
+creator = creator.Creator()
+hou.session.creator = creator
+creator.run(type="actor")
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Create Actor Tool =========================== -->
+		</subMenu>
+		<!-- ============================ End creator subMenu =========================== -->
 
 		<!-- ============================ Start cloner subMenu =========================== -->
 		<subMenu id="cloner_menu">

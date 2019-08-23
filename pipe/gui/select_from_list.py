@@ -86,11 +86,15 @@ class SelectFromList(QtWidgets.QWidget):
         self.button.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
         self.button.clicked.connect(self.submit)
         self.button.setEnabled(False)
+        self.button.setAutoDefault(True)
         self.vbox.addWidget(self.button)
 
     def set_values(self, values):
         self.values = values
-        self.button.setEnabled(len(self.values) > 0)
+        if len(self.values) > 0:
+            self.button.setDefault(True)
+            self.button.setAutoDefault(True)
+            self.button.setEnabled(True)
 
     def select(self):
         # print "selected items: {0}".format(self.listWidget.selectedItems())

@@ -119,16 +119,18 @@ class HoudiniInput(QtWidgets.QWidget):
 		self.vbox.addLayout(hbox)
 
     def initializeSubmitButton(self):
-        # Create the button widget
-        self.button = QtWidgets.QPushButton("Confirm")
-        self.button.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
-        self.button.clicked.connect(self.submit)
-        self.button.setEnabled(False)
-        self.vbox.addWidget(self.button)
+		# Create the button widget
+		self.button = QtWidgets.QPushButton("Confirm")
+		self.button.setDefault(True)
+		self.button.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
+		self.button.clicked.connect(self.submit)
+		self.button.setEnabled(False)
+		self.vbox.addWidget(self.button)
 
     def textEdited(self, newText):
 		if len(newText) > 0:
 			self.button.setEnabled(True)
+			self.button.setDefault(True)
 		else:
 			self.button.setEnabled(False)
 
