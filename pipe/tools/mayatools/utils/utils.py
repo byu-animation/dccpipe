@@ -7,6 +7,7 @@ from PySide2 import QtWidgets
 
 from pipe.am import *
 from pipe.am.environment import Environment
+from pipe.am.environment import Department
 from pipe.am.project import Project
 from pipe.am.element import Element
 from pipe.am.body import Body, AssetType
@@ -165,6 +166,21 @@ def group_top_level():
         shapes = node.listRelatives(shapes=True)
         if not shapes and "group" not in str(node):
             pm.group(top_level_nodes)
+
+def get_departments_by_type(asset_type):
+    department_list = []
+    project = Project()
+
+    if str(asset_type) == 'prop':
+        department_list = project.prop_export_departments()
+    elif str(asset_type) == 'character':
+        department_list = project.char_export_departments()
+    elif str(asset_type) == 'set':
+        department_list = project.set_export_departments()
+    elif str(asset_type) == 'shot':
+        department_list = project.shot_export_departments()
+
+    return department_list
 
 '''
     Helper function for scene_prep()

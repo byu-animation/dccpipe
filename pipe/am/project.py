@@ -20,6 +20,48 @@ class Project:
 		'''
 		self._env = Environment()
 
+	@staticmethod
+	def default_departments():
+		'''
+		return a list of all departments
+		'''
+		return Department.ALL
+
+	@staticmethod
+	def houdini_default_departments():
+		'''
+		return a list of houdini-specific departments
+		'''
+		return Department.HOUDINI_DEPTS
+
+	@staticmethod
+	def prop_export_departments():
+		'''
+		return a list of departments that props are exported to
+		'''
+		return Department.PROP_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def char_export_departments():
+		'''
+		return a list of departments that chars are exported to
+		'''
+		return Department.CHARACTER_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def set_export_departments():
+		'''
+		return a list of departments that sets are exported to
+		'''
+		return Department.SET_EXPORT_DEPARTMENTS
+
+	@staticmethod
+	def shot_export_departments():
+		'''
+		return a list of departments that shots are exported to
+		'''
+		return Department.SHOT_EXPORT_DEPARTMENTS
+
 	def get_name(self):
 		'''
 		return the name of the this project
@@ -159,7 +201,7 @@ class Project:
 		datadict = bodyobj.create_new_dict(name)
 		pipeline_io.writefile(os.path.join(filepath, bodyobj.PIPELINE_FILENAME), datadict)
 		new_body = bodyobj(filepath)
-		for dept in bodyobj.default_departments():
+		for dept in self.default_departments():
 			pipeline_io.mkdir(os.path.join(filepath, dept))
 			new_body.create_element(dept, Element.DEFAULT_NAME)
 

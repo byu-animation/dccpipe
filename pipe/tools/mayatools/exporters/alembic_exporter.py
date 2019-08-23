@@ -270,16 +270,8 @@ class AlembicExporter:
 
         self.body.set_frame_range(self.frame_range)
 
-        department_list = []
         asset_type = self.body.get_type()
-        if str(asset_type) == 'prop':
-            department_list = self.body.prop_export_departments()
-        elif str(asset_type) == 'character':
-            department_list = self.body.char_export_departments()
-        elif str(asset_type) == 'set':
-            department_list = self.body.set_export_departments()
-        elif str(asset_type) == 'shot':
-            department_list = self.body.shot_export_departments()
+        department_list = get_departments_by_type(asset_type)
 
         if export_all:
             # tag top level nodes
