@@ -5,7 +5,6 @@ from pipe.am.environment import Department, Environment
 from pipe.am.element import Element
 from pipe.am.body import Body, Asset, Shot, AssetType
 from pipe.tools.houtools.assembler.assembler import Assembler
-from pipe.tools.houtools.cloner.cloner import Cloner
 from pipe.tools.houtools.utils.utils import *
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
@@ -29,8 +28,10 @@ class Importer:
 
         # Bring in the body so we can get info
         body = Project().get_body(shot_name)
+        print("shot name: ", shot_name)
+        print("body: ", str(body))
         if not body:
-            qd.error("Error with body.")
+            qd.error("Error with asset.")
             return
         elif not body.is_shot():
             qd.error("Body is not shot?")
@@ -110,6 +111,12 @@ class Importer:
             try:
                 # get the most recent data for this reference
                 asset_name = actor["asset_name"]
+
+                try:
+                    from pipe.tools.houtools.cloner.cloner import Cloner
+                except:
+                    pass
+
                 actor_node, instances = Cloner().asset_results([asset_name])
                 # Assembler().update_contents_actor(actor_node, asset_name, shot=shot_name)
 

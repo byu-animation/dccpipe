@@ -5,6 +5,7 @@ import pipe.gui.quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
 
 from pipe.tools.houtools.utils.utils import *
+from pipe.tools.houtools.importer.importer import Importer
 
 from pipe.am.project import Project
 from pipe.am.body import Body
@@ -46,6 +47,12 @@ class Cloner:
 
         self.publishes = element.list_publishes();
         print("publishes: ", self.publishes)
+
+        if not self.publishes:
+            # has not been imported. Import it first.
+            importer = Importer()
+            importer.import_shot([shot_name])
+            return
 
         # make the list a list of strings, not tuples
         self.sanitized_publish_list = []

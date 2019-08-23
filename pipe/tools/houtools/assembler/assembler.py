@@ -303,6 +303,7 @@ class Assembler:
                 continue
 
             # get the most recent data for this reference
+            from pipe.tools.houtools.cloner.cloner import Cloner
             cloned_subnet, instances = Cloner().asset_results([reference["asset_name"]])
 
             # move the cloned asset inside the set node and delete the one on the top level

@@ -7,19 +7,6 @@
 
 		<subMenu id="tools_menu">
 			<label>DCCPipe</label>
-			<!-- ============================ Start Message Displayer Tool =========================== -->
-			<!-- 	<scriptItem id="h.message_displayer">
-					<label>Message Displayer</label>
-					<scriptCode scriptType="python">
-						<![CDATA[
-from pipe.tools.tool import Tool
-T = Tool("houtools.message_displayer.tool", gui=True)
-T.run()
-						]]>
-					</scriptCode>
-			</scriptItem> -->
-			<!-- ============================ End Message Displayer Tool =========================== -->
-
 			<!-- ============================ Start Create Prop or Actor Tool =========================== -->
 			<scriptItem id="h.createBody">
 				<label>Create Prop/Actor</label>
@@ -34,38 +21,6 @@ creator.run()
 				</scriptCode>
 			</scriptItem>
 			<!-- ============================ End Create Prop or Actor Tool =========================== -->
-
-			<!-- ============================ Start Assembler Tool =========================== -->
-			<scriptItem id="h.assembler">
-				<label>Assemble Asset</label>
-				<scriptCode scriptType="python">
-					<![CDATA[
-from pipe.tools.houtools.assembler import assembler
-import hou
-assembler = assembler.Assembler()
-hou.session.assembler = assembler
-assembler.run()
-					]]>
-				</scriptCode>
-			</scriptItem>
-			<!-- ============================ End Assembler Tool =========================== -->
-
-
-			<!-- ============================ Start Shot Importer Tool =========================== -->
-			<scriptItem id="h.import_shot">
-				<label>Import Shot</label>
-				<scriptCode scriptType="python">
-					<![CDATA[
-from pipe.tools.houtools.importer import importer
-import hou
-importer = importer.Importer()
-hou.session.importer = importer
-importer.run()
-					]]>
-				</scriptCode>
-			</scriptItem>
-			<!-- ============================ End Shot Importer Tool =========================== -->
-
 
 		<!-- ============================ Start cloner subMenu =========================== -->
 		<subMenu id="cloner_menu">
