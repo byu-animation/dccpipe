@@ -17,6 +17,7 @@ class Publisher:
     def __init__(self):
         self.dcc_geo_departments = [Department.MODIFY, Department.MATERIAL]
         self.item_gui = None
+        self.node_name = None
 
     def publish_content_hda(self, node):
         node_name = node.type().name()
@@ -35,8 +36,14 @@ class Publisher:
         success_message = "Success! Published " + asset_name + " to " + str(department)
         self.print_success_message(success_message)
 
-    def publish_asset(self, node=None):
+    def publish_asset(self, node=None, name=None):
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
+
+        if node:
+            self.node_name = name
+            print("node: ", node)
+            print("name: ", name)
+
         self.publish(selectedHDA=node)
 
     def publish_tool(self, node=None):
@@ -280,13 +287,19 @@ class Publisher:
 
         if selectedHDA.type().definition() is not None:
             self.src = selectedHDA.type().definition().libraryFilePath()
+
+            if self.node_name:
+                self.asset_results([self.node_name])
+                return
+
             asset_list = project.list_props_and_actors()
             self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to publish to")
             self.item_gui.submitted.connect(self.asset_results)
 
         else:
             qd.error('The selected node is not a digital asset')
-            return
+
+        return
 
     def asset_results(self, value):
         chosen_asset = value[0]
