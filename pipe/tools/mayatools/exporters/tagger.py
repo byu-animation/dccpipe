@@ -25,8 +25,22 @@ class Tagger:
 
             qd.info("untag successful!")
 
+    def displaytag(self):
+        tagged_items=[]
+
+        for node in self.all:
+        #     if(node_is_tagged_with_flag(node,"DCC_Alembic_Export_Flag"))
+        #     {
+        #         tagged_itmes.append(node)
+        #     }
+        #
+        #
+        # print(tagged_itmes)
+
+
     def get_selected_string(self):
         self.selected = ls(sl=True, tr=True)
+        self.all = ls(tr=True)
         selected_string = ""
 
         for node in self.selected:

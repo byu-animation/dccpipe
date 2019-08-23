@@ -50,6 +50,12 @@
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
+			"icon":"1.png",
+			"annotation":"Display all Tagged and Untaged Objects",
+			"tool":"mayatools.exporters.tagger",
+			"function":"Tagger.displaytag()"
+		},{
+			"itemType":"button",
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
 			"tool":"mayatools.importers.referencer",
