@@ -1,6 +1,8 @@
+import pipe.gui.select_from_list as sfl
 from pymel.core import *
 from pipe.gui import quick_dialogs as qd
 from pipe.tools.mayatools.utils.utils import *
+
 
 
 class Tagger:
@@ -26,16 +28,16 @@ class Tagger:
             qd.info("untag successful!")
 
     def displaytag(self):
-        tagged_items=[]
+        tagged_items={}
 
         for node in self.all:
-        #     if(node_is_tagged_with_flag(node,"DCC_Alembic_Export_Flag"))
-        #     {
-        #         tagged_itmes.append(node)
-        #     }
-        #
-        #
-        # print(tagged_itmes)
+            if(node_is_tagged_with_flag(node,"DCC_Alembic_Export_Flag")):
+                print(str(node))
+                tagged_items.update({str(node) : node})
+
+
+        self.item_gui = sfl.SelectFromList(l=tagged_items, parent=maya_main_window(), title="Tagged Items")
+		# self.item_gui.submitted.connect(self.results)
 
 
     def get_selected_string(self):
@@ -47,3 +49,6 @@ class Tagger:
             selected_string += node
 
         return selected_string
+
+        def results(self, value):
+            print("CALLLED")
