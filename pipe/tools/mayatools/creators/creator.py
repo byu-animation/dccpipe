@@ -50,14 +50,14 @@ class Creator:
             else:
                 prepare_scene_file()
                 # show the gui, get the element. To list elements, get the body and get the department
-                department = "model"  # hard-coding model for now since this is Maya
+                department = "model"
                 asset_list = body.list_elements(department)
 
                 # get the element for the model dept and the user, and using that publish
-                selected_element = body.get_element("model")
-
+                selected_element = body.get_element(department)
                 user = Environment().get_user()
-                post_publish(selected_element, user, published=True, comment="First commit.")  # FIXME: WE NEED TO FIGURE OUT TO WHICH DEPARTMENT(S) WE ACTUALLY NEED TO PUBLISH TO
+
+                post_publish(selected_element, user, published=True, comment="First commit.")
 
                 qd.info("Asset created successfully!", "Success")
 

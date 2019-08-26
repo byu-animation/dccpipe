@@ -14,6 +14,7 @@ from pipe.am.body import Body, AssetType
 import pipe.gui.quick_dialogs as qd
 from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter
 from pipe.tools.mayatools.exporters.json_exporter import JSONExporter
+from pipe.tools.mayatools.publishers.publisher import MayaPublisher as Publisher
 
 import maya.cmds as mc
 
@@ -38,43 +39,74 @@ def prepare_scene_file():
         filePath = os.path.join(filePath, 'untitled.mb')
         filePath = pipeline_io.version_file(filePath)
         mc.file(rename=filePath)
+        print("saving file: ", filePath)
         mc.file(save=True)
 
 '''
     Publish the asset. Called from creator and publisher.
 '''
-def post_publish(element, user, published=True, comment="No comment."):
+def post_publish(element, user, published=True, comment="No comment.", quick_publish=False):
     scene_file, created_new_file = get_scene_file()
 
-    if published:
-        if not mc.file(q=True, sceneName=True) == '':
-            mc.file(save=True, force=True) #save file
+    scene_prep(quick_publish)
 
-        scene_prep()
+    username = user.get_username()
+    dst = element.publish(username, scene_file, comment)
 
-        username = user.get_username()
-        dst = element.publish(username, scene_file, comment)
+    #Ensure file has correct permissions
+    try:
+        os.chmod(dst, 0660)
+    except:
+        print("Setting file permissions failed badly.")
 
-        #Ensure file has correct permissions
-        try:
-            os.chmod(dst, 0660)
-        except:
-            print("Setting file permissions failed badly.")
+    # Export JSON
+    print('Publish Complete. Begin Exporting JSON if set.')
+    body = Project().get_body(element.get_parent())
 
-        # Export JSON
-        print('Publish Complete. Begin Exporting JSON if set.')
-        body = Project().get_body(element.get_parent())
+    if body and body.is_asset():
+        if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
+            json_export = JSONExporter()
+            json_export.go(body, body.get_type())
 
-        if body and body.is_asset():
-            if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
-                json_export = JSONExporter()
-                json_export.go(body, body.get_type())
+    print("begin alembic export")
+    alembic = AlembicExporter()
+    alembic.auto_export(body.get_name())
 
-        print("begin alembic export")
-        alembic = AlembicExporter()
-        alembic.auto_export(body.get_name())
+    convert_to_education()
 
-        convert_to_education()
+'''
+    check if user has unsaved changes before performing action, and if so, save as new publish
+'''
+def check_unsaved_changes():
+    unsaved_changes = mc.file(q=True, modified=True)
+
+    if unsaved_changes:
+        response = qd.yes_or_no("You have unsaved changes for the current asset. Would you like to publish them before you clone?")
+        if response:
+            # instead of saving, publish.
+            scene = mc.file(q=True, sceneName=True)
+            dir_path = scene.split("assets/")
+            print("dir path: ", dir_path)
+            try:
+                asset_path = dir_path[1].split("/")
+            except:
+                # scene path is stored in the user directory instead of assets. We can't get the asset name, so they must publish manually.
+                qd.error("Publish failed. Please publish manually before cloning the new asset.")
+                return
+            asset_name = asset_path[0]
+
+            model = qd.binary_option("Which department for your unsaved changes to " + str(asset_name) + "?", "Model", "Rig", title="Select department")
+            if model:
+                department = "model"
+            elif model is not None:
+                department = "rig"
+            else:
+                qd.warning("Skipping changes to " + str(asset_name))
+                return
+
+            publisher = Publisher(quick_publish=True)
+            publisher.non_gui_publish(asset_name, department)
+
 
 '''
     Helper function for post_publish()
@@ -91,7 +123,12 @@ def get_scene_file():
 '''
     Helper function for post_publish()
 '''
-def scene_prep():
+def scene_prep(quick_publish):
+    if quick_publish:
+        pass
+    else:
+        check_unsaved_changes()
+
     try:
         clear_construction_history()
     except:
@@ -164,7 +201,7 @@ def group_top_level():
     elif len(top_level_nodes) == 1:
         node = top_level_nodes[0]
         shapes = node.listRelatives(shapes=True)
-        if not shapes and "group" not in str(node):
+        if shapes and "group" not in str(node):
             pm.group(top_level_nodes)
 
 def get_departments_by_type(asset_type):
