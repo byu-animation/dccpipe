@@ -22,6 +22,8 @@ class ReferenceImporter:
         for file in files:
             try:
                 path = os.path.join(self.reference_dir, file)
-                cmds.file( path, i = True, type="OBJ", iv=True, ra=True, mnc=False, ns="reference_object", op="mo=1", pr=True)
+                name = os.path.basename(file)
+                cmds.file( path, i = True, type="OBJ", iv=True, ra=True, mnc=False, ns=name, op="mo=1", pr=True)
+
             except Exception as e:
                 qd.warning(str(e))

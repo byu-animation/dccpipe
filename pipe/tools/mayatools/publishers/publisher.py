@@ -23,8 +23,8 @@ except ImportError:
 '''
 class MayaPublisher:
 
-    def __init__(self, gui=True, src=None):
-        pass
+    def __init__(self, gui=True, src=None, quick_publish=False):
+        self.quick_publish = quick_publish
 
     def publish(self):
         # this is the function that we will use to publish.
@@ -65,7 +65,7 @@ class MayaPublisher:
         if comment is None:
             comment = "No comment."
 
-        post_publish(selected_element, user, published=True, comment=comment)
+        post_publish(selected_element, user, published=True, comment=comment, quick_publish=self.quick_publish)
 
         qd.info("Asset published successfully.", "Success")
 

@@ -93,7 +93,6 @@ class MayaCloner:
 
 		if not self.publishes:
 			qd.error("There have been no publishes for this department. Maybe you meant model?")
-			self.results(value)
 			return
 
 		# make the list a list of strings, not tuples
@@ -124,25 +123,7 @@ class MayaCloner:
 
 		# selected_scene_file is the one that contains the scene file for the selected commit
 		if selected_scene_file is not None:
-			unsaved_changes = mc.file(q=True, modified=True)
-
-			if unsaved_changes:
-				response = qd.yes_or_no("You have unsaved changes for the current asset. Would you like to publish them before you clone?")
-				if response:
-					# instead of saving, publish.
-					scene = mc.file(q=True, sceneName=True)
-					dir_path = scene.split("assets/")
-					print("dir path: ", dir_path)
-					try:
-						asset_path = dir_path[1].split("/")
-					except:
-						# scene path is stored in the user directory instead of assets. We can't get the asset name, so they must publish manually.
-						qd.error("Publish failed. Please publish manually before cloning the new asset.")
-						return
-					asset_name = asset_path[0]
-					# asset = Project().get_body(asset_name)
-					self.publisher = Publisher()
-					self.publisher.non_gui_publish(asset_name, "model")
+			check_unsaved_changes()
 
 			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)
