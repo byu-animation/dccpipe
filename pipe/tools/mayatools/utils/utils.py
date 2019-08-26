@@ -164,7 +164,7 @@ def group_top_level():
     elif len(top_level_nodes) == 1:
         node = top_level_nodes[0]
         shapes = node.listRelatives(shapes=True)
-        if not shapes and "group" not in str(node):
+        if shapes and "group" not in str(node):
             pm.group(top_level_nodes)
 
 def get_departments_by_type(asset_type):
