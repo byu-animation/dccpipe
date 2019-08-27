@@ -32,22 +32,17 @@ def maya_main_window():
     Prepare the scene for a publish. Called from creator and publisher.
 '''
 def prepare_scene_file():
-    filePath = mc.file(q=True, sceneName=True)
-
-    if not filePath:
-        filePath = Environment().get_user_workspace()
-        filePath = os.path.join(filePath, 'untitled.mb')
-        filePath = pipeline_io.version_file(filePath)
-        mc.file(rename=filePath)
-        print("saving file: ", filePath)
-        mc.file(save=True)
+    file_path = Environment().get_user_workspace()
+    file_path = os.path.join(file_path, 'untitled.mb')
+    file_path = pipeline_io.version_file(file_path)
+    mc.file(rename=file_path)
+    print("saving file: ", file_path)
+    mc.file(save=True)
 
 '''
     Publish the asset. Called from creator and publisher.
 '''
 def post_publish(element, user, published=True, comment="No comment.", quick_publish=False):
-    scene_file, created_new_file = get_scene_file()
-
     scene_prep(quick_publish)
 
     username = user.get_username()
@@ -81,12 +76,11 @@ def check_unsaved_changes():
     unsaved_changes = mc.file(q=True, modified=True)
 
     if unsaved_changes:
-        response = qd.yes_or_no("You have unsaved changes for the current asset. Would you like to publish them before you clone?")
+        response = qd.yes_or_no("You have unsaved changes to the current asset. Would you like to publish them before you proceed?")
         if response:
             # instead of saving, publish.
             scene = mc.file(q=True, sceneName=True)
             dir_path = scene.split("assets/")
-            print("dir path: ", dir_path)
             try:
                 asset_path = dir_path[1].split("/")
             except:
@@ -107,7 +101,6 @@ def check_unsaved_changes():
             publisher = Publisher(quick_publish=True)
             publisher.non_gui_publish(asset_name, department)
 
-
 '''
     Helper function for post_publish()
 '''
@@ -125,8 +118,9 @@ def get_scene_file():
 '''
 def scene_prep(quick_publish):
     if quick_publish:
-        pass
+        print("skipping check for unsaved changes")
     else:
+        save_scene_file()
         check_unsaved_changes()
 
     try:

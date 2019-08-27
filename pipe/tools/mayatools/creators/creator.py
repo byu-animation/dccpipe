@@ -9,9 +9,8 @@ from PySide2 import QtWidgets
 
 
 '''
-Parent class for managing assets
+    Maya class for creating new assets
 '''
-
 class Creator:
 
     def __init__(self):
@@ -42,18 +41,18 @@ class Creator:
             created = False
 
         if created:
+            check_unsaved_changes()
             project = Project()
             body = project.create_asset(name, asset_type=type)
+
             if body == None:
                 # print a message about failure/duplicate
                 qd.error("Asset with name " + str(name) + " already exists in pipeline.")
             else:
                 prepare_scene_file()
-                # show the gui, get the element. To list elements, get the body and get the department
                 department = "model"
                 asset_list = body.list_elements(department)
 
-                # get the element for the model dept and the user, and using that publish
                 selected_element = body.get_element(department)
                 user = Environment().get_user()
 
