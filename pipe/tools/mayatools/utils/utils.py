@@ -43,6 +43,7 @@ def prepare_scene_file():
     Publish the asset. Called from creator and publisher.
 '''
 def post_publish(element, user, published=True, comment="No comment.", quick_publish=False):
+    scene_file, new_file = get_scene_file()
     scene_prep(quick_publish)
 
     username = user.get_username()
@@ -76,7 +77,7 @@ def check_unsaved_changes():
     unsaved_changes = mc.file(q=True, modified=True)
 
     if unsaved_changes:
-        response = qd.yes_or_no("You have unsaved changes to the current asset. Would you like to publish them before you proceed?")
+        response = qd.yes_or_no("Unsaved changes detected. Would you like to publish them before you proceed? (You can ignore this message if you just created a new scene or opened Maya.)")
         if response:
             # instead of saving, publish.
             scene = mc.file(q=True, sceneName=True)

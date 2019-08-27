@@ -38,7 +38,12 @@ class MayaReferencer:
             for asset in assets:
                 body = self.project.get_body(asset)
 
-                model = qd.binary_option("Which department for " + str(asset) + " ?", "Model", "Rig", title="Select department")
+                # TODO: change the choice to depend more on each individual asset. I.e. only ask model or rig for actors. Otherwise it's always going to be model.
+                type = body.get_type()
+                if type == AssetType.ACTOR:
+                    model = qd.binary_option("Which department for " + str(asset) + "?", "Model", "Rig", title="Select department")
+                else:
+                    model = True
 
                 if model:
                     department = "model"

@@ -41,6 +41,8 @@ class Creator:
             created = False
 
         if created:
+            scene_file, new_file = get_scene_file()
+            print("scene file, new file: ", scene_file, new_file)
             check_unsaved_changes()
             project = Project()
             body = project.create_asset(name, asset_type=type)
@@ -56,7 +58,7 @@ class Creator:
                 selected_element = body.get_element(department)
                 user = Environment().get_user()
 
-                post_publish(selected_element, user, published=True, comment="First commit.")
+                post_publish(selected_element, user, published=True, comment="First publish!")
 
                 qd.info("Asset created successfully!", "Success")
 
