@@ -23,8 +23,8 @@ except ImportError:
 '''
 class MayaPublisher:
 
-    def __init__(self, gui=True, src=None):
-        pass
+    def __init__(self, gui=True, src=None, quick_publish=False):
+        self.quick_publish = quick_publish
 
     def publish(self):
         # this is the function that we will use to publish.
@@ -51,7 +51,7 @@ class MayaPublisher:
     def department_results(self, value):
         chosen_department = value[0]
 
-        prepare_scene_file()
+        prepare_scene_file(quick_publish=self.quick_publish)
 
         print("value: ", value)
         print("dept: ", chosen_department)

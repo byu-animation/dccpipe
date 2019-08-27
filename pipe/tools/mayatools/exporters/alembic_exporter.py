@@ -449,8 +449,14 @@ class AlembicExporter:
             if not parent:
                 # then this is either an animated prop, a char, or a set. Export an alembic for each accordingly, with the correct file name
                 refAbcFilePath = os.path.join(destination, name + ".abc")
-                p = rootNode.listRelatives(p=True)[0]
-                root = str(p) + "|" + str(rootNode)
+                print("root node relatives: ", rootNode.listRelatives(p=True))
+                parents = rootNode.listRelatives(p=True)
+                if parents:
+                    print("parents exist")
+                    p = parents[0]
+                    root = str(p) + "|" + str(rootNode)
+                else:
+                    root = str(rootNode)
                 command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[root])
             else:
                 continue
