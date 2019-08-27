@@ -51,7 +51,7 @@ class MayaPublisher:
     def department_results(self, value):
         chosen_department = value[0]
 
-        prepare_scene_file()
+        prepare_scene_file(quick_publish=self.quick_publish)
 
         print("value: ", value)
         print("dept: ", chosen_department)
@@ -65,7 +65,7 @@ class MayaPublisher:
         if comment is None:
             comment = "No comment."
 
-        post_publish(selected_element, user, published=True, comment=comment, quick_publish=self.quick_publish)
+        post_publish(selected_element, user, published=True, comment=comment)
 
         qd.info("Asset published successfully.", "Success")
 

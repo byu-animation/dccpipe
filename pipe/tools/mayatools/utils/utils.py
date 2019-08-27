@@ -31,7 +31,8 @@ def maya_main_window():
 '''
     Prepare the scene for a publish. Called from creator and publisher.
 '''
-def prepare_scene_file():
+def prepare_scene_file(quick_publish=False):
+    scene_prep(quick_publish)
     file_path = Environment().get_user_workspace()
     file_path = os.path.join(file_path, 'untitled.mb')
     file_path = pipeline_io.version_file(file_path)
@@ -42,9 +43,8 @@ def prepare_scene_file():
 '''
     Publish the asset. Called from creator and publisher.
 '''
-def post_publish(element, user, published=True, comment="No comment.", quick_publish=False):
+def post_publish(element, user, published=True, comment="No comment."):
     scene_file, new_file = get_scene_file()
-    scene_prep(quick_publish)
 
     username = user.get_username()
     dst = element.publish(username, scene_file, comment)
