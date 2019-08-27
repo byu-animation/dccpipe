@@ -193,7 +193,10 @@ if node:
 	import hou
 	publisher = publisher.Publisher()
 	hou.session.publisher = publisher
-	publisher.publish_asset(node)
+	node_path = node.path()
+	name = node_path.split('/')[-1]
+	name = name.lower()
+	publisher.publish_asset(node=node, name=name)
 				]]>
 			</scriptCode>
 		</scriptItem>

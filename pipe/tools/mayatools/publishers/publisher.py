@@ -23,8 +23,8 @@ except ImportError:
 '''
 class MayaPublisher:
 
-    def __init__(self, gui=True, src=None):
-        pass
+    def __init__(self, gui=True, src=None, quick_publish=False):
+        self.quick_publish = quick_publish
 
     def publish(self):
         # this is the function that we will use to publish.
@@ -42,9 +42,8 @@ class MayaPublisher:
         project = Project()
         self.body = project.get_body(chosen_asset)
 
-        department_list = self.body.default_departments()
-        houdini_default_departments = self.body.houdini_default_departments()
-        department_list = [dept for dept in department_list if dept not in houdini_default_departments]
+        asset_type = self.body.get_type()
+        department_list = get_departments_by_type(asset_type)
 
         self.item_gui = sfl.SelectFromList(l=department_list, parent=maya_main_window(), title="Select department for this publish")
         self.item_gui.submitted.connect(self.department_results)
@@ -54,9 +53,11 @@ class MayaPublisher:
 
         prepare_scene_file()
 
+        print("value: ", value)
+        print("dept: ", chosen_department)
+
         # get the element for the model dept and the user, and using that publish
         selected_element = self.body.get_element(chosen_department)
-
         user = Environment().get_user()
 
         # get the comment
@@ -64,19 +65,12 @@ class MayaPublisher:
         if comment is None:
             comment = "No comment."
 
-        post_publish(selected_element, user, published=True, comment=comment)
+        post_publish(selected_element, user, published=True, comment=comment, quick_publish=self.quick_publish)
 
         qd.info("Asset published successfully.", "Success")
 
-    # TODO: SET UP A FUNCTION FOR PUBLISH WITHOUT GUI
-    # def non_gui_publish(element, user, src, comment):
-    # 	dst = element.publish(user, src, comment)
-    # 	#Ensure file has correct permissions
-    # 	try:
-    # 		os.chmod(dst, 0660)
-    # 	except:
-    # 		pass
-    #
-    # 	# TODO: export playblast
-    #
-    #     print element.get_name()
+    def non_gui_publish(self, asset_name, department):
+        project = Project()
+        self.body = project.get_body(asset_name)
+
+        self.department_results([department])

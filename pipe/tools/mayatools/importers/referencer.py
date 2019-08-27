@@ -38,12 +38,20 @@ class MayaReferencer:
             for asset in assets:
                 body = self.project.get_body(asset)
 
-                model = qd.binary_option("Which department for " + str(asset) + " ?", "Model", "Rig", title="Select department")
+                # TODO: change the choice to depend more on each individual asset. I.e. only ask model or rig for actors. Otherwise it's always going to be model.
+                type = body.get_type()
+                if type == AssetType.ACTOR:
+                    model = qd.binary_option("Which department for " + str(asset) + "?", "Model", "Rig", title="Select department")
+                else:
+                    model = True
 
                 if model:
                     department = "model"
-                else:
+                elif model is not None:
                     department = "rig"
+                else:
+                    qd.warning("Skipping " + str(asset))
+                    continue
 
                 element = body.get_element(department)
                 publish = element.get_last_publish()
@@ -80,7 +88,7 @@ class MayaReferencer:
                 print os.path.exists(str(cycle)), 'this is another shot'
                 return
             fileName = os.path.basename(cycle)
-            #The file is going to be an alembic so we can drop the last four characters '.abc' to get the file name
+            #The file is going to be an alembic so we can drop the last four actors '.abc' to get the file name
             cycleName = fileName[:len(fileName)-4]
 
             invalidInput = True

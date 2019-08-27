@@ -9,9 +9,8 @@ from PySide2 import QtWidgets
 
 
 '''
-Parent class for managing assets
+    Maya class for creating new assets
 '''
-
 class Creator:
 
     def __init__(self):
@@ -42,22 +41,24 @@ class Creator:
             created = False
 
         if created:
+            scene_file, new_file = get_scene_file()
+            print("scene file, new file: ", scene_file, new_file)
+            check_unsaved_changes()
             project = Project()
             body = project.create_asset(name, asset_type=type)
+
             if body == None:
                 # print a message about failure/duplicate
                 qd.error("Asset with name " + str(name) + " already exists in pipeline.")
             else:
                 prepare_scene_file()
-                # show the gui, get the element. To list elements, get the body and get the department
-                department = "model"  # hard-coding model for now since this is Maya
+                department = "model"
                 asset_list = body.list_elements(department)
 
-                # get the element for the model dept and the user, and using that publish
-                selected_element = body.get_element("model")
-
+                selected_element = body.get_element(department)
                 user = Environment().get_user()
-                post_publish(selected_element, user, published=True, comment="First commit.")  # FIXME: WE NEED TO FIGURE OUT TO WHICH DEPARTMENT(S) WE ACTUALLY NEED TO PUBLISH TO
+
+                post_publish(selected_element, user, published=True, comment="First publish!")
 
                 qd.info("Asset created successfully!", "Success")
 

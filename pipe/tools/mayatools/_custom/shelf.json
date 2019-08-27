@@ -73,7 +73,7 @@
 		}, {
 			"itemType":"button",
 			"icon":"import-ref.svg",
-			"annotation":"Import reference character",
+			"annotation":"Import reference actor",
 			"tool":"mayatools.importers.reference_importer",
 			"function":"ReferenceImporter.go()"
 		}

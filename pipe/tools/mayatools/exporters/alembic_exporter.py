@@ -256,7 +256,7 @@ class AlembicExporter:
         self.body = project.get_body(chosen_asset)
         type = self.body.get_type()
 
-        if str(type) == str("shot"):
+        if type == AssetType.SHOT:
             self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
 
             if self.frame_range is None or self.frame_range == u'':
@@ -270,16 +270,8 @@ class AlembicExporter:
 
         self.body.set_frame_range(self.frame_range)
 
-        department_list = []
         asset_type = self.body.get_type()
-        if str(asset_type) == 'prop':
-            department_list = self.body.prop_export_departments()
-        elif str(asset_type) == 'character':
-            department_list = self.body.char_export_departments()
-        elif str(asset_type) == 'set':
-            department_list = self.body.set_export_departments()
-        elif str(asset_type) == 'shot':
-            department_list = self.body.shot_export_departments()
+        department_list = get_departments_by_type(asset_type)
 
         if export_all:
             # tag top level nodes
@@ -439,7 +431,7 @@ class AlembicExporter:
         @return: a list of exported alembic files
 
         Gets all loaded references, then loops through them and if it's a top level reference
-        i.e. a character, set, or animated prop, exports an alembic file to the destination specified
+        i.e. a actor, set, or animated prop, exports an alembic file to the destination specified
     '''
     def exportReferences(self, destination, tag="DCC_Alembic_Export_Flag", startFrame=1, endFrame=1):
         selection = get_loaded_references()
@@ -457,8 +449,14 @@ class AlembicExporter:
             if not parent:
                 # then this is either an animated prop, a char, or a set. Export an alembic for each accordingly, with the correct file name
                 refAbcFilePath = os.path.join(destination, name + ".abc")
-                p = rootNode.listRelatives(p=True)[0]
-                root = str(p) + "|" + str(rootNode)
+                print("root node relatives: ", rootNode.listRelatives(p=True))
+                parents = rootNode.listRelatives(p=True)
+                if parents:
+                    print("parents exist")
+                    p = parents[0]
+                    root = str(p) + "|" + str(rootNode)
+                else:
+                    root = str(rootNode)
                 command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=[root])
             else:
                 continue

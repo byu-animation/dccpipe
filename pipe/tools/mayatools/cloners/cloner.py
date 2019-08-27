@@ -2,7 +2,8 @@
 # from pipe.am.environment import Department
 import pipe.gui.select_from_list as sfl
 import pipe.gui.quick_dialogs as qd
-import pipe.tools.mayatools.utils.utils as maya_utils
+from pipe.tools.mayatools.utils.utils import *
+from pipe.tools.mayatools.publishers.publisher import MayaPublisher as Publisher
 from pipe.am.project import Project
 from pipe.am.body import Body
 from pipe.am.element import Element
@@ -40,8 +41,39 @@ class MayaCloner:
 	def go(self):
 		project = Project()
 		asset_list = project.list_assets()
-		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_utils.maya_main_window(), title="Select an asset to clone")
+		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to clone")
 		self.item_gui.submitted.connect(self.results)
+
+	def get_element_option(self, type, body):
+		element = None
+
+		if type == AssetType.PROP:
+			element = body.get_element("model")
+
+		elif type == AssetType.ACTOR:
+			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "rig")
+			if response:
+				element = body.get_element("model")
+			elif response is not None:
+				element = body.get_element("rig")
+			else:
+				return None
+
+		elif type == AssetType.SET:
+			element = body.get_element("model")
+
+		elif type == AssetType.SHOT:
+			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "anim")
+			if response:
+				element = body.get_element("model")
+			elif response is not None:
+				element = body.get_element("anim")
+			else:
+				return None
+
+		print("element: ", element)
+
+		return element
 
 	def results(self, value):
 		print("Final value: ", value[0])
@@ -49,14 +81,19 @@ class MayaCloner:
 
 		project = Project()
 		body = project.get_body(filename)
+		type = body.get_type()
+		element = self.get_element_option(type, body)
 
-		element = body.get_element("model")
+		if element is None:
+			qd.warning("Nothing was cloned.")
+			return
 
-		filepath = body.get_filepath()
-
-		self.publishes = element.list_publishes();
+		self.publishes = element.list_publishes()
 		print("publishes: ", self.publishes)
-		print("path: ", filepath)
+
+		if not self.publishes:
+			qd.error("There have been no publishes for this department. Maybe you meant model?")
+			return
 
 		# make the list a list of strings, not tuples
 		self.sanitized_publish_list = []
@@ -68,7 +105,7 @@ class MayaCloner:
 			label = publish[0] + " " + publish[1] + " " + publish[2]
 			self.sanitized_publish_list.append(label)
 
-		self.item_gui = sfl.SelectFromList(l=self.sanitized_publish_list, parent=maya_utils.maya_main_window(), title="Select publish to clone")
+		self.item_gui = sfl.SelectFromList(l=self.sanitized_publish_list, parent=maya_main_window(), title="Select publish to clone")
 		self.item_gui.submitted.connect(self.publish_selection_results)
 
 	def publish_selection_results(self, value):
@@ -86,12 +123,7 @@ class MayaCloner:
 
 		# selected_scene_file is the one that contains the scene file for the selected commit
 		if selected_scene_file is not None:
-			unsaved_changes = mc.file(q=True, modified=True)
-
-			if unsaved_changes:
-				response = qd.yes_or_no("You have unsaved changes to the current scene. Would you like to save before you clone?")
-				if response:
-					mc.file(save=True, force=True) #save file
+			check_unsaved_changes()
 
 			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)
@@ -101,6 +133,3 @@ class MayaCloner:
 			else:
 				mc.file(selected_scene_file, open=True, force=True)
 				print "File opened: " + selected_scene_file
-
-# FIXME: When cloning an asset, the changes to the current asset are saved over the scene file of the commit user was working on previously
-# We should give user an option to save their changes to the asset or not when they opt to clone another asset, and if so, save as a new publish.
