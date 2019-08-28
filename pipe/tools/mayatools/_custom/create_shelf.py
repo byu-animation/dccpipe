@@ -18,6 +18,8 @@ environment = Environment()
 PROJ = environment.get_project_name()
 SHELF_DIR = os.environ.get('MAYA_SHELF_DIR')
 ICON_DIR = os.environ.get('MAYA_ICONS_DIR')
+os.environ["DCC_ASSET_NAME"] = ""
+os.environ["DCC_DEPARTMENT"] = ""
 
 '''
 	Shelf building code. You shouldn't have to edit anything

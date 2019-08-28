@@ -58,6 +58,9 @@ class Creator:
                 selected_element = body.get_element(department)
                 user = Environment().get_user()
 
+                print("name :", str(name))
+                print("department: ", department)
+                setPublishEnvVar(name, department);
                 post_publish(selected_element, user, published=True, comment="First publish!")
 
                 qd.info("Asset created successfully!", "Success")

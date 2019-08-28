@@ -20,6 +20,13 @@ import maya.cmds as mc
 
 
 '''
+    Set Asset and Department Environment Variables
+'''
+def setPublishEnvVar(asset_name, department="model"):
+    os.environ["DCC_ASSET_NAME"] = asset_name;
+    os.environ["DCC_DEPARTMENT"] = department;
+
+'''
     Function used whenever a more complex gui is called within Maya
 '''
 def maya_main_window():
