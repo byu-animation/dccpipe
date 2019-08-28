@@ -50,10 +50,10 @@
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
-			"icon":"1.png",
-			"annotation":"Display all Tagged and Untaged Objects",
+			"icon":"ik-fk.svg",
+			"annotation":"Select Tagged Objects to Untag",
 			"tool":"mayatools.exporters.tagger",
-			"function":"Tagger.displaytag()"
+			"function":"Tagger.untag_multiple()"
 		},{
 			"itemType":"button",
 			"icon":"reference.svg",

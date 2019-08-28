@@ -27,17 +27,14 @@ class Tagger:
 
             qd.info("untag successful!")
 
-    def displaytag(self):
+    def untag_multiple(self):
         tagged_items={}
-
         for node in self.all:
             if(node_is_tagged_with_flag(node,"DCC_Alembic_Export_Flag")):
-                print(str(node))
                 tagged_items.update({str(node) : node})
 
-
-        self.item_gui = sfl.SelectFromList(l=tagged_items, parent=maya_main_window(), title="Tagged Items")
-		# self.item_gui.submitted.connect(self.results)
+        self.item_gui = sfl.SelectFromList(l=tagged_items, parent=maya_main_window(), title="Untag Multiple")
+        self.item_gui.submitted.connect(self.mass_untag)
 
 
     def get_selected_string(self):
@@ -50,5 +47,11 @@ class Tagger:
 
         return selected_string
 
-        def results(self, value):
-            print("CALLLED")
+    def mass_untag(self, value):
+        for name in value:
+            for object in self.all:
+                if str(object) == str(name):
+                    node = object
+                    break
+
+            untag_node_with_flag(node, "DCC_Alembic_Export_Flag")
