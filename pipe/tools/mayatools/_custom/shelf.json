@@ -50,7 +50,7 @@
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
-			"icon":"ik-fk.svg",
+			"icon":"interpolate.svg",
 			"annotation":"Select Tagged Objects to Untag",
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag_multiple()"
