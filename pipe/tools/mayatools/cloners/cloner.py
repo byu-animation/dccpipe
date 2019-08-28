@@ -49,25 +49,31 @@ class MayaCloner:
 
 		if type == AssetType.PROP:
 			element = body.get_element("model")
+			self.department = "model"
 
 		elif type == AssetType.ACTOR:
 			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "rig")
 			if response:
 				element = body.get_element("model")
+				self.department = "model"
 			elif response is not None:
 				element = body.get_element("rig")
+				self.department = "rig"
 			else:
 				return None
 
 		elif type == AssetType.SET:
 			element = body.get_element("model")
+			self.department = "model"
 
 		elif type == AssetType.SHOT:
 			response = qd.binary_option("Which department for " + str(body.get_name()) + "?", "model", "anim")
 			if response:
 				element = body.get_element("model")
+				self.department = "model"
 			elif response is not None:
 				element = body.get_element("anim")
+				self.department = "anim"
 			else:
 				return None
 
@@ -81,6 +87,7 @@ class MayaCloner:
 
 		project = Project()
 		body = project.get_body(filename)
+		self.body = body
 		type = body.get_type()
 		element = self.get_element_option(type, body)
 
@@ -125,6 +132,7 @@ class MayaCloner:
 		if selected_scene_file is not None:
 			check_unsaved_changes()
 
+			setPublishEnvVar(self.body.get_name(), self.department)
 			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)
 				mc.file(rename=selected_scene_file)

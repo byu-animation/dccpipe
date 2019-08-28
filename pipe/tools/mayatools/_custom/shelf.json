@@ -20,6 +20,12 @@
 			"function":"MayaPublisher.publish()"
 		}, {
 			"itemType":"button",
+			"icon":"agent.svg",
+			"annotation":"Publish a model, rig or animation... but quickly",
+			"tool":"mayatools.publishers.publisher",
+			"function":"MayaPublisher.fast_publish()"
+		}, {
+			"itemType":"button",
 			"icon":"rollback.svg",
 			"annotation":"Rollback body to previous version",
 			"tool":"mayatools.cloners.cloner",
