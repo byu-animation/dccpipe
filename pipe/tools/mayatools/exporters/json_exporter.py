@@ -33,8 +33,8 @@ class JSONExporter:
         self.select_from_list_dialog = None
 
     def confirmWriteSetReferences(self, body=None):
-        filePath = pm.sceneName()
-        fileDir = os.path.dirname(filePath)
+        filepath = pm.sceneName()
+        fileDir = os.path.dirname(filepath)
         proj = Project()
         if not body:
             checkout = proj.get_checkout(fileDir)
@@ -45,16 +45,16 @@ class JSONExporter:
             if body.get_type() == AssetType.SET:
                 print("SET OK")
                 element = body.get_element(Department.MODEL)
-                refsFilePath = os.path.join(Project().get_assets_dir(), element.get_cache_dir())
-                self.exportReferences(refsFilePath)
+                refsfilepath = os.path.join(Project().get_assets_dir(), element.get_cache_dir())
+                self.exportReferences(refsfilepath)
                 qd.info("JSON references written successfully.")
             else:
                 print("NOT A SET")
                 qd.error('No set found in current scene.')
 
     def confirmWritePropReference(self, body=None):
-        filePath = pm.sceneName()
-        fileDir = os.path.dirname(filePath)
+        filepath = pm.sceneName()
+        fileDir = os.path.dirname(filepath)
         project = Project()
 
         if not body:
@@ -64,18 +64,18 @@ class JSONExporter:
 
         if body.is_asset() and body.get_type() == AssetType.PROP:
             element = body.get_element(Department.MODEL)
-            filePath = os.path.join(project.get_assets_dir(), element.get_cache_dir())
+            filepath = os.path.join(project.get_assets_dir(), element.get_cache_dir())
             assemblies = pm.ls(assemblies=True)
             pm.select(pm.listCameras(), replace=True)
             cameras = pm.selected()
             pm.select([])
             non_cameras = [assembly for assembly in assemblies if assembly not in cameras]
-            self.exportPropJSON(filePath, non_cameras[0], isReference=False, name=body.get_name())
+            self.exportPropJSON(filepath, non_cameras[0], isReference=False, name=body.get_name())
             qd.info("JSON references written successfully.")
 
     def confirmWriteShotReferences(self, body=None):
-        filePath = pm.sceneName()
-        filDir = os.path.dirname(filePath)
+        filepath = pm.sceneName()
+        filDir = os.path.dirname(filepath)
         proj = Project()
         if not body:
             checkout = proj.get_checkout(fileDir)
@@ -85,8 +85,8 @@ class JSONExporter:
         if body.is_shot():
             print("SHOT OK")
             element = body.get_element(Department.ANIM)
-            refsFilePath = os.path.join(Project().get_assets_dir(), element.get_cache_dir())
-            self.export_shot(refsFilePath)
+            refsfilepath = os.path.join(Project().get_assets_dir(), element.get_cache_dir())
+            self.export_shot(refsfilepath)
         else:
             print("NOT A SHOT")
             qd.error('No set found in current scene.')
@@ -102,13 +102,13 @@ class JSONExporter:
         if len(animated_prop_jsons) < 1:
             return
         jsonAnimatedProps = json.dumps(animated_prop_jsons)
-        path = os.path.join(filePath, "animated_props.json")
+        path = os.path.join(filepath, "animated_props.json")
         with open(path, "w") as f:
             f.write(jsonAnimatedProps)
             f.close()
         qd.info("JSON references written successfully.")
 
-    def export_shot(self, filePath):
+    def export_shot(self, filepath):
         refsSelection = get_loaded_references()
         props = []
         actors = []
@@ -142,20 +142,20 @@ class JSONExporter:
         print "props: {0}\nactors: {1}\nsets: {2}".format(props, actors, sets)
 
         jsonActors = json.dumps(actors)
-        path = os.path.join(filePath, "actors.json")
+        path = os.path.join(filepath, "actors.json")
 
         with open(path, "w") as f:
             f.write(jsonActors)
             f.close()
 
         jsonSets = json.dumps(sets)
-        path = os.path.join(filePath, "sets.json")
+        path = os.path.join(filepath, "sets.json")
 
         with open(path, "w") as f:
             f.write(jsonSets)
             f.close()
 
-        response = qd.yes_or_no("Are there any animated props?")
+        response = False  #qd.yes_or_no("Are there any animated props?")
         if not response:
             qd.info("JSON references written successfully.")
             return
@@ -165,7 +165,7 @@ class JSONExporter:
         self.select_from_list_dialog.submitted.connect(self.write_animated_props)
 
     # Creates a list of all reference files in the current set
-    def exportReferences(self, filePath):
+    def exportReferences(self, filepath):
         refsSelection = get_loaded_references()
         print("refsSelection = ", refsSelection)
 
@@ -173,20 +173,20 @@ class JSONExporter:
         for ref in refsSelection:
             rootNode = get_root_node_from_reference(ref)
             print("\t Curr rootNode: ", rootNode)
-            propJSON = self.exportPropJSON(filePath, rootNode)
+            propJSON = self.exportPropJSON(filepath, rootNode)
 
             if propJSON:
                 allReferences.append(propJSON)
 
         print "all References: {0}".format(allReferences)
         jsonRefs = json.dumps(allReferences)
-        path = os.path.join(filePath, "whole_set.json")
+        path = os.path.join(filepath, "whole_set.json")
 
         with open(path, "w") as f:
             f.write(jsonRefs)
             f.close()
 
-    def exportPropJSON(self, filePath, rootNode, isReference=True, name="", version_number=None):
+    def exportPropJSON(self, filepath, rootNode, isReference=True, name="", version_number=None):
         if isReference:
             body = get_body_from_reference(rootNode)
         else:
@@ -194,19 +194,12 @@ class JSONExporter:
 
         name = body.get_name()
 
-        print("Body: ", str(body))
-        print("filepath: ", filePath)
-        print("rootNode: ", rootNode)
-
         if not body or not body.is_asset() or body.get_type() != AssetType.PROP:
             print "The asset %s does not exist as a prop, skipping.".format(name)
             return None
 
-        # Check if verNum is nothing - if so, we need to make it be an int 0
-        if not version_number:
-            version_number = 0
-            # version_string = "000"
-            version_string = "0"
+        # Increment the version number
+        version_number, version_string = body.version_prop_json(name, filepath)
 
         firstMesh, path = find_first_mesh(rootNode)
         vertpos1, vertpos2, vertpos3 = get_anchor_points(firstMesh)
@@ -223,7 +216,7 @@ class JSONExporter:
 
         # Write JSON to fill
         jsonRef = json.dumps(json_data)
-        wholePath = os.path.join(filePath, os.path.join(filePath, name + "_" + version_string + ".json"))
+        wholePath = os.path.join(filepath, os.path.join(filepath, name + "_" + version_string + ".json"))
         outfile = open(wholePath, "w")  # *** THIS IS THE NAME OF THE OUTPUT FILE ***
         outfile.write(jsonRef)
         outfile.close()

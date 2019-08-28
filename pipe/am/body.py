@@ -112,32 +112,27 @@ class Body(object):
 		self._datadict[Body.FRAME_RANGE] = frame_range
 		pipeline_io.writefile(self._pipeline_file, self._datadict)
 
-	def get_latest_json_version(self, asset_name, department="model"):
-		element = self.get_element(department)
+	def version_prop_json(self, prop, filepath):
+		files = os.listdir(filepath)
 
-		cache_dir = element.get_cache_dir()
-		files = os.listdir(cache_dir)
-
-		matches = []
+		latest_version = -1
 		for file in files:
-			root, ext = os.path.splitext(file)
-			# version = root[-3:]
-			# name = root[:-4]
-			version = root[-1:]
-			name = root[:-2]
+			filename, ext = os.path.splitext(file)
 
-			if str(name) == str(asset_name):
-				# matches the asset
-				matches.append([name, version, file])
+			if not str(ext) == ".json":
+				continue
+			if str(prop) not in str(filename):
+				continue
 
-		latest_version = 0
-		latest_file = None
-		for match in matches:
-			if int(match[1]) >= latest_version:
-				latest_version = int(match[1])
-				latest_file = match[2]
+			name_and_version = str(filename).split("_")
+			version = name_and_version[-1]
 
-		return latest_file, latest_version
+			if int(version) > latest_version:
+				latest_version = int(version)
+
+		latest_version += 1
+
+		return latest_version, str(latest_version)
 
 	def get_element(self, department, name=Element.DEFAULT_NAME, force_create=False):
 		'''

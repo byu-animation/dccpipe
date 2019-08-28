@@ -104,9 +104,11 @@ class Publisher:
             print("child: ", child)
             inside = child.node("inside")
             out = inside.node("OUT")
+            modify = inside.node("modify")
             set_transform = inside.node("set_dressing_transform")
-            child_path = child.path()
-            name = child_path.split('/')[-1].lower()
+
+            modify_name = modify.type().name()
+            name = modify_name.split("_")[0].lower()
 
             child_body = project.get_body(name)
             if child_body is None:
@@ -118,16 +120,14 @@ class Publisher:
             rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
             sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
 
-            # FIXME
-            latest_file, latest_version = self.body.get_latest_json_version(name)
-            # if latest_version == int(999):
-            #     new_version = 999
-            if latest_version == int(9):
-                new_version = 0
-            else:
-                new_version = int(latest_version) + 1
+            cache_dir = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache")
+            print("filepath: ", cache_dir)
+            latest_version, version_string = self.body.version_prop_json(name, cache_dir)
+            print('latest version: ', latest_version)
+            new_version = latest_version
+            latest_version -= 1
 
-            prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_" + str(latest_version) + ".json")
+            prop_file = os.path.join(cache_dir, str(name) + "_" + str(latest_version) + ".json")
 
             if name in items_in_set:
                 print("set contains asset: " + str(name))

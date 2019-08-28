@@ -440,15 +440,18 @@ class AlembicExporter:
             return
 
         abcFiles = []
+        print("destination: ", destination)
 
         for ref in selection:
             rootNode = get_root_node_from_reference(ref)
             name = str(ref.associatedNamespace(baseName=True))
             parent = ref.parentReference()
+            print("ref: ", ref)
 
             if not parent:
                 # then this is either an animated prop, a char, or a set. Export an alembic for each accordingly, with the correct file name
                 refAbcFilePath = os.path.join(destination, name + ".abc")
+                print("ref abc filepath: ", refAbcFilePath)
                 print("root node relatives: ", rootNode.listRelatives(p=True))
                 parents = rootNode.listRelatives(p=True)
                 if parents:
