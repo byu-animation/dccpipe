@@ -50,6 +50,12 @@
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
+			"icon":"ik-fk.svg",
+			"annotation":"Select Tagged Objects to Untag",
+			"tool":"mayatools.exporters.tagger",
+			"function":"Tagger.untag_multiple()"
+		},{
+			"itemType":"button",
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
 			"tool":"mayatools.importers.referencer",
