@@ -462,7 +462,13 @@ class AlembicExporter:
                 continue
 
             print 'Export Alembic command: ', command
-            pm.Mel.eval(command)
+
+            try:
+                pm.Mel.eval(command)
+            except:
+                qd.warning("No alembic exported for " + str(rootNode) + ". Make sure that there is only one top-level group in the outliner.")
+                continue
+
             abcFiles.append(refAbcFilePath)
 
         return abcFiles
