@@ -1,6 +1,7 @@
 import hou
 import numpy as np
 import math
+import pipe.gui.quick_dialogs as qd
 
 def houdini_main_window():
     return hou.ui.mainQtWindow()
@@ -8,6 +9,21 @@ def houdini_main_window():
 def layout_object_level_nodes():
     node = hou.node("/obj")
     node.layoutChildren()
+
+def get_selected_node():
+    nodes = hou.selectedNodes()
+
+    if len(nodes) == 1:
+        selectedHDA = nodes[0]
+    elif len(nodes) > 1:
+        qd.error('Too many nodes selected. Please select only one node.')
+        return None
+    else:
+        qd.error('No nodes selected. Please select a node.')
+        return None
+
+    return selectedHDA
+
 
 def convert_to_matrix(x, y, z):
     return np.matrix([  [x],

@@ -29,7 +29,31 @@ class Cloner:
         self.clone_hda(hda=node)
 
     def clone_tool(self, node=None):
-        self.clone_hda(hda=node)
+        self.project = Project()
+        hda_list = self.project.list_hdas()
+
+        self.item_gui = sfl.SelectFromList(l=hda_list, parent=houdini_main_window(), title="Select a tool to clone")
+        self.item_gui.submitted.connect(self.tool_results)
+
+    def tool_results(self, value):
+        tool_name = value[0]
+
+        source = os.path.join(Environment().get_hda_dir(), str(tool_name) + ".hda")
+
+        hou.hda.installFile(source)
+        obj = hou.node("/obj")
+        hda = obj.createNode(tool_name)
+        definition = hou.hdaDefinition(hda.type().category(), hda.type().name(), source)
+        definition.setPreferred(True)
+
+        hda.allowEditingOfContents()
+
+        try:
+            hda.setName(tool_name)
+        except:
+            qd.warning(str(tool_name) + " cloned but could not be renamed correctly.")
+
+        layout_object_level_nodes()
 
     def clone_shot(self):
         project = Project()

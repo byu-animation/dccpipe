@@ -16,7 +16,7 @@ if node:
 			name = node_path.split('/')[-1]
 			name = name.lower()
 			if name in Project().list_tools():
-				return 1
+				return 0
 				print("This is the Cloner Tool MenuItem")
 return 0
 			</expression>
@@ -46,7 +46,7 @@ if node:
 			node_path = node.path()
 			name = node_path.split('/')[-1]
 			name = name.lower()
-			if name in Project().list_tools():
+			if name in Project().list_hdas():
 				return 1
 return 0
 			</expression>

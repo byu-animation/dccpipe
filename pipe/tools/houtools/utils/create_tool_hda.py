@@ -5,111 +5,98 @@ from PySide2 import QtGui, QtWidgets, QtCore
 
 from pipe.am.environment import Department, Environment
 from pipe.am.project import Project
-# from byugui.assemble_gui import AssembleWindow
 from pipe.am.body import AssetType
 import pipe.gui.quick_dialogs as qd
-# import checkout
+from pipe.tools.houtools.utils.utils import *
 
 class CreateToolHda:
 
     def __init__(self):
         pass
 
-    def run(self, node=None):
-    	# global create_window
-    	self.hda = node
+    def go(self, node=None):
+        self.hda = node
+        environment = Environment()
+        project = Project()
+        hda_dir = environment.get_hda_dir()
 
-    	if self.hda is None:
-    		selection = hou.selectedNodes()
-    		if len(selection) > 1:
-    			qd.error('Please select only one node')
-    			return
-    		elif len(selection) < 1:
-    			qd.error('Please select a node')
-    			return
-    		self.hda = selection[0]
+        if self.hda is None:
+            self.hda = get_selected_node()
+            if self.hda is None:
+                return
 
-    	create_window = AssembleWindow(hou.ui.mainQtWindow(), [Department.HDA])  # this lists hdas that have been created
-    	create_window.finished.connect(create_hda)
+        node_path = self.hda.path()
+        name = node_path.split('/')[-1]
+        tool_name = name.lower()
 
-    def create_hda(self, value):
-    	tool_name = create_window.result
+        if tool_name is None:
+            return
 
-    	if tool_name is None:
-    		return
+        if not self.hda.canCreateDigitalAsset():
+            if self.hda.type().definition is not None:
+                # we are dealing with an premade self.hda
+                result = qd.yes_or_no('The selected node is already a digial asset. Would you like to copy the definition into the pipeline')
+                if not result:
+                    return
+                else:
+                    copyHDA = True
+            else:
+                qd.error('You can\'t make a digital asset from the selected node')
+                return
+        else:
+            copyHDA = False
 
-    	if not self.hda.canCreateDigitalAsset():
-    		if self.hda.type().definition is not None:
-    			# we are dealing with an premade self.hda
-    			result = qd.yes_or_no('The selected node is already a digial asset. Would you like to copy the definition into the pipeline')
-    			if not result:
-    				return
-    			copyHDA = True
-    		else:
-    			qd.error('You can\'t make a digital asset from the selected node')
-    			return
-    	else:
-    		copyHDA = False
+        destination = os.path.join(hda_dir, tool_name + ".hda")
 
-    	project = Project()
-    	environment = Environment()
-    	username = project.get_current_username()
-    	tool = project.get_tool(tool_name)
-    	hda_element = tool.get_element(Department.HDA)
+        operatorName = tool_name
+        operatorLabel = str(project.get_name()) + '_' + str(tool_name)
+        saveToLibrary = destination
+        num_inputs = len(self.hda.inputs())
 
-    	checkout_file = hda_element.checkout(username)
+        if copyHDA:
+            parent = self.hda.parent()
+            subnet = parent.createNode('subnet')
+            hda_node = subnet.createDigitalAsset(name=operatorName, description=operatorLabel, hda_file_name=saveToLibrary, min_num_inputs=num_inputs)
 
-    	operatorName = hda_element.get_short_name()
-    	operatorLabel = (project.get_name() + ' ' + tool.get_name()).title()
-    	saveToLibrary = checkout_file
+            hou.copyNodesTo(self.hda.children(), hda_node)
+            hda_nodeDef = hda_node.type().definition()
+            hdaDef = self.hda.type().definition()
 
-    	num_inputs = len(self.hda.inputs())
+            #Copy over sections
+            sects = hdaDef.sections()
+            for sectName in sects:
+                hda_nodeDef.addSection(sectName, sects[sectName].contents())
 
-    	if copyHDA:
-    		parent = self.hda.parent()
+            #Copy over NodeGroups
+            nodeGroups = self.hda.nodeGroups()
+            for ng in nodeGroups:
+                newNg = hda_node.addNodeGroup(ng.name())
 
-    		subnet = parent.createNode('subnet')
+                for node in ng.nodes():
+                    nodePath = hda_node.path() + '/' + str(node.name())
+                    newNode = hou.node(nodePath)
 
-    		hda_node = subnet.createDigitalAsset(name=operatorName, description=operatorLabel, hda_file_name=saveToLibrary, min_num_inputs=num_inputs)
+                    if newNode is None:
+                        print ('Ya that node was null that is a problem')
+                        continue
 
-    		hou.copyNodesTo(self.hda.children(), hda_node)
-    		hda_nodeDef = hda_node.type().definition()
-    		hdaDef = self.hda.type().definition()
+                    newNg.addNode(newNode)
 
-    		#Copy over sections
-    		sects = hdaDef.sections()
-    		for sectName in sects:
-    			print 'Copying over section: ' + str(sectName)
-    			hda_nodeDef.addSection(sectName, sects[sectName].contents())
+            # Copy over paramters
+            oldParms = hdaDef.parmTemplateGroup()
+            hda_nodeDef.setParmTemplateGroup(oldParms)
+        else:
+            try:
+                hda_node = self.hda.createDigitalAsset(name=operatorName, description=operatorLabel, hda_file_name=saveToLibrary, min_num_inputs=num_inputs)
+            except hou.OperationFailed, e:
+                qd.error('There was a problem creating a digital asset', details=str(e))
+                return
 
-    		#Copy over NodeGroups
-    		nodeGroups = self.hda.nodeGroups()
-    		for ng in nodeGroups:
-    			newNg = hda_node.addNodeGroup(ng.name())
-    			print 'New group: ' + str(newNg)
-    			for node in ng.nodes():
-    				nodePath = hda_node.path() + '/' + str(node.name())
-    				print 'The Node path is:' + str(nodePath)
-    				newNode = hou.node(nodePath)
-    				if newNode is None:
-    					print ('Ya that node was null that is a problem')
-    					continue
-    				print 'The new Node is: ' + str(newNode)
-    				newNg.addNode(newNode)
+        assetTypeDef = hda_node.type().definition()
+        assetTypeDef.setIcon(environment.get_project_dir() + '/byu-pipeline-tools/assets/images/icons/hda-icon.png')
 
-    		# Copy over paramters
-    		oldParms = hdaDef.parmTemplateGroup()
-    		hda_nodeDef.setParmTemplateGroup(oldParms)
-    	else:
-    		try:
-    			hda_node = self.hda.createDigitalAsset(name=operatorName, description=operatorLabel, hda_file_name=saveToLibrary, min_num_inputs=num_inputs)
-    		except hou.OperationFailed, e:
-    			print qd.error('There was a problem creating a digital asset', details=str(e))
-    			return
+        if not copyHDA:
+            nodeParms = hda_node.parmTemplateGroup()
+            assetTypeDef.setParmTemplateGroup(nodeParms)
 
-    	assetTypeDef = hda_node.type().definition()
-    	assetTypeDef.setIcon(environment.get_project_dir() + '/byu-pipeline-tools/assets/images/icons/hda-icon.png')
-    	if not copyHDA:
-    		nodeParms = hda_node.parmTemplateGroup()
-    		assetTypeDef.setParmTemplateGroup(nodeParms)
-    	hda_node.setSelected(True)
+        hda_node.setSelected(True)

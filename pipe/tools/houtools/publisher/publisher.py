@@ -47,8 +47,34 @@ class Publisher:
         self.publish(selectedHDA=node)
 
     def publish_tool(self, node=None):
-        self.departments = [Department.HDA]
-        self.publish(selectedHDA=node)
+        if node is None:
+            node = get_selected_node()
+            if node is None:
+                return
+
+        node_path = node.path()
+        name = node_path.split('/')[-1]
+        tool_name = name.lower()
+
+        tools = Project().list_hdas()
+        if tool_name not in tools:
+            qd.error("Tool not found in project. Try creating HDA instead.")
+
+        try:
+            node.type().definition().updateFromNode(node)
+        except hou.OperationFailed, e:
+            qd.error('There was a problem publishing the HDA to the pipeline.\n', details=str(e))
+            return
+
+        try:
+            node.matchCurrentDefinition()
+        except hou.OperationFailed, e:
+            qd.warning("Problem matching description.")
+
+        destination = os.path.join(Environment().get_hda_dir(), tool_name + ".hda")
+        hou.hda.installFile(destination)
+        definition = hou.hdaDefinition(node.type().category(), node.type().name(), destination)
+        definition.setPreferred(True)
 
     def publish_set(self, node=None):
         self.departments = [Department.ASSEMBLY]
@@ -276,16 +302,8 @@ class Publisher:
         self.selectedHDA = selectedHDA
 
         if selectedHDA is None:
-            nodes = hou.selectedNodes()
-
-            if len(nodes) == 1:
-                selectedHDA = nodes[0]
-                self.selectedHDA = selectedHDA
-            elif len(nodes) > 1:
-                qd.error('Too many nodes selected. Please select only one node.')
-                return
-            else:
-                qd.error('No nodes selected. Please select a node.')
+            self.selectedHDA = get_selected_node()
+            if self.selectedHDA is None:
                 return
 
         if selectedHDA.type().definition() is not None:

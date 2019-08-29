@@ -297,6 +297,23 @@ class Project:
 		'''
 		return self._list_bodies_in_dir(self._env.get_tools_dir())
 
+	def list_hdas(self):
+		'''
+		returns a list of strings containing the names of all tools in this project
+		'''
+		hdas = os.listdir(self._env.get_hda_dir())
+		names = []
+		for hda in hdas:
+			name, ext = os.path.splitext(hda)
+
+			if not ext:
+				continue
+
+			if str(ext) == ".hda":
+				names.append(name)
+
+		return names
+
 	def list_crowd_cycles(self):
 		'''
 		returns a list of strings containing the names of all crowds cycles in this project
