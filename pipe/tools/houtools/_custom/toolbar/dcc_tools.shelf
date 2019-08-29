@@ -5,7 +5,7 @@
  Note, that two definitions of the same element are not allowed in
  a single file. -->
 
-  <toolshelf name="byu_tools" label="BYU Tools">
+  <toolshelf name="dcc_tools" label="DCC Tools">
     <memberTool name="new_body"/>
     <memberTool name="publish_shot"/>
     <memberTool name="rollback_shot"/>
