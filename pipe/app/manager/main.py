@@ -1,9 +1,16 @@
+import os
+
+print("here")
+print(os.getcwd())
+
+from PySide import *
+print("PyQt version:", PYQT_VERSION_STR)
 try:
-	from PySide2 import QtWidgets, QtGui
-	from PySide2 import QtCore
+    from PySide import QtGui as QtWidgets
+    from PySide import QtGui as QtGui
+    from PySide import QtCore
 except ImportError:
-	from PySide import QtGui as QtWidgets
-	from PySide import QtCore
+    from PySide2 import QtWidgets, QtGui, QtCore
 
 import datetime
 import operator
@@ -13,7 +20,7 @@ from pipe.am.body import AssetType, Asset, Shot
 from pipe.am.environment import Department, Status
 from pipe.am.project import Project
 
-from byugui import request_email
+# from byugui import request_email
 
 REF_WINDOW_WIDTH = 1080
 REF_WINDOW_HEIGHT = 650
@@ -356,7 +363,7 @@ class ElementBrowser(QtWidgets.QWidget):
 		layout.addWidget(self.status_bar)
 		self.setLayout(layout)
 
-		request_email.check_user_email(self)
+		# request_email.check_user_email(self)
 
 	def _build_tree(self):
 		self.tree.clear()
