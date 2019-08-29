@@ -23,7 +23,7 @@
 			"function":"MayaPublisher.publish()"
 		}, {
 			"itemType":"button",
-			"icon":"agent.svg",
+			"icon":"quick_publish.png",
 			"annotation":"Publish a model, rig or animation... but quickly",
 			"label":"quick",
 			"tool":"mayatools.publishers.publisher",
@@ -32,14 +32,16 @@
 			"itemType":"button",
 			"icon":"rollback.svg",
 			"annotation":"Rollback body to previous version",
-			"label":"rollback",
+			"label":"roll",
 			"tool":"mayatools.cloners.cloner",
 			"function":"MayaCloner.rollback()"
+		}, {
+				"itemType":"separator"
 		}, {
 			"itemType":"button",
 			"icon":"playblast.svg",
 			"annotation":"Playblast this shot",
-			"label":"playblast",
+			"label":"blast",
 			"tool":"mayatools.submitters.playblaster",
 			"function":"Playblaster.playblast()"
 		}, {
@@ -49,6 +51,8 @@
 			"label":"alembic",
 			"tool":"mayatools.exporters.alembic_exporter",
 			"function":"AlembicExporter.go()"
+		}, {
+				"itemType":"separator"
 		}, {
 			"itemType":"button",
 			"icon":"tag.svg",
@@ -65,12 +69,14 @@
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
-			"icon":"interpolate.svg",
+			"icon":"multi_tag.png",
 			"annotation":"Select Tagged Objects to Untag",
 			"label":"tags",
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag_multiple()"
-		},{
+		}, {
+				"itemType":"separator"
+		}, {
 			"itemType":"button",
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",

@@ -41,6 +41,7 @@ def load_shelf():
 			icon = os.path.join(ICON_DIR, shelf_item['icon'])
 			annotation = shelf_item['annotation']
 			label = shelf_item['label']
+			# dcc = double click command: we could add a different command that goes when double clicked.
 
 			path = "pipe.tools." + shelf_item['tool']
 			function = shelf_item['function']
