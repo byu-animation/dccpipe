@@ -29,6 +29,7 @@ class MayaPublisher:
     def fast_publish(self):
         asset_name = os.environ.get("DCC_ASSET_NAME")
         department = os.environ.get("DCC_DEPARTMENT")
+        self.quick_publish = True
         self.non_gui_publish(asset_name, department)
 
     def publish(self):
@@ -70,8 +71,8 @@ class MayaPublisher:
         if comment is None:
             comment = "No comment."
 
-        setPublishEnvVar(self.body.get_name(), chosen_department)
         post_publish(selected_element, user, published=True, comment=comment)
+        setPublishEnvVar(self.body.get_name(), chosen_department)
 
         qd.info("Asset published successfully.", "Success")
 

@@ -4,6 +4,7 @@ import os
 import re
 import smtplib
 import time
+from pipe.gui import quick_dialogs as qd
 
 def readfile(filepath):
 	"""
@@ -90,6 +91,28 @@ def alphanumeric(name):
 	        seq.append(char)
 
 	return ''.join(seq).lower()
+
+def checkFileName(name):
+	if not re.match('^[a-zA-Z][a-zA-Z0-9.]*', name):
+		qd.error("AssetName can't start with a number or symbol!\nAlso, AssetName can only have letters, numbers and \'.\'\'s")
+		return False
+
+	if name.find('_') != -1:
+		qd.error("AssetName can't have underscore!")
+		return False
+
+	if name.find('/') != -1:
+		qd.error("AssetName can't have backslash!")
+		return False
+
+	if name.find('!') != -1:
+		qd.error("AssetName can't have backslash!")
+		return False
+
+	if name.find('|') != -1:
+		qd.error("AssetName can't have backslash!")
+		return False
+	return True
 
 def timestamp():
 	"""
