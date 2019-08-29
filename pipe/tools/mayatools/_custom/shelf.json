@@ -102,6 +102,14 @@
 			"label":"obj",
 			"tool":"mayatools.importers.reference_importer",
 			"function":"ReferenceImporter.go()"
+		},
+		{
+			"itemType":"button",
+			"icon":"turtle.png",
+			"annotation":"Unload References",
+			"label":"obj",
+			"tool":"mayatools.importers.referencer",
+			"function":"MayaReferencer.dereference_asset()"
 		}
 	]
 }
