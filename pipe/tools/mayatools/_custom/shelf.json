@@ -4,66 +4,77 @@
 			"itemType":"button",
 			"icon":"new-body.svg",
 			"annotation":"Create a new body",
+			"label":"create",
 			"tool":"mayatools.creators.creator",
 			"function":"Creator.create_body()"
 		}, {
 			"itemType":"button",
 			"icon":"checkout.svg",
 			"annotation":"Check-out/clone an asset",
+			"label":"clone",
 			"tool":"mayatools.cloners.cloner",
 			"function":"MayaCloner.clone()"
 		}, {
 			"itemType":"button",
 			"icon":"publish.svg",
 			"annotation":"Publish a model, rig or animation",
+			"label":"publish",
 			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.publish()"
 		}, {
 			"itemType":"button",
 			"icon":"agent.svg",
 			"annotation":"Publish a model, rig or animation... but quickly",
+			"label":"quick",
 			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.fast_publish()"
 		}, {
 			"itemType":"button",
 			"icon":"rollback.svg",
 			"annotation":"Rollback body to previous version",
+			"label":"rollback",
 			"tool":"mayatools.cloners.cloner",
 			"function":"MayaCloner.rollback()"
 		}, {
 			"itemType":"button",
 			"icon":"playblast.svg",
 			"annotation":"Playblast this shot",
+			"label":"playblast",
 			"tool":"mayatools.submitters.playblaster",
 			"function":"Playblaster.playblast()"
 		}, {
 			"itemType":"button",
 			"icon":"alembic-export.svg",
 			"annotation":"Export as Alembic",
+			"label":"alembic",
 			"tool":"mayatools.exporters.alembic_exporter",
 			"function":"AlembicExporter.go()"
 		}, {
 			"itemType":"button",
 			"icon":"tag.svg",
 			"annotation":"Tag Selected Objects for Export",
+			"label":"tag",
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.tag()"
 		}, {
 			"itemType":"button",
 			"icon":"untag.svg",
 			"annotation":"Remove Export Tags from Selected Objects",
+			"label":"untag",
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
 			"icon":"interpolate.svg",
 			"annotation":"Select Tagged Objects to Untag",
+			"label":"tags",
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag_multiple()"
 		},{
 			"itemType":"button",
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
+			"label":"ref",
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.go()"
 		}, {
@@ -72,12 +83,14 @@
 			"itemType":"button",
 			"icon":"education.svg",
 			"annotation":"Change the licence to education",
+			"label":"edu",
 			"tool":"mayatools.utils.education",
 			"function":"education.go()"
 		}, {
 			"itemType":"button",
 			"icon":"reload-scripts.svg",
 			"annotation":"Reload python scripts",
+			"label":"scripts",
 			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go()"
 		}, {
@@ -86,6 +99,7 @@
 			"itemType":"button",
 			"icon":"import-ref.svg",
 			"annotation":"Import reference actor",
+			"label":"obj",
 			"tool":"mayatools.importers.reference_importer",
 			"function":"ReferenceImporter.go()"
 		}
