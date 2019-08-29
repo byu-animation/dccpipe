@@ -44,7 +44,7 @@ class MayaCloner:
 		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an asset to clone")
 		self.item_gui.submitted.connect(self.results)
 
-	def get_element_option(self, type, body):
+	def get_element_option(self, type, body):  # FIXME: this would go better in Body()
 		element = None
 
 		if type == AssetType.PROP:
