@@ -5,7 +5,9 @@ from pipe.am.environment import Environment
 from pipe.am.body import Body
 from pipe.am.body import AssetType
 from pipe.tools.houtools.utils.utils import *
+from pipe.am import pipeline_io
 from pipe.tools.houtools.assembler.assembler import Assembler
+import re
 from PySide2 import QtWidgets
 
 
@@ -28,6 +30,11 @@ class Creator:
 
     def name_results(self, value):
         self.name = str(value)
+
+        name = str(self.name)
+        if not pipeline_io.checkFileName(name):
+            self.create_body()
+            return
 
         if self.name is None or self.name == "":
             return

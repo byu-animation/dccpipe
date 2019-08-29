@@ -4,7 +4,9 @@ from pipe.am.project import Project
 from pipe.am.environment import Environment
 from pipe.am.body import Body
 from pipe.am.body import AssetType
+from pipe.am import pipeline_io
 from pipe.tools.mayatools.utils.utils import *
+import re
 from PySide2 import QtWidgets
 
 
@@ -25,6 +27,11 @@ class Creator:
         if self.name is None:
             return
 
+        #Error checking
+        name = str(self.name)
+        if not pipeline_io.checkFileName(name):
+            self.create_body()
+            return
         asset_type_list = AssetType().list_maya_types()
 
         self.item_gui = sfl.SelectFromList(l=asset_type_list, parent=maya_main_window(), title="What are you creating?", width=250, height=120)
