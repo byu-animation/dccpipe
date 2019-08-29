@@ -301,13 +301,13 @@ class Publisher:
         project = Project()
         self.selectedHDA = selectedHDA
 
-        if selectedHDA is None:
+        if self.selectedHDA is None:
             self.selectedHDA = get_selected_node()
             if self.selectedHDA is None:
                 return
 
-        if selectedHDA.type().definition() is not None:
-            self.src = selectedHDA.type().definition().libraryFilePath()
+        if self.selectedHDA.type().definition() is not None:
+            self.src = self.selectedHDA.type().definition().libraryFilePath()
 
             if self.node_name:
                 self.asset_results([self.node_name])
@@ -338,7 +338,7 @@ class Publisher:
         body = self.body
         asset_type = body.get_type()
 
-        inside = selectedHDA.node("inside")
+        inside = self.selectedHDA.node("inside")
         modify = inside.node("modify")
         material = inside.node("material")
         hair = inside.node("hair")
@@ -368,7 +368,7 @@ class Publisher:
         comment = "publish by " + str(user.get_username()) + " in departments " + str(departments_to_publish)
 
         for department in departments_to_publish:
-            inside = self.get_inside_node(asset_type, department, selectedHDA)
+            inside = self.get_inside_node(asset_type, department, self.selectedHDA)
             node = inside.node(department)
             src = node.type().definition().libraryFilePath()
 
@@ -412,6 +412,7 @@ class Publisher:
             hou.hda.installFile(dst)
             definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
             definition.setPreferred(True)
+            node.allowEditingOfContents()
 
         else:
             qd.error('File does not exist', details=src)

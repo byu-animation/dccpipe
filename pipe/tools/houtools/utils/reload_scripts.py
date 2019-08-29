@@ -6,6 +6,7 @@ from pipe.tools.houtools.assembler import assembler as hou_assembler
 from pipe.tools.houtools.importer import importer as hou_importer
 from pipe.tools.houtools.publisher import publisher as hou_publisher
 from pipe.tools.houtools.cloner import cloner as hou_cloner
+from pipe.tools.houtools.rollback import rollback as hou_rollback
 import pipe.gui.quick_dialogs as qd
 
 
@@ -18,6 +19,7 @@ class ReloadScripts:
         reload(hou_assembler)
         reload(hou_creator)
         reload(hou_cloner)
+        reload(hou_rollback)
         reload(hou_publisher)
         reload(hou_importer)
         reload(qd)
