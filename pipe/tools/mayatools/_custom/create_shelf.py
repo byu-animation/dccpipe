@@ -41,7 +41,9 @@ def load_shelf():
 			icon = os.path.join(ICON_DIR, shelf_item['icon'])
 			annotation = shelf_item['annotation']
 			label = shelf_item['label']
-			# dcc = double click command: we could add a different command that goes when double clicked.
+
+			dcc = shelf_item['double-click']
+			# dcc = double click command: we can add a different command that goes when double clicked.
 
 			path = "pipe.tools." + shelf_item['tool']
 			function = shelf_item['function']
@@ -51,7 +53,12 @@ def load_shelf():
 
 			command = "from " + str(path) + " import " + str(module) + "; shelf_item = " + str(module) + "(); shelf_item." + str(method)
 
-			pm.shelfButton(command=command, annotation=annotation, image=icon, l=annotation, iol=label, olb=(0,0,0,0))
+			if dcc == 0:
+				dcc = command
+			else:
+				dcc = "from " + str(path) + " import " + str(module) + "; shelf_item = " + str(module) + "(); shelf_item." + str(dcc)
+
+			pm.shelfButton(command=command, annotation=annotation, image=icon, l=annotation, iol=label, olb=(0,0,0,0), dcc=dcc)
 		else:
 			pm.separator(horizontal=False, style='shelf', enable=True, width=35, height=35, visible=1, enableBackground=0, backgroundColor=(0.2,0.2,0.2), highlightColor=(0.321569, 0.521569, 0.65098))
 

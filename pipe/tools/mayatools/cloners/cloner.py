@@ -17,9 +17,14 @@ import os
 class MayaCloner:
 	def __init__(self):
 		self.maya_checkout_dialog = None
+		self.quick = False
 
 	def rollback(self):
 		print("Rollin' Rollin' Rollin' (Back)")
+
+	def quick_clone(self):
+		self.quick = True
+		self.go()
 
 	def clone(self, gui=True, file_path=None, asset_name='Temp'):
 		if gui:
@@ -91,6 +96,16 @@ class MayaCloner:
 		type = body.get_type()
 		element = self.get_element_option(type, body)
 
+		if self.quick:
+			latest = element.get_last_publish()
+			if not latest:
+				qd.error("There have been no publishes in this department.")
+				return
+			else:
+				selected_scene_file = latest[3]
+				self.open_scene_file(selected_scene_file)
+				return
+
 		if element is None:
 			qd.warning("Nothing was cloned.")
 			return
@@ -99,7 +114,7 @@ class MayaCloner:
 		print("publishes: ", self.publishes)
 
 		if not self.publishes:
-			qd.error("There have been no publishes for this department. Maybe you meant model?")
+			qd.error("There have been no publishes in this department. Maybe you meant model?")
 			return
 
 		# make the list a list of strings, not tuples
@@ -129,10 +144,13 @@ class MayaCloner:
 				selected_scene_file = publish[3]
 
 		# selected_scene_file is the one that contains the scene file for the selected commit
+		self.open_scene_file(selected_scene_file)
+
+	def open_scene_file(self, selected_scene_file):
 		if selected_scene_file is not None:
 			check_unsaved_changes()
-
 			setPublishEnvVar(self.body.get_name(), self.department)
+
 			if not os.path.exists(selected_scene_file):
 				mc.file(new=True, force=True)
 				mc.file(rename=selected_scene_file)
@@ -141,3 +159,7 @@ class MayaCloner:
 			else:
 				mc.file(selected_scene_file, open=True, force=True)
 				print "File opened: " + selected_scene_file
+
+			return True
+		else:
+			return False

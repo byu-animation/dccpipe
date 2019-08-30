@@ -5,20 +5,23 @@
 			"icon":"new-body.svg",
 			"annotation":"Create a new body",
 			"label":"create",
+			"double-click":0,
 			"tool":"mayatools.creators.creator",
 			"function":"Creator.create_body()"
 		}, {
 			"itemType":"button",
-			"icon":"checkout.svg",
+			"icon":"clone.png",
 			"annotation":"Check-out/clone an asset",
 			"label":"clone",
+			"double-click":"clone()",
 			"tool":"mayatools.cloners.cloner",
-			"function":"MayaCloner.clone()"
+			"function":"MayaCloner.quick_clone()"
 		}, {
 			"itemType":"button",
 			"icon":"publish.svg",
 			"annotation":"Publish a model, rig or animation",
 			"label":"publish",
+			"double-click":0,
 			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.publish()"
 		}, {
@@ -26,15 +29,9 @@
 			"icon":"quick_publish.png",
 			"annotation":"Publish a model, rig or animation... but quickly",
 			"label":"quick",
+			"double-click":0,
 			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.fast_publish()"
-		}, {
-			"itemType":"button",
-			"icon":"rollback.svg",
-			"annotation":"Rollback body to previous version",
-			"label":"roll",
-			"tool":"mayatools.cloners.cloner",
-			"function":"MayaCloner.rollback()"
 		}, {
 				"itemType":"separator"
 		}, {
@@ -42,6 +39,7 @@
 			"icon":"playblast.svg",
 			"annotation":"Playblast this shot",
 			"label":"blast",
+			"double-click":0,
 			"tool":"mayatools.submitters.playblaster",
 			"function":"Playblaster.playblast()"
 		}, {
@@ -49,6 +47,7 @@
 			"icon":"alembic-export.svg",
 			"annotation":"Export as Alembic",
 			"label":"alembic",
+			"double-click":0,
 			"tool":"mayatools.exporters.alembic_exporter",
 			"function":"AlembicExporter.go()"
 		}, {
@@ -58,6 +57,7 @@
 			"icon":"tag.svg",
 			"annotation":"Tag Selected Objects for Export",
 			"label":"tag",
+			"double-click":0,
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.tag()"
 		}, {
@@ -65,6 +65,7 @@
 			"icon":"untag.svg",
 			"annotation":"Remove Export Tags from Selected Objects",
 			"label":"untag",
+			"double-click":0,
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag()"
 		}, {
@@ -72,6 +73,7 @@
 			"icon":"multi_tag.png",
 			"annotation":"Select Tagged Objects to Untag",
 			"label":"tags",
+			"double-click":0,
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag_multiple()"
 		}, {
@@ -81,6 +83,7 @@
 			"icon":"reference.svg",
 			"annotation":"Reference a model or rig",
 			"label":"ref",
+			"double-click":0,
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.go()"
 		}, {
@@ -90,6 +93,7 @@
 			"icon":"education.svg",
 			"annotation":"Change the licence to education",
 			"label":"edu",
+			"double-click":0,
 			"tool":"mayatools.utils.education",
 			"function":"education.go()"
 		}, {
@@ -97,6 +101,7 @@
 			"icon":"reload-scripts.svg",
 			"annotation":"Reload python scripts",
 			"label":"scripts",
+			"double-click":0,
 			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go()"
 		}, {
@@ -106,6 +111,7 @@
 			"icon":"import-ref.svg",
 			"annotation":"Import reference actor",
 			"label":"obj",
+			"double-click":0,
 			"tool":"mayatools.importers.reference_importer",
 			"function":"ReferenceImporter.go()"
 		}
