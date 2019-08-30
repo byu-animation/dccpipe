@@ -91,11 +91,6 @@ import pipe.gui.write_message as wm
 
 from pipe.tools.houtools.utils.utils import *
 from pipe.tools.houtools.publisher.publisher import Publisher
-try:
-    from pipe.tools.houtools.cloner.cloner import Cloner
-except:
-    print("Cloner already loaded. Skipping.")
-
 
 class UpdateModes:
     SMART = "smart"
@@ -303,8 +298,7 @@ class Assembler:
                 continue
 
             # get the most recent data for this reference
-            from pipe.tools.houtools.cloner.cloner import Cloner
-            cloned_subnet, instances = Cloner().asset_results([reference["asset_name"]])
+            cloned_subnet, instances = self.clone_content_hdas([reference["asset_name"]])
 
             # move the cloned asset inside the set node and delete the one on the top level
             subnet = cloned_subnet.copyTo(inside)
@@ -335,6 +329,45 @@ class Assembler:
             })
 
         inside.layoutChildren()
+
+    def clone_content_hdas(self, filename):
+        project = Project()
+        self.body = project.get_body(filename)
+
+        self.modify_element = self.body.get_element("modify")
+        self.material_element = self.body.get_element("material")
+        self.hair_element = self.body.get_element("hair")
+        self.cloth_element = self.body.get_element("cloth")
+
+        self.filepath = self.body.get_filepath()
+
+        modify_publish = self.modify_element.get_last_publish()
+        material_publish = self.material_element.get_last_publish()
+        hair_publish = self.hair_element.get_last_publish()
+        cloth_publish = self.cloth_element.get_last_publish()
+
+        if not modify_publish and not material_publish and not hair_publish and not cloth_publish:
+            department_paths = None
+        else:
+            department_paths = {}
+
+        if(modify_publish):
+            self.modify_publish = modify_publish[3]
+            department_paths['modify'] = self.modify_publish
+        if(material_publish):
+            self.material_publish = material_publish[3]
+            department_paths['material'] = self.material_publish
+        if(hair_publish):
+            self.hair_publish = hair_publish[3]
+            department_paths['hair'] = self.hair_publish
+        if(cloth_publish):
+            self.cloth_publish = cloth_publish[3]
+            department_paths['cloth'] = self.cloth_publish
+
+        node, created_instances =  self.create_hda(filename, body=self.body, department_paths=department_paths)
+        layout_object_level_nodes()
+
+        return node, created_instances
 
     '''
         Cache all the contents of the set for faster cooking
