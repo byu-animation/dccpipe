@@ -11,7 +11,7 @@
 		}, {
 			"itemType":"button",
 			"icon":"clone.png",
-			"annotation":"Check-out/clone an asset",
+			"annotation":"Clone an asset. Double-click to get latest publish.",
 			"label":"clone",
 			"double-click":"clone()",
 			"tool":"mayatools.cloners.cloner",
