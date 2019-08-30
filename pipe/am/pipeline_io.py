@@ -80,7 +80,7 @@ def version_dir(dirpath, zero_padding=3):
 def alphanumeric(name):
 	"""
 	returns a string of the same length as the given name with all the non-alphanumeric actors
-	replaced by underscores and all uppercase letters replaced by lowercase letters
+	replaced by underscores
 	name -- string to make alphanumeric
 	"""
 	seq = []
@@ -90,7 +90,7 @@ def alphanumeric(name):
 	    else:
 	        seq.append(char)
 
-	return ''.join(seq).lower()
+	return ''.join(seq)
 
 def checkFileName(name):
 	if not re.match('^[a-zA-Z][a-zA-Z0-9.]*', name):
@@ -106,11 +106,11 @@ def checkFileName(name):
 		return False
 
 	if name.find('!') != -1:
-		qd.error("AssetName can't have backslash!")
+		qd.error("AssetName can't have Exclamation point!")
 		return False
 
 	if name.find('|') != -1:
-		qd.error("AssetName can't have backslash!")
+		qd.error("AssetName can't have pipe (|)!")
 		return False
 	return True
 
