@@ -10,10 +10,10 @@ except ImportError:
     from PySide2.QtCore import Slot
 
 from app import *
-from resources import *
-from pipelion.lion_mng.logger import Logger
+# from resources import *
+# from pipelion.lion_mng.logger import Logger
 from window import *
-from resources import *
+# from resources import *
 import viewmodel as ViewModel
 
 def main():

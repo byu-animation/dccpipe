@@ -1,26 +1,32 @@
 import os
+import sys
 
-print("here")
-print(os.getcwd())
-
-from PySide import *
-print("PyQt version:", PYQT_VERSION_STR)
+import PySide2
 try:
-    from PySide import QtGui as QtWidgets
-    from PySide import QtGui as QtGui
-    from PySide import QtCore
+	from PySide import QtGui as QtWidgets
+	from PySide import QtGui as QtGui
+	from PySide import QtCore
 except ImportError:
-    from PySide2 import QtWidgets, QtGui, QtCore
+	from PySide2 import QtWidgets
+	from PySide2 import QtGui
+	from PySide2 import QtCore
 
 import datetime
 import operator
-import os
 
+import pipe.gui.select_from_list as sfl
 from pipe.am.body import AssetType, Asset, Shot
-from pipe.am.environment import Department, Status
+from pipe.am.environment import Department
 from pipe.am.project import Project
 
 # from byugui import request_email
+
+
+class Status:
+	ALL = ["one", "two"]
+
+def get_status():
+	return "one"
 
 REF_WINDOW_WIDTH = 1080
 REF_WINDOW_HEIGHT = 650
@@ -554,9 +560,9 @@ class ElementBrowser(QtWidgets.QWidget):
 		self.tree.setItemWidget(item, column, lineedit)
 
 	def init_status(self, element, item, column):
-		item.setText(column, element.get_status())
+		item.setText(column, get_status())
 		combobox = TreeComboBoxItem(item, column)
-		element_type = element.get_status()
+		element_type = get_status()
 		type_idx = 0
 		for idx, type in enumerate(Status.ALL):
 			combobox.addItem(type)
@@ -603,7 +609,7 @@ class ElementBrowser(QtWidgets.QWidget):
 			self.status_bar.showMessage('"' + user + '" is not a valid username')
 
 	def update_status(self, element, item, column):
-		element.update_status(str(item.text(column)))
+		# element.update_status(str(item.text(column)))
 		self.status_bar.clearMessage()
 
 	def update_start_date(self, element, item, column):
@@ -668,9 +674,18 @@ class UserListDialog(QtWidgets.QDialog):
 
 
 if __name__ == '__main__':
+	print("here")
+	print("sys.argv ", sys.argv)
 
-	import sys
-	app = QtWidgets.QApplication(sys.argv)
+	try:
+		self.app = QtWidgets.QApplication(sys.argv)
+	except:
+		print("failed to create qapp")
+
+	list = Status.ALL
+
+	print("here 2")
 	window = ElementBrowser()
+	print("here")
 	window.show()
 	sys.exit(app.exec_())

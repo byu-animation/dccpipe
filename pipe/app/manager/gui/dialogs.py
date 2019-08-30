@@ -10,10 +10,10 @@ except ImportError:
     from PySide2 import QtWidgets, QtGui, QtCore
     from PySide2.QtCore import Slot
 
-from pipelion.lion_mng.reader import *
-from pipelion.lion_mng.body import Body
+# from pipelion.lion_mng.reader import *
+# from pipelion.lion_mng.body import Body
 from programWidget import ProgramShelfWidget
-from pipelion.lion_mng.writer import cloneDataToUser
+# from pipelion.lion_mng.writer import cloneDataToUser
 import viewmodel as ViewModel
 
 class BodyOverviewController():

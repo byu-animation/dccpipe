@@ -11,8 +11,8 @@ except ImportError:
     from PySide2.QtCore import Qt, Slot, Signal, QObject
 
 from tables import *
-import pipelion.lion_mng.reader as Reader
-from pipelion.lion_mng.logger import Logger
+# import pipelion.lion_mng.reader as Reader
+# from pipelion.lion_mng.logger import Logger
 from resources import *
 from dialogs import *
 
