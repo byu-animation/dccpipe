@@ -112,12 +112,7 @@ class Importer:
                 # get the most recent data for this reference
                 asset_name = actor["asset_name"]
 
-                try:
-                    from pipe.tools.houtools.cloner.cloner import Cloner
-                except:
-                    pass
-
-                actor_node, instances = Cloner().asset_results([asset_name])
+                actor_node, instances = Assembler().asset_results([asset_name])
                 # Assembler().update_contents_actor(actor_node, asset_name, shot=shot_name)
 
                 # actor_node = cloned_subnet.copyTo(inside)

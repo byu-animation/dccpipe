@@ -12,6 +12,7 @@ from pipe.am.body import Body
 from pipe.am.element import Element
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
+from pipe.tools.houtools.assembler.assembler import Assembler
 
 
 class Cloner:
@@ -122,41 +123,4 @@ class Cloner:
         print("Selected asset: ", value[0])
         filename = value[0]
 
-        project = Project()
-        self.body = project.get_body(filename)
-
-        self.modify_element = self.body.get_element("modify")
-        self.material_element = self.body.get_element("material")
-        self.hair_element = self.body.get_element("hair")
-        self.cloth_element = self.body.get_element("cloth")
-
-        self.filepath = self.body.get_filepath()
-
-        modify_publish = self.modify_element.get_last_publish()
-        material_publish = self.material_element.get_last_publish()
-        hair_publish = self.hair_element.get_last_publish()
-        cloth_publish = self.cloth_element.get_last_publish()
-
-        if not modify_publish and not material_publish and not hair_publish and not cloth_publish:
-            department_paths = None
-        else:
-            department_paths = {}
-
-        if(modify_publish):
-            self.modify_publish = modify_publish[3]
-            department_paths['modify'] = self.modify_publish
-        if(material_publish):
-            self.material_publish = material_publish[3]
-            department_paths['material'] = self.material_publish
-        if(hair_publish):
-            self.hair_publish = hair_publish[3]
-            department_paths['hair'] = self.hair_publish
-        if(cloth_publish):
-            self.cloth_publish = cloth_publish[3]
-            department_paths['cloth'] = self.cloth_publish
-
-        from pipe.tools.houtools.assembler.assembler import Assembler  # put import here to remove cross import issue FIXME
-        node, created_instances =  Assembler().create_hda(filename, body=self.body, department_paths=department_paths)
-        layout_object_level_nodes()
-
-        return node, created_instances
+        return Assembler().clone_content_hdas(filename);
