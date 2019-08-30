@@ -141,7 +141,7 @@ class Project:
 		returns the shot object associated with the given name.
 		name -- the name of the shot
 		'''
-		filepath = os.path.join(self._env.get_shots_dir(), name)
+		filepath = os.path.join(self._env.get_assets_dir(), name)
 		if not os.path.exists(filepath):
 			return None
 		return Shot(filepath)
@@ -171,9 +171,7 @@ class Project:
 		returns the body object associated with the given name.
 		name -- the name of the body
 		'''
-		body = self.get_shot(name)
-		if body is None:
-			body = self.get_asset(name)
+		body = self.get_asset(name)
 		if body is None:
 			body = self.get_tool(name)
 		if body is None:
@@ -218,6 +216,11 @@ class Project:
 			return None  # asset already exists.
 
 		asset.update_type(asset_type)
+
+		if asset_type == str(AssetType.SHOT):
+			rendered_shots = Environment().get_shots_dir()
+			dir = os.path.join(rendered_shots, name)
+			pipeline_io.mkdir(dir)
 
 		return asset
 
