@@ -413,6 +413,7 @@ class Element:
         # get the filepath for this publish and add it to list of publishes
         old_filepath, new_filename = os.path.split(src)
         new_publish = os.path.join(new_version_dir, new_filename)
+        pipeline_io.set_permissions(new_publish)
         self._datadict[self.PUBLISHES].append((username, timestamp, comment, new_publish))
 
         if status is not None:

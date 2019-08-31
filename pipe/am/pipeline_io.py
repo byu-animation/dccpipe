@@ -36,6 +36,12 @@ def mkdir(dirpath):
 		return False # file already exists
 	return True
 
+def set_permissions(path):
+	try:
+		os.chmod(path, 0777)
+	except:
+		qd.warning("Couldn't set permissions.")
+
 def version_file(filepath):
 	"""
 	versions up the given file based on other files in the same directory. The given filepath
