@@ -4,6 +4,7 @@ import json
 
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
+from pipe.am import pipeline_io
 from pipe.am.body import Body, AssetType
 from pipe.am.project import Project
 from pipe.am.element import Element
@@ -292,7 +293,9 @@ class Publisher:
         #Publish
         user = Environment().get_user()
         comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+        pipeline_io.set_permissions(src)
         dst = self.publish_element(element, user, src, comment)
+        pipeline_io.set_permissions(dst)
 
         message = "Successfully published " + str(self.body.get_name()) + "!"
         self.print_success_message(message)
