@@ -5,6 +5,7 @@ import shutil
 
 from pipe.am.project import Project
 from pipe.am.environment import Environment, Department
+import pipe.am.pipeline_io
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
 from pipe.tools.mayatools.utils.utils import *
@@ -39,4 +40,6 @@ class Playblaster:
 
     def simpleBlast(self, start_frame, end_frame, filename):
     	mc.playblast(st=start_frame, et=end_frame, fmt="qt", compression="png", qlt=100, forceOverwrite=True, filename=filename, offScreen=True, percent=100, v=False)
+        pipeline_io.set_permissions(filename)
+
         return
