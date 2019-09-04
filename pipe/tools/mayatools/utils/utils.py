@@ -131,21 +131,21 @@ def scene_prep(quick_publish, department=None):
         save_scene_file()
         check_unsaved_changes()
 
-    delete_history = True
+    not_rig = True
     if department == Department.RIG:
-        delete_history = False
+        not_rig = False
 
-    if delete_history:
+    if not_rig:
         print("clearing construction history")
         try:
             clear_construction_history()
         except:
             qd.warning("Clear construction history failed. There may be something unusual in the history that's causing this.")
 
-    try:
-        freeze_transformations()
-    except:
-        qd.warning("Freeze transform failed. There may be 1+ keyframed values in object. Remove all keyframed values and expressions from object.")
+        try:
+            freeze_transformations()
+        except:
+            qd.warning("Freeze transform failed. There may be 1+ keyframed values in object. Remove all keyframed values and expressions from object.")
 
     try:
         delete_image_planes()
