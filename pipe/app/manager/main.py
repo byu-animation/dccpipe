@@ -672,20 +672,51 @@ class UserListDialog(QtWidgets.QDialog):
 	def sizeHint(self):
 		return QtCore.QSize(540, 800)
 
+class Manager:
 
-if __name__ == '__main__':
-	print("here")
-	print("sys.argv ", sys.argv)
+	def __init__(self):
+		pass
 
-	try:
-		self.app = QtWidgets.QApplication(sys.argv)
-	except:
-		print("failed to create qapp")
 
-	list = Status.ALL
+	def go(self):
+		print("here")
+		print("sys.argv ", sys.argv)
 
-	print("here 2")
-	window = ElementBrowser()
-	print("here")
-	window.show()
-	sys.exit(app.exec_())
+		# try:
+		# 	self.app = QtWidgets.QApplication(sys.argv)
+		# except:
+		# 	print("failed to create qapp")
+
+		list = Status.ALL
+
+		print("here 2")
+		try:
+			window = ElementBrowser()
+		except Exception as e:
+			print(e)
+
+		print("here")  # fails between here and shown
+		try:
+			window.show()
+		except Exception as e:
+			print(e)
+
+		print("shown")
+		# sys.exit(app.exec_())
+
+# if __name__ == '__main__':
+# 	print("here")
+# 	print("sys.argv ", sys.argv)
+#
+# 	try:
+# 		self.app = QtWidgets.QApplication(sys.argv)
+# 	except:
+# 		print("failed to create qapp")
+#
+# 	list = Status.ALL
+#
+# 	print("here 2")
+# 	window = ElementBrowser()
+# 	print("here")
+# 	window.show()
+# 	sys.exit(app.exec_())

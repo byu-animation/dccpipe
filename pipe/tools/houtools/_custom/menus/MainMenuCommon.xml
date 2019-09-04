@@ -43,6 +43,21 @@ creator.run(type="actor")
 		</subMenu>
 		<!-- ============================ End creator subMenu =========================== -->
 
+		<!-- <scriptItem>
+			<label>Manager</label>
+			<scriptCode scriptType="python">
+				<![CDATA[
+import pipe.app
+from pipe.app.manager import main
+
+import hou
+manager = main.Manager()
+hou.session.manager = manager
+manager.go()
+				]]>
+			</scriptCode>
+		</scriptItem> -->
+
 		<!-- ============================ Start cloner subMenu =========================== -->
 		<subMenu id="cloner_menu">
 			<label>Clone</label>
