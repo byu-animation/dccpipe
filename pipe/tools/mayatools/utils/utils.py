@@ -38,8 +38,8 @@ def maya_main_window():
 '''
     Prepare the scene for a publish. Called from creator and publisher.
 '''
-def prepare_scene_file(quick_publish=False):
-    scene_prep(quick_publish)
+def prepare_scene_file(quick_publish=False, department=None):
+    scene_prep(quick_publish, department=department)
     file_path = Environment().get_user_workspace()
     file_path = os.path.join(file_path, 'untitled.mb')
     file_path = pipeline_io.version_file(file_path)
@@ -124,17 +124,23 @@ def get_scene_file():
 '''
     Helper function for post_publish()
 '''
-def scene_prep(quick_publish):
+def scene_prep(quick_publish, department=None):
     if quick_publish:
         print("skipping check for unsaved changes")
     else:
         save_scene_file()
         check_unsaved_changes()
 
-    try:
-        clear_construction_history()
-    except:
-        qd.warning("Clear construction history failed. There may be something unusual in the history that's causing this.")
+    delete_history = True
+    if department == Department.RIG:
+        delete_history = False
+
+    if delete_history:
+        print("clearing construction history")
+        try:
+            clear_construction_history()
+        except:
+            qd.warning("Clear construction history failed. There may be something unusual in the history that's causing this.")
 
     try:
         freeze_transformations()

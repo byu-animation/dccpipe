@@ -57,7 +57,7 @@ class MayaPublisher:
     def department_results(self, value):
         chosen_department = value[0]
 
-        prepare_scene_file(quick_publish=self.quick_publish)
+        prepare_scene_file(quick_publish=self.quick_publish, department=chosen_department)
 
         print("value: ", value)
         print("dept: ", chosen_department)
