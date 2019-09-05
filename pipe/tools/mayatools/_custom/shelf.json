@@ -109,7 +109,7 @@
 			"annotation":"Unload References",
 			"label":"obj",
 			"tool":"mayatools.importers.referencer",
-			"function":"MayaReferencer.dereference_asset()"
+			"function":"MayaReferencer.dereference_assets()"
 		}
 	]
 }
