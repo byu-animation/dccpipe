@@ -4,7 +4,6 @@ import os
 import re
 import smtplib
 import time
-from pipe.gui import quick_dialogs as qd
 
 def readfile(filepath):
 	"""
@@ -38,6 +37,7 @@ def mkdir(dirpath):
 
 def set_permissions(path):
 	try:
+		from pipe.gui import quick_dialogs as qd
 		os.chmod(path, 0777)
 	except:
 		qd.warning("Couldn't set permissions.")
@@ -99,6 +99,7 @@ def alphanumeric(name):
 	return ''.join(seq)
 
 def checkFileName(name):
+	from pipe.gui import quick_dialogs as qd
 	if not re.match('^[a-zA-Z][a-zA-Z0-9.]*', name):
 		qd.error("AssetName can't start with a number or symbol!\nAlso, AssetName can only have letters, numbers and \'.\'\'s")
 		return False
