@@ -1,0 +1,6 @@
+{
+	"description": "Connect to DCC pipeline tools",
+	"url": "https://github.com/byu-animation/dccpipe/",
+	"version": "0.1",
+	"license": "<a href=\"https://github.com/byu-animation/dccpipe/blob/master/LICENSE\">dccpipe</a>"
+}
