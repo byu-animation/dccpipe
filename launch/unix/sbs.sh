@@ -9,5 +9,8 @@ export PYTHONPATH=${PYTHONPATH}:${MEDIA_PROJECT_DIR}
 
 cp -ar ${MEDIA_PROJECT_DIR}'/pipe/tools/sbstools' ~/Documents/Allegorithmic/Substance\ Painter/plugins/
 
+# Write asset list to an XML file in production
+python ${MEDIA_PROJECT_DIR}'/pipe/tools/sbstools/create_asset_xml.py'
+
 echo "Starting Substance..."
-substancepainter
+# substancepainter ${MEDIA_PROJECT_DIR}

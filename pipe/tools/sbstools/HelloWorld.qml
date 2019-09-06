@@ -6,7 +6,13 @@ import "."
 AlgWindow {
   id: window
   title: "HelloWorld"
-  visible: true
+  visible: false
+  minimumWidth: 600
+  maximumWidth: minimumWidth
+  minimumHeight: 500
+  maximumHeight: minimumHeight
+
+  property var itemList : null
 
   ColumnLayout {
     id: horizontalLayout
@@ -30,7 +36,7 @@ AlgWindow {
 
         AlgButton {
           text: "Say Hello!"
-          Layout.preferredWidth: Style.widgets.buttonWidth
+          Layout.preferredWidth: 150
 
           onClicked: {
             alg.log.info("Hello World!")
