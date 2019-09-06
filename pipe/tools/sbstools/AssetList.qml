@@ -16,7 +16,12 @@ AlgWindow {
   minimumHeight: 500
   maximumHeight: minimumHeight
 
-  property var assetFolder : "null"
+  property var xmlFile : "null"
+  flags: Qt.Window
+		| Qt.WindowTitleHint // title
+		| Qt.WindowSystemMenuHint // Recquired to add buttons
+		| Qt.WindowMinMaxButtonsHint // minimize and maximize button
+		| Qt.WindowCloseButtonHint // close button
 
   ColumnLayout {
     id: horizontalLayout
@@ -24,13 +29,15 @@ AlgWindow {
 
     ListView {
         width: 200; height: 400
+        id: assetList
+        Layout.minimumHeight: 400
 
         XmlListModel {
             id: xmlModel
-            source: "http://www.mysite.com/feed.xml"
-            query: "/rss/channel/item"
+            source: xmlFile
+            query: "/channel/item"
 
-            XmlRole { name: "title"; query: "title/string()" }
+            XmlRole { name: "title"; query: "string()" }
         }
 
         Component {
@@ -41,5 +48,8 @@ AlgWindow {
         model: xmlModel
         delegate: xmlDelegate
     }
+
+    // Create the list view now
+
   }
 }

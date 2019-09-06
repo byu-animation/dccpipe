@@ -13,9 +13,10 @@ PainterPlugin {
     var iconDir = mediaDir + "/pipe/tools/_resources/"
     var assetDir = mediaDir + "/production/assets/"
 
-    var assetList = null
+    var assetXml = mediaDir + "/production/props_and_actors.xml"
+    alg.log.info(assetXml)
 
-    window.assetFolder = assetDir
+    window.xmlFile = assetXml
 
     // possible alg.ui methods: addDockWidget, addToolBarWidget, addWidgetToPluginToolBar, clickButton
     var importTool = alg.ui.addToolBarWidget("toolbar.qml")
