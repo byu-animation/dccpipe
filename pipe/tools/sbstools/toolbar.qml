@@ -9,12 +9,18 @@ Row {
   property var toolImage : "untitled.svg"
   property var tooltipMessage : "null"
 
+  spacing: 2
+  padding: 0
+
   Button {
     id: rect
-    width: 30
+    width: 200
     height: 30
     hoverEnabled: true
-    // tooltip: tooltipMessage
+    ToolTip.visible: hovered
+    ToolTip.delay: 1000
+    ToolTip.timeout: 3000
+    ToolTip.text: qsTr(tooltipMessage)
 
     Rectangle {
       anchors.fill: parent
