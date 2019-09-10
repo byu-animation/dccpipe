@@ -104,6 +104,9 @@ def checkFileName(name):
 		qd.error("AssetName can't start with a number or symbol!\nAlso, AssetName can only have letters, numbers and \'.\'\'s")
 		return False
 
+	first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
+	name = first_char_to_lower(name)
+
 	if name.find('_') != -1:
 		qd.error("AssetName can't have underscore!")
 		return False

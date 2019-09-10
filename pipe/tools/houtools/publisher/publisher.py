@@ -55,7 +55,7 @@ class Publisher:
 
         node_path = node.path()
         name = node_path.split('/')[-1]
-        tool_name = name.lower()
+        tool_name = name
 
         tools = Project().list_hdas()
         if tool_name not in tools:
@@ -77,8 +77,12 @@ class Publisher:
         definition = hou.hdaDefinition(node.type().category(), node.type().name(), destination)
         definition.setPreferred(True)
 
-    def publish_set(self, node=None):
+    def publish_set(self, node=None, name=None):
         self.departments = [Department.ASSEMBLY]
+
+        if name:
+            self.set_results([name])
+            return
 
         project = Project()
         set_list = project.list_sets()
@@ -116,16 +120,29 @@ class Publisher:
             item_version = item['version_number']
             items_in_set.append(item_name)
 
-        # TODO: for each child, make sure that it exists in whole_set.json, or add it if it doesn't, or remove it if it does not
         child_names = []
         for child in children:
             child_path = child.path()
-            name = child_path.split('/')[-1].lower()
+            first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
+            name = child_path.split('/')[-1]
+            name = first_char_to_lower(name)
             child_names.append(name)
+        print("child names; ", child_names)
 
         for item in set_data:
             if str(item['asset_name']) not in child_names:
                 set_data.remove(item)
+
+        # TODO: To allow adding multiple copies of the same prop to a set in houdini, we'll want to add as many copies to the whole_set.json file
+        # for child_name in child_names:
+        #     child = inside.node(child_name)  # get the child node
+        #     inside = child.node("inside")
+        #     modify = inside.node("modify")
+        #     modify_name = modify.type().name()
+        #     name = modify_name.split("_")[0].lower()
+        #
+        #     if name not in items_in_set:
+        #         set_data.append
 
         for child in children:
             print("child: ", child)
@@ -133,9 +150,10 @@ class Publisher:
             out = inside.node("OUT")
             modify = inside.node("modify")
             set_transform = inside.node("set_dressing_transform")
+            current_version = child.parm("version_number").evalAsInt()
 
             modify_name = modify.type().name()
-            name = modify_name.split("_")[0].lower()
+            name = modify_name.split("_")[0]
 
             child_body = project.get_body(name)
             if child_body is None:
@@ -154,7 +172,8 @@ class Publisher:
             new_version = latest_version
             latest_version -= 1
 
-            prop_file = os.path.join(cache_dir, str(name) + "_" + str(latest_version) + ".json")
+            prop_file = os.path.join(cache_dir, str(name) + "_" + str(current_version) + ".json")
+            print("prop file: ", prop_file)
 
             if name in items_in_set:
                 print("set contains asset: " + str(name))
@@ -167,8 +186,10 @@ class Publisher:
 
                 for set_item in set_data:
                     if str(set_item['asset_name']) == str(name):
-                        set_item['version_number'] = new_version
-                        break
+                        if set_item['version_number'] == current_version:
+                            print("updating ", set_item, " with version ", new_version)
+                            set_item['version_number'] = new_version
+                            break
 
             else:
                 print(str(name) + " not found in set file.")
@@ -176,6 +197,7 @@ class Publisher:
                 prop_data = {"asset_name": name, "version_number": 0, "path" : str(path), "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
                 set_data.append({"asset_name": str(name), "version_number": 0})
                 new_version = 0
+                items_in_set.append(name)
 
             new_prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_" + str(new_version) + ".json")
 
@@ -190,6 +212,7 @@ class Publisher:
             prop_data['a'] = a
             prop_data['b'] = b
             prop_data['c'] = c
+            prop_data['version_number'] = new_version
 
             # TODO: add a commit and a publish for this set
 
@@ -203,22 +226,18 @@ class Publisher:
             print("prop file updated for " + str(name))
 
             self.clear_transform(set_transform)
-            self.update_version_number(child, new_version)
+            self.set_space(child, set_name, name, new_version)
             import_node = child.node("import")
             read_from_json = import_node.node("read_from_json")
             read_from_json.parm("reload").pressButton()
 
-        outfile = open(set_file, "w")
-        print("set data: ", set_data)
-        updated_set_data = json.dumps(set_data)
-        outfile.write(updated_set_data)
-        outfile.close()
+            outfile = open(set_file, "w")
+            print("set data: ", set_data)
+            updated_set_data = json.dumps(set_data)
+            outfile.write(updated_set_data)
+            outfile.close()
 
         qd.info("Set " + str(set_name) + " published successfully!")
-
-    def update_version_number(self, child, version_number):
-        version_parm = child.parm("version_number").evalAsInt()
-        child.parm("version_number").set(version_number)
 
     def get_prim_path(self, out):
         geo = out.geometry()
@@ -257,6 +276,16 @@ class Publisher:
         z = child.parm(parm3).evalAsFloat()
 
         return x, y, z
+
+    def set_space(self, child, set_name, child_name, version_number):
+        child.parm("space").set("set")
+        child.parm("space").eval()
+        child.parm("set").set(set_name)
+        child.parm("set").eval()
+        child.parm("asset_name").set(child_name)
+        child.parm("asset_name").eval()
+        child.parm("version_number").set(version_number)
+        child.parm("version_number").eval()
 
     def clear_transform(self, child):
         parm_scale_list = ["sx", "sy", "sz"]
