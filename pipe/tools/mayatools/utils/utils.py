@@ -240,7 +240,7 @@ def delete_image_planes():
     Helper for JSONExporter and AlembicExporter
 '''
 def get_loaded_references():
-    references = pm.ls(references=True, transforms=True)
+    references = pm.ls(references=True)  #, transforms=True)
     loaded=[]
 
     for ref in references:

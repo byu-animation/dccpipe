@@ -47,7 +47,7 @@ class JSONExporter:
                 element = body.get_element(Department.MODEL)
                 refsfilepath = os.path.join(Project().get_assets_dir(), element.get_cache_dir())
                 self.exportReferences(refsfilepath)
-                qd.info("JSON references written successfully.")
+                print("JSON references written successfully.")
             else:
                 print("NOT A SET")
                 qd.error('No set found in current scene.')
@@ -71,7 +71,7 @@ class JSONExporter:
             pm.select([])
             non_cameras = [assembly for assembly in assemblies if assembly not in cameras]
             self.exportPropJSON(filepath, non_cameras[0], isReference=False, name=body.get_name())
-            qd.info("JSON references written successfully.")
+            print("JSON references written successfully.")
 
     def confirmWriteShotReferences(self, body=None):
         filepath = pm.sceneName()
@@ -106,7 +106,7 @@ class JSONExporter:
         with open(path, "w") as f:
             f.write(jsonAnimatedProps)
             f.close()
-        qd.info("JSON references written successfully.")
+        print("JSON references written successfully.")
 
     def export_shot(self, filepath):
         refsSelection = get_loaded_references()
@@ -157,7 +157,7 @@ class JSONExporter:
 
         response = False  #qd.yes_or_no("Are there any animated props?")
         if not response:
-            qd.info("JSON references written successfully.")
+            print("JSON references written successfully.")
             return
 
         props_and_nums = [prop["asset_name"] + ", version: " + str(prop["version_number"]) for prop in props]
@@ -222,7 +222,7 @@ class JSONExporter:
         outfile.close()
 
         if not isReference:
-            qd.info("JSON references written successfully.")
+            print("JSON references written successfully.")
 
         return {"asset_name" : json_data["asset_name"], "version_number" :  json_data["version_number"]}
 
