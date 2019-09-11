@@ -33,7 +33,7 @@ class Tagger:
             if(node_is_tagged_with_flag(node,"DCC_Alembic_Export_Flag")):
                 tagged_items.update({str(node) : node})
 
-        self.item_gui = sfl.SelectFromList(l=tagged_items, parent=maya_main_window(), title="Untag Multiple")
+        self.item_gui = sfl.SelectFromList(l=tagged_items, parent=maya_main_window(), title="Untag Multiple", multiple_selection=True)
         self.item_gui.submitted.connect(self.mass_untag)
 
 
