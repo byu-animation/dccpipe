@@ -281,7 +281,7 @@ class Assembler:
 
         # Smart updating will only destroy assets that no longer exist in the Set's JSON list
         if mode == UpdateModes.SMART:
-            non_matching = [child for child in current_children if len([reference for reference in set_data if matches_reference(child, reference)]) == 0]
+            non_matching = [child for child in current_children if len([reference for reference in set_data if self.matches_reference(child, reference)]) == 0]
             for non_match in non_matching:
                 non_match.destroy()
 
@@ -289,7 +289,7 @@ class Assembler:
         elif mode == UpdateModes.CLEAN:
             inside.deleteItems(inside.children())
 
-        # Grab current children again
+        # Grab updated children
         current_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
 
         # Tab-in/update all assets in list
@@ -299,6 +299,7 @@ class Assembler:
             if body is None:
                 print 'Error on: ', reference["asset_name"]
                 continue
+            # Continue to the next reference if the body is not an asset or the body is a set
             if not body.is_asset() or body.get_type() == AssetType.SET:
                 continue
 
@@ -491,7 +492,7 @@ class Assembler:
     '''
     def update_contents_geo(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART):
 
-        # Set up the body/elements and make sure it's not a actor. Just do some simple error checking.
+        # Set up the body/elements and make sure it's not an actor. Just do some simple error checking.
         body = Project().get_body(asset_name)
         if body is None:
             qd.error("Asset doesn't exist.")
