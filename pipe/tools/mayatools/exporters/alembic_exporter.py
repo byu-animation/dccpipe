@@ -514,7 +514,7 @@ class AlembicExporter:
 
         # Then here is the actual Alembic Export command for Mel.
         # command = 'AbcExport -j "%s -frameRange %s %s -stripNamespaces -step %s -writeVisibility -noNormals -uvWrite -worldSpace -file %s"'%(roots_string, str(startFrame), str(endFrame), str(step), outFilePath)
-        command = 'AbcExport -j "-frameRange %s %s -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), roots_string, outFilePath)
+        command = 'AbcExport -j "-frameRange %s %s -uvWrite -worldSpace -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), roots_string, outFilePath)
         print 'Command', command
         return command
 
