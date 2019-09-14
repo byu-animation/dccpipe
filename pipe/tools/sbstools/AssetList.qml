@@ -147,9 +147,9 @@ AlgWindow {
     alg.log.info("load")
     alg.log.info(mediaDir)
 
-    if alg.project.isOpen() {
-      alg.project.close()
-    }
+  //  if alg.project.isOpen() {
+  //    alg.project.close()
+  //  }
 
     alg.project.open("filepath")
   }

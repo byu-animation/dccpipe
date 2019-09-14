@@ -13,6 +13,7 @@ from pipe.am.element import Element
 from pipe.am.body import Body, AssetType
 import pipe.gui.quick_dialogs as qd
 from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter
+from pipe.tools.mayatools.exporters.fbx_exporter import FbxExporter
 from pipe.tools.mayatools.exporters.json_exporter import JSONExporter
 from pipe.tools.mayatools.publishers.publisher import MayaPublisher as Publisher
 
@@ -74,6 +75,10 @@ def post_publish(element, user, published=True, comment="No comment."):
     print("begin alembic export")
     alembic = AlembicExporter()
     alembic.auto_export(body.get_name())
+
+    print("begin fbx export")
+    fbx_exporter = FbxExporter()
+    fbx_exporter.auto_export() # (body.get_name())
 
     convert_to_education()
 

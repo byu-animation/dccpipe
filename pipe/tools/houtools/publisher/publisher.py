@@ -321,7 +321,9 @@ class Publisher:
 
         #Publish
         user = Environment().get_user()
-        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+        comment = qd.input("Comments for publishing")
+        if comment is None:
+            comment = "publish by " + str(user.get_username()) + " in department " + str(department)
         pipeline_io.set_permissions(src)
         dst = self.publish_element(element, user, src, comment)
         pipeline_io.set_permissions(dst)
