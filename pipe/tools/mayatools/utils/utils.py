@@ -78,7 +78,7 @@ def post_publish(element, user, published=True, comment="No comment."):
 
     print("begin fbx export")
     fbx_exporter = FbxExporter()
-    fbx_exporter.auto_export() # (body.get_name())
+    fbx_exporter.auto_export(body.get_name())
 
     convert_to_education()
 
