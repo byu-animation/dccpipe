@@ -30,7 +30,9 @@ class Publisher:
         src = node.type().definition().libraryFilePath()
         user = Environment().get_user()
 
-        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+        comment = qd.input("Comment", title="Comments for publishing")
+        if comment is None:
+            comment = "publish by " + str(user.get_username()) + " in department " + str(department)
 
         self.publish_src_node_to_department(src, node, department, user, comment)
 
@@ -292,7 +294,7 @@ class Publisher:
 
         #Publish
         user = Environment().get_user()
-        comment = qd.input("Comments for publishing")
+        comment = qd.input("Comment", title="Comments for publishing")
         if comment is None:
             comment = "publish by " + str(user.get_username()) + " in department " + str(department)
         pipeline_io.set_permissions(src)
@@ -370,7 +372,9 @@ class Publisher:
             qd.error("Asset not found in pipe.")
             return
 
-        comment = "publish by " + str(user.get_username()) + " in departments " + str(departments_to_publish)
+        comment = qd.input("Comment", title="Comments for publishing")
+        if comment is None:
+            comment = "publish by " + str(user.get_username()) + " in department " + str(department)
 
         for department in departments_to_publish:
             inside = self.get_inside_node(asset_type, department, self.selectedHDA)
