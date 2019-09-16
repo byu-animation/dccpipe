@@ -71,8 +71,12 @@ class Rollback:
         hou.hda.installFile(selected_scene_file)
         definition.setPreferred(True)
 
+        print("node: ", self.node, str(self.node))
+        type = self.node.type().name()
+        print("type: ", str(type))
+
         parent = self.node.parent()
-        new_node = parent.createNode("cube_modify")
+        new_node = parent.createNode(str(type))
 
         try:
             self.node.type().definition().updateFromNode(new_node)
