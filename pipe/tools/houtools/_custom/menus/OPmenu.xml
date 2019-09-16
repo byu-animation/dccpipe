@@ -149,7 +149,7 @@ if node:
 		node_body = Project().get_body(node_name)
 		if node_body:
 			if node_body.is_asset():
-				return 1
+				return 0
 return 0
 			</expression>
 			<scriptCode scriptType="python">
