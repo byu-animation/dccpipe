@@ -121,6 +121,7 @@ class AlembicExporter:
             endFrame += 5
             endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
+            self.export_cameras(bodyName)
 
         elif body.is_asset():
             if body.get_type() == AssetType.SET:
@@ -249,6 +250,11 @@ class AlembicExporter:
             abcFiles.append(refAbcFilePath)
 
         return abcFiles
+
+    def export_cameras(self, shot_name):
+        cam_list = mc.listCameras(p=True)
+
+        print("cam list: ", cam_list)
 
     def getFilenameForReference(self, ref):
         #TODO Make sure that we test for multiple files
