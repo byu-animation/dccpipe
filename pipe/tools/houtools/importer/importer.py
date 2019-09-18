@@ -172,7 +172,9 @@ class Importer:
         for actor_node in actor_nodes:
             actor_node.moveToGoodPosition()
         for animated_prop_node in animated_prop_nodes:
-            actor_node.moveToGoodPosition()
+            animated_prop_node.moveToGoodPosition()
+        for camera in cameras:
+            camera.moveToGoodPosition()
 
         layout_object_level_nodes()
 
