@@ -32,6 +32,7 @@ class Registry:
 		self._registrydict[Department.MODIFY] = self.hda_element_factory
 		self._registrydict[Department.HAIR] = self.sim_element_factory
 		self._registrydict[Department.CLOTH] = self.sim_element_factory
+		self._registrydict[Department.CAMERA] = self.element_factory
 
 	def element_factory(self, filepath):
 		return Element(filepath)
