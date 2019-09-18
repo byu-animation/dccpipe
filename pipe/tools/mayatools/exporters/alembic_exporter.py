@@ -9,6 +9,7 @@ from pymel.core import *
 import pipe.am.pipeline_io as pio
 from pipe.tools.mayatools.utils.utils import *
 from pipe.am.environment import Environment
+from pipe.am.environment import Department
 from pipe.am.body import AssetType
 from pipe.am.project import Project
 from pipe.gui import quick_dialogs as qd
@@ -121,7 +122,7 @@ class AlembicExporter:
             endFrame += 5
             endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
-            self.export_cameras(bodyName)
+            files.extend(self.export_cameras(body, startFrame, endFrame))
 
         elif body.is_asset():
             if body.get_type() == AssetType.SET:
@@ -251,10 +252,44 @@ class AlembicExporter:
 
         return abcFiles
 
-    def export_cameras(self, shot_name):
+    def export_cameras(self, shot, startFrame, endFrame):
         cam_list = mc.listCameras(p=True)
 
+        if u'persp' in cam_list:
+            cam_list.remove(u'persp')
+
         print("cam list: ", cam_list)
+        print("shot", str(shot))
+
+        cam_element = shot.get_element(Department.CAMERA, force_create=True)
+        cache_dir = cam_element.get_cache_dir()
+
+        print("cache dir: ", cache_dir)
+
+        files = []
+
+        for cam_name in cam_list:
+            cameras = pm.ls(cam_name)
+            camera = cameras[0]
+
+            root = self.get_parent_root_string(camera)
+            root_strings = [root]
+
+            destination = os.path.join(cache_dir, str(cam_name) + ".abc")
+
+            command = self.buildAlembicCommand(destination, startFrame, endFrame, geoList=root_strings)
+
+            print 'Export Alembic command: ', command
+
+            try:
+                pm.Mel.eval(command)
+            except:
+                qd.warning("No alembic exported for " + str(camera) + ". Make sure that there is only one top-level group in the outliner.")
+                continue
+
+            files.append(destination)
+
+        return files
 
     def getFilenameForReference(self, ref):
         #TODO Make sure that we test for multiple files
