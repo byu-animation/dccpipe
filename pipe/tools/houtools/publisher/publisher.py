@@ -21,6 +21,15 @@ class Publisher:
         self.node_name = None
 
     def publish_content_hda(self, node):
+        self.node = node
+        self.comment = qd.HoudiniInput(parent=houdini_main_window(), title="Any comments?")
+        self.comment.submitted.connect(self.publish_content_hda_comment)
+
+    def publish_content_hda_comment(self, value):
+        node = self.node
+        comment = value
+        if comment is None:
+            comment = "published by " + str(user.get_username()) + " in department " + str(department)
         node_name = node.type().name()
         index = node_name.rfind('_')
         asset_name = node_name[:index]
@@ -29,8 +38,6 @@ class Publisher:
         self.body = Project().get_body(asset_name)
         src = node.type().definition().libraryFilePath()
         user = Environment().get_user()
-
-        comment = "publish by " + str(user.get_username()) + " in department " + str(department)
 
         self.publish_src_node_to_department(src, node, department, user, comment)
 
@@ -308,7 +315,17 @@ class Publisher:
         self.item_gui.submitted.connect(self.shot_results)
 
     def shot_results(self, value):
-        chosen_asset = value[0]
+        self.chosen_asset = value[0]
+
+        self.comment = qd.HoudiniInput(parent=houdini_main_window(), title="Any comments?")
+        self.comment.submitted.connect(self.shot_comment)
+
+    def shot_comment(self, value):
+        comment = value
+        if comment is None:
+            comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+
+        chosen_asset = self.chosen_asset
 
         project = Project()
         self.body = project.get_body(chosen_asset)
@@ -320,10 +337,7 @@ class Publisher:
         src = hou.hipFile.name()
 
         #Publish
-        user = Environment().get_user()
-        comment = qd.input("Comments for publishing")
-        if comment is None:
-            comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+        user = Environment().get_user()        
         pipeline_io.set_permissions(src)
         dst = self.publish_element(element, user, src, comment)
         pipeline_io.set_permissions(dst)
@@ -361,9 +375,14 @@ class Publisher:
 
         project = Project()
         self.body = project.get_body(chosen_asset)
-        self.publish_hda()
+        self.comment = qd.HoudiniInput(parent=houdini_main_window(), title="Any comments?")
+        self.comment.submitted.connect(self.publish_hda)
 
-    def publish_hda(self):
+    def publish_hda(self, value):
+        comment = value
+        if comment is None:
+            comment = "publish by " + str(user.get_username()) + " in department " + str(department)
+
         project = Project()
         environment = Environment()
         user = environment.get_user()
@@ -398,8 +417,6 @@ class Publisher:
         if body is None:
             qd.error("Asset not found in pipe.")
             return
-
-        comment = "publish by " + str(user.get_username()) + " in departments " + str(departments_to_publish)
 
         for department in departments_to_publish:
             inside = self.get_inside_node(asset_type, department, self.selectedHDA)

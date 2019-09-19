@@ -147,6 +147,13 @@ class Importer:
             version_number_parm = actor_node.parm("version_number")
             version_number_parm.set(actor["version_number"])
 
+        cam_dir = body.get_element(Department.CAMERA).get_cache_dir()
+        camera_files = os.listdir(cam_dir)
+        cameras = []
+
+        for camera_file in camera_files:
+            cameras.append( self.tab_in_camera(str(shot_name), str(camera_file)) )
+
         # create network box in houdini and fill it with all objects in the shot
         box = hou.node("/obj").createNetworkBox()
         box.setComment(shot_name)
@@ -156,6 +163,8 @@ class Importer:
             box.addItem(actor_node)
         for animated_prop_node in animated_prop_nodes:
             box.addItem(animated_prop_node)
+        for camera in cameras:
+            box.addItem(camera)
 
         # move all the imported objects to a non-overlaid position in the node editor
         for set_node in set_nodes:
@@ -163,9 +172,14 @@ class Importer:
         for actor_node in actor_nodes:
             actor_node.moveToGoodPosition()
         for animated_prop_node in animated_prop_nodes:
-            actor_node.moveToGoodPosition()
+            animated_prop_node.moveToGoodPosition()
+        for camera in cameras:
+            camera.moveToGoodPosition()
 
-    def tab_in_camera(self, shot_name):
+        layout_object_level_nodes()
+
+    def tab_in_camera(self, shot_name, camera_file):
         camera_node = hou.node("/obj").createNode("dcc_camera")
         camera_node.parm("shot").set(shot_name)
+        camera_node.parm("cam").set(camera_file)
         return camera_node
