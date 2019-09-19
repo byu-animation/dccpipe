@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.0
 import AlgWidgets 2.0
 import AlgWidgets.Style 2.0
+import "settings.js" as Sett
 import "."
 
 
@@ -24,7 +25,7 @@ AlgWindow {
 
   flags: Qt.Window
 		| Qt.WindowTitleHint // title
-		| Qt.WindowSystemMenuHint // Recquired to add buttons
+		| Qt.WindowSystemMenuHint // Required to add buttons
 		| Qt.WindowMinMaxButtonsHint // minimize and maximize button
 		| Qt.WindowCloseButtonHint // close button
 
@@ -133,33 +134,28 @@ AlgWindow {
   }
 
   function save(assetName, mediaDir) {
-    alg.log.info(assetName)
-    alg.log.info("save")
-    alg.log.info(mediaDir)
+    alg.log.info("saving " + assetName)
+    var filePath = Sett.filePrefix + mediaDir + Sett.pathToAssets + assetName + Sett.pathToProject + assetName + Sett.savePostfix
+    alg.log.info(filePath)
 
-
-    alg.project.save("file:///c:/Documents/project.spp", alg.project.SaveMode.Incremental)
-
+    alg.project.save(filePath, alg.project.SaveMode.Incremental)
   }
 
   function load(assetName, mediaDir) {
-    alg.log.info(assetName)
-    alg.log.info("load")
-    alg.log.info(mediaDir)
+    alg.log.info("loading " + assetName)
+    var filePath = Sett.filePrefix + mediaDir + Sett.pathToAssets + assetName + Sett.pathToProject + assetName + Sett.savePostfix
+    alg.log.info(filePath)
+    customSaveAndClose(mediaDir)
 
-  //  if alg.project.isOpen() {
-  //    alg.project.close()
-  //  }
-
-    alg.project.open("filepath")
+    alg.project.open(filePath)
   }
 
   function importFile(assetName, mediaDir) {
-    alg.log.info(assetName)
-    alg.log.info("import")
-    alg.log.info(mediaDir)
+    alg.log.info("importing " + assetName)
+    var fbxPath = Sett.filePrefix + mediaDir + Sett.pathToAssets + assetName + Sett.pathToCache + assetName + Sett.fbxPostfix
+    customSaveAndClose(mediaDir)
 
-    alg.project.create("meshFile")
+    alg.project.create(fbxPath)
   }
 
   function exportMaps(assetName, mediaDir) {
@@ -167,8 +163,29 @@ AlgWindow {
     alg.log.info("export")
     alg.log.info(mediaDir)
 
-    // file:///opt/Allegorithmic/Substance_Painter/resources/javascript-doc/alg.mapexport.html#.save__anchor
+    //file:///opt/Allegorithmic/Substance_Painter/resources/javascript-doc/alg.mapexport.html#.save__anchor
 
+  }
+
+  // Helper function for saving and closing a file
+  function customSaveAndClose(mediaDir) {
+    alg.log.info("customSaveAndClose")
+    // Break early if nothing needs to be saved
+    if (!alg.project.isOpen()) {
+      alg.log.info("no project opened--skipping save step")
+      return
+    }
+
+    // Check if the "default" project is still open from having passed in the mediaDir as an arg at sbs painter startup.
+    if (alg.project.name() === mediaDir.split("/").pop() ) {
+      alg.log.info("closing default project")
+      alg.project.close()
+    }
+    // Save an already opened file
+    else {
+      alg.log.info("saving and closing current project")
+      alg.project.saveAndClose()
+    }
   }
 
 }

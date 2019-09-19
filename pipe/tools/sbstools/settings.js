@@ -1,7 +1,9 @@
 // settings.js
 .pragma library
 
+var filePrefix = "file://"
 var pathToAssets = "/production/assets/"
-var pathToTextures = "/texture/main/"
-var pathToCache = pathToTextures + "cache/"
+var pathToProject = "/texture/main/"
+var pathToCache = pathToProject + "cache/"
 var fbxPostfix = "_texture_main.fbx"
+var savePostfix = "_project.spp"
