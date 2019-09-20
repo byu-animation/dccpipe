@@ -5,7 +5,8 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.0
 import AlgWidgets 2.0
 import AlgWidgets.Style 2.0
-import "settings.js" as Sett
+// import "settings.js" as Sett
+import "toolbar.js" as Toolbar
 import "."
 
 
@@ -121,70 +122,15 @@ AlgWindow {
     // may need to convert file to URL with alg.fileIO.localFileToUrl(path)
 
     if (action === "save") {
-      save(assetName, mediaDir)
+      Toolbar.save(assetName, mediaDir)
     } else if (action === "load") {
-      load(assetName, mediaDir)
+      Toolbar.load(assetName, mediaDir)
     } else if (action === "import") {
-      importFile(assetName, mediaDir)
+      Toolbar.importFile(assetName, mediaDir)
     } else if (action === "export") {
-      exportMaps(assetName, mediaDir)
+      Toolbar.exportMaps(assetName, mediaDir)
     } else {
       // Error
-    }
-  }
-
-  function save(assetName, mediaDir) {
-    alg.log.info("saving " + assetName)
-    var filePath = Sett.filePrefix + mediaDir + Sett.pathToAssets + assetName + Sett.pathToProject + assetName + Sett.savePostfix
-    alg.log.info(filePath)
-
-    alg.project.save(filePath, alg.project.SaveMode.Incremental)
-  }
-
-  function load(assetName, mediaDir) {
-    alg.log.info("loading " + assetName)
-    var filePath = Sett.filePrefix + mediaDir + Sett.pathToAssets + assetName + Sett.pathToProject + assetName + Sett.savePostfix
-    alg.log.info(filePath)
-    customSaveAndClose(mediaDir)
-
-    alg.project.open(filePath)
-  }
-
-  function importFile(assetName, mediaDir) {
-    alg.log.info("importing " + assetName)
-    var fbxPath = Sett.filePrefix + mediaDir + Sett.pathToAssets + assetName + Sett.pathToCache + assetName + Sett.fbxPostfix
-    customSaveAndClose(mediaDir)
-
-    alg.project.create(fbxPath)
-  }
-
-  function exportMaps(assetName, mediaDir) {
-    alg.log.info(assetName)
-    alg.log.info("export")
-    alg.log.info(mediaDir)
-
-    //file:///opt/Allegorithmic/Substance_Painter/resources/javascript-doc/alg.mapexport.html#.save__anchor
-
-  }
-
-  // Helper function for saving and closing a file
-  function customSaveAndClose(mediaDir) {
-    alg.log.info("customSaveAndClose")
-    // Break early if nothing needs to be saved
-    if (!alg.project.isOpen()) {
-      alg.log.info("no project opened--skipping save step")
-      return
-    }
-
-    // Check if the "default" project is still open from having passed in the mediaDir as an arg at sbs painter startup.
-    if (alg.project.name() === mediaDir.split("/").pop() ) {
-      alg.log.info("closing default project")
-      alg.project.close()
-    }
-    // Save an already opened file
-    else {
-      alg.log.info("saving and closing current project")
-      alg.project.saveAndClose()
     }
   }
 
