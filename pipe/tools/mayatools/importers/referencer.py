@@ -165,7 +165,7 @@ class MayaReferencer:
         for ref in self.references:
             ref_names.append(str(ref))
 
-        self.item_gui = sfl.SelectFromList(l=ref_names, parent=maya_main_window(), title="Select Assets to Unload")
+        self.item_gui = sfl.SelectFromList(l=ref_names, parent=maya_main_window(), title="Select Assets to Unload", multiple_selection=True)
         self.item_gui.submitted.connect(self.dereference_asset)
 
     def dereference_asset(self, reference_names):
