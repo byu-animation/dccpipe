@@ -255,6 +255,13 @@ def get_loaded_references():
     return loaded
 
 '''
+    Helper for Unloading References
+'''
+def unload_reference(ref):
+    path = ref.fileName(False, True, False)
+    mc.file(path, rr=True)
+
+'''
     Helper for JSONExporter
 '''
 def ref_path_to_ref_name(path):

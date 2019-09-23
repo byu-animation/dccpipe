@@ -158,3 +158,18 @@ class MayaReferencer:
                 pm.connectAttr(controlAlembicTranslate, cycleRefTranslate)
                 pm.connectAttr(controlAlembicRotate, cycleRefRotate)
                 pm.connectAttr(controlAlembicScale, cycleRefScale)
+
+    def dereference_assets(self):
+        self.references = get_loaded_references()
+        ref_names = []
+        for ref in self.references:
+            ref_names.append(str(ref))
+
+        self.item_gui = sfl.SelectFromList(l=ref_names, parent=maya_main_window(), title="Select Assets to Unload", multiple_selection=True)
+        self.item_gui.submitted.connect(self.dereference_asset)
+
+    def dereference_asset(self, reference_names):
+        for name in reference_names:
+            for ref in self.references:
+                if str(ref) == name:
+                    unload_reference(ref)
