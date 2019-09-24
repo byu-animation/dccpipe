@@ -39,7 +39,6 @@ AlgWindow {
       anchors.fill: parent
       anchors.margins: 4
       maximumFlickVelocity: 1500
-      contentHeight: 500
 
 
       ListView {
