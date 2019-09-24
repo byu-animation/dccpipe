@@ -18,7 +18,7 @@ def create_asset_xml():
     write_to_file(f, filename, "<channel>\n")
 
     for asset in asset_list:
-        text = "\t<item>" + str(asset).lower() + "</item>\n"
+        text = "\t<item>" + str(asset) + "</item>\n"
         write_to_file(f, filename, text)
 
     write_to_file(f, filename, "</channel>\n")
