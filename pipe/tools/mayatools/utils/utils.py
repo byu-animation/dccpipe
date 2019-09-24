@@ -13,6 +13,7 @@ from pipe.am.element import Element
 from pipe.am.body import Body, AssetType
 import pipe.gui.quick_dialogs as qd
 from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter
+from pipe.tools.mayatools.exporters.fbx_exporter import FbxExporter
 from pipe.tools.mayatools.exporters.json_exporter import JSONExporter
 from pipe.tools.mayatools.publishers.publisher import MayaPublisher as Publisher
 
@@ -62,14 +63,20 @@ def post_publish(element, user, published=True, comment="No comment."):
     except:
         print("Setting file permissions failed badly.")
 
-    # Export JSON
-    print('Publish Complete. Begin Exporting JSON if set.')
+
     body = Project().get_body(element.get_parent())
 
     if body and body.is_asset():
+        # Export JSON
+        print('Publish Complete. Begin Exporting JSON if set.')
         if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
             json_export = JSONExporter()
             json_export.go(body, body.get_type())
+        # export fbx file to textures folder
+        elif body.get_type() == AssetType.PROP or body.get_type() == AssetType.ACTOR:
+            print("begin fbx export")
+            fbx_exporter = FbxExporter()
+            fbx_exporter.auto_export(body.get_name())
 
     print("begin alembic export")
     alembic = AlembicExporter()
