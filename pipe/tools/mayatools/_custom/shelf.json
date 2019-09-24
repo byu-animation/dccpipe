@@ -2,7 +2,7 @@
 	"shelfItems":[
 		{
 			"itemType":"button",
-			"icon":"new-body.svg",
+			"icon":"create_asset.png",
 			"annotation":"Create a new body",
 			"label":"create",
 			"double-click":0,
@@ -18,7 +18,7 @@
 			"function":"MayaCloner.quick_clone()"
 		}, {
 			"itemType":"button",
-			"icon":"publish.svg",
+			"icon":"publish.png",
 			"annotation":"Publish a model, rig or animation",
 			"label":"publish",
 			"double-click":0,
@@ -36,7 +36,7 @@
 				"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"playblast.svg",
+			"icon":"video.png",
 			"annotation":"Playblast this shot",
 			"label":"blast",
 			"double-click":0,
@@ -44,7 +44,7 @@
 			"function":"Playblaster.playblast()"
 		}, {
 			"itemType":"button",
-			"icon":"alembic-export.svg",
+			"icon":"export.png",
 			"annotation":"Export as Alembic",
 			"label":"alembic",
 			"double-click":0,
@@ -54,7 +54,7 @@
 				"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"tag.svg",
+			"icon":"tag.png",
 			"annotation":"Tag Selected Objects for Export",
 			"label":"tag",
 			"double-click":0,
@@ -62,7 +62,7 @@
 			"function":"Tagger.tag()"
 		}, {
 			"itemType":"button",
-			"icon":"untag.svg",
+			"icon":"untag.png",
 			"annotation":"Remove Export Tags from Selected Objects",
 			"label":"untag",
 			"double-click":0,
@@ -70,7 +70,7 @@
 			"function":"Tagger.untag()"
 		}, {
 			"itemType":"button",
-			"icon":"multi_tag.png",
+			"icon":"tags.png",
 			"annotation":"Select Tagged Objects to Untag",
 			"label":"tags",
 			"double-click":0,
@@ -80,17 +80,25 @@
 				"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"reference.svg",
+			"icon":"reference.png",
 			"annotation":"Reference a model or rig",
 			"label":"ref",
 			"double-click":0,
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.go()"
 		}, {
+			"itemType":"button",
+			"icon":"remove_reference.png",
+			"annotation":"Unload References",
+			"label":"de-ref",
+			"double-click":0,
+			"tool":"mayatools.importers.referencer",
+			"function":"MayaReferencer.dereference_assets()"
+		}, {
 			"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"education.svg",
+			"icon":"education.png",
 			"annotation":"Change the licence to education",
 			"label":"edu",
 			"double-click":0,
@@ -98,7 +106,7 @@
 			"function":"education.go()"
 		}, {
 			"itemType":"button",
-			"icon":"reload-scripts.svg",
+			"icon":"reload.png",
 			"annotation":"Reload python scripts",
 			"label":"scripts",
 			"double-click":0,
@@ -108,7 +116,7 @@
 			"itemType":"separator"
 		}, {
 			"itemType":"button",
-			"icon":"import-ref.svg",
+			"icon":"person.png",
 			"annotation":"Import reference actor",
 			"label":"obj",
 			"double-click":0,
