@@ -38,7 +38,7 @@ PainterPlugin {
     importTool.windowReference.action = "import"
     importTool.windowReference.mediaDir = mediaDir
     importTool.windowReference.windowTitle = "Choose an asset to import"
-    importTool.toolImage = iconDir + "clone.png"
+    importTool.toolImage = iconDir + "import.png"
     importTool.tooltipMessage = "Bring in an asset to paint"
 
     var publishTool = alg.ui.addToolBarWidget("toolbar.qml")
@@ -46,7 +46,7 @@ PainterPlugin {
     publishTool.windowReference.action = "export"
     publishTool.windowReference.mediaDir = mediaDir
     publishTool.windowReference.windowTitle = "Choose an asset to export maps to"
-    publishTool.toolImage = iconDir + "publish.svg"
+    publishTool.toolImage = iconDir + "export.png"
     publishTool.tooltipMessage = "Export maps to asset"
 
     var saveTool = alg.ui.addToolBarWidget("toolbar.qml")
@@ -54,7 +54,7 @@ PainterPlugin {
     saveTool.windowReference.action = "save"
     saveTool.windowReference.mediaDir = mediaDir
     saveTool.windowReference.windowTitle = "Choose an asset to save to"
-    saveTool.toolImage = iconDir + "auto-comp.svg"
+    saveTool.toolImage = iconDir + "save.png"
     saveTool.tooltipMessage = "Save current project"
 
     var loadTool = alg.ui.addToolBarWidget("toolbar.qml")
@@ -62,7 +62,7 @@ PainterPlugin {
     loadTool.windowReference.action = "load"
     loadTool.windowReference.mediaDir = mediaDir
     loadTool.windowReference.windowTitle = "Choose an asset to load"
-    loadTool.toolImage = iconDir + "checkout.svg"
+    loadTool.toolImage = iconDir + "load.png"
     loadTool.tooltipMessage = "Load a project"
   }
 }
