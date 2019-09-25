@@ -671,6 +671,7 @@ class Assembler:
             print('created hda instance for ' + asset_name + ' in ' + department)
         except Exception as e:
             qd.error("HDA Creation Error. " + asset_name + "_" + department + " must not exist.")
+            return None
 
         hda_instance.setName(department)
         self.tab_into_correct_place(inside, hda_instance, department)
@@ -699,6 +700,8 @@ class Assembler:
             is_published = self.published_definition(asset_name, department)
         except:
             is_published = False
+
+        print("is published? ", is_published)
 
         # If there isn't a published asset, delete the impostor!
         if not is_published and content_node:

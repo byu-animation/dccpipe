@@ -341,12 +341,30 @@ class Project:
 		'''
 		returns a list of strings containing the names of all props/actors in this project
 		'''
+		pc_list = []
+		pc_list.extend(self.list_actors())
+		pc_list.extend(self.list_props())
+
+		return pc_list
+
+	def list_actors(self):
 		list = self.list_assets()
 		pc_list = []
 
 		for item in list:
 			asset = self.get_asset(item)
-			if asset.get_type() == AssetType.PROP or asset.get_type() == AssetType.ACTOR:
+			if asset.get_type() == AssetType.ACTOR:
+				pc_list.append(item)
+
+		return pc_list
+
+	def list_props(self):
+		list = self.list_assets()
+		pc_list = []
+
+		for item in list:
+			asset = self.get_asset(item)
+			if asset.get_type() == AssetType.PROP:
 				pc_list.append(item)
 
 		return pc_list
