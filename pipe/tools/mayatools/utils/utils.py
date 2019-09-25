@@ -39,8 +39,8 @@ def maya_main_window():
 '''
     Prepare the scene for a publish. Called from creator and publisher.
 '''
-def prepare_scene_file(quick_publish=False, department=None):
-    scene_prep(quick_publish, department=department)
+def prepare_scene_file(quick_publish=False, department=None, body=None):
+    scene_prep(quick_publish, body=body, department=department)
     file_path = Environment().get_user_workspace()
     file_path = os.path.join(file_path, 'untitled.mb')
     file_path = pipeline_io.version_file(file_path)
@@ -131,18 +131,21 @@ def get_scene_file():
 '''
     Helper function for post_publish()
 '''
-def scene_prep(quick_publish, department=None):
+def scene_prep(quick_publish, body=None, department=None):
     if quick_publish:
         print("skipping check for unsaved changes")
     else:
         save_scene_file()
         check_unsaved_changes()
 
-    not_rig = True
+    freeze_and_clear = True
     if department == Department.RIG:
-        not_rig = False
+        freeze_and_clear = False
 
-    if not_rig:
+    if body.is_shot():
+        freeze_and_clear = False
+
+    if freeze_and_clear:
         print("clearing construction history")
         try:
             clear_construction_history()

@@ -389,7 +389,7 @@ class Element:
         Replace the applcation file of this element. Create a new version with the new file.
         Store the result of this operation as a new publish.
         username -- the username of the user performing this action
-        src -- the file to be placed in the new version
+        src -- a string representing the file to be placed in the new version
         comment -- description of changes made in this publish
         """
 

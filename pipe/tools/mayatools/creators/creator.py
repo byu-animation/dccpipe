@@ -58,7 +58,7 @@ class Creator:
                 # print a message about failure/duplicate
                 qd.error("Asset with name " + str(name) + " already exists in pipeline.")
             else:
-                prepare_scene_file()
+                prepare_scene_file(body=body)
                 department = "model"
                 asset_list = body.list_elements(department)
 

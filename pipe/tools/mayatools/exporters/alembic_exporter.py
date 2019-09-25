@@ -40,6 +40,13 @@ class AlembicExporter:
         self.body = project.get_body(chosen_asset)
         type = self.body.get_type()
 
+        if type == AssetType.PROP or type == AssetType.ACTOR:
+            creases = qd.yes_or_no("Does this asset use creases?")
+
+            self.crease = False
+            if creases:
+                self.crease = True
+
         if type == AssetType.SHOT:
             self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
 
@@ -332,8 +339,12 @@ class AlembicExporter:
 
         print('roots_string: ', roots_string)
 
+        auto_sub = ""
+        if self.crease is True:
+            auto_sub = "-autoSubd"
+
         # Then here is the actual Alembic Export command for Mel. For abcExport docs, run AbcExport -h in Maya
-        command = 'AbcExport -j "-frameRange %s %s -uvWrite -noNormals -worldSpace -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), roots_string, outFilePath)
+        command = 'AbcExport -j "-frameRange %s %s -uvWrite %s -noNormals -worldSpace -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), auto_sub, roots_string, outFilePath)
         return command
 
     def get_all_tagged_nodes(self, tag="DCC_Alembic_Export_Flag"):
