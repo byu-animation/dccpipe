@@ -2,6 +2,8 @@ import os
 import sys
 import json
 
+projectfile = "test.json"
+
 def update_key_value(filepath, **kwargs):
     with open(filepath, "r") as json_file:
         data = json.load(json_file)
