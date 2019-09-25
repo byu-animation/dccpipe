@@ -17,6 +17,11 @@ class Creator:
 
     def __init__(self):
         self.name = None
+        self.export = False
+
+    def create_body_and_export(self):
+        self.export = True
+        self.create_body()
 
     '''
     This will bring up the create new body UI
@@ -68,7 +73,7 @@ class Creator:
                 print("name :", str(name))
                 print("department: ", department)
                 setPublishEnvVar(name, department);
-                post_publish(selected_element, user, published=True, comment="First publish!")
+                post_publish(selected_element, user, self.export, published=True, comment="First publish!")
 
                 qd.info("Asset created successfully!", "Success")
 

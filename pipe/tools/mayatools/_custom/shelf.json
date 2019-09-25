@@ -3,15 +3,15 @@
 		{
 			"itemType":"button",
 			"icon":"create_asset.png",
-			"annotation":"Create a new body",
+			"annotation":"Create a new body. Double-click to create body and export.",
 			"label":"create",
-			"double-click":0,
+			"double-click":"create_body_and_export()",
 			"tool":"mayatools.creators.creator",
 			"function":"Creator.create_body()"
 		}, {
 			"itemType":"button",
 			"icon":"clone.png",
-			"annotation":"Clone an asset. Double-click to get latest publish.",
+			"annotation":"Clone an asset. Double-click to select a previous publish.",
 			"label":"clone",
 			"double-click":"clone()",
 			"tool":"mayatools.cloners.cloner",
@@ -19,19 +19,19 @@
 		}, {
 			"itemType":"button",
 			"icon":"publish.png",
-			"annotation":"Publish a model, rig or animation",
+			"annotation":"Publish an asset. Double-click to publish and export.",
 			"label":"publish",
-			"double-click":0,
+			"double-click":"publish()",
 			"tool":"mayatools.publishers.publisher",
-			"function":"MayaPublisher.publish()"
+			"function":"MayaPublisher.publish_without_export()"
 		}, {
 			"itemType":"button",
 			"icon":"quick_publish.png",
-			"annotation":"Publish a model, rig or animation... but quickly",
+			"annotation":"Publish asset to department most recently cloned or created. Double-click to publish and export.",
 			"label":"quick",
-			"double-click":0,
+			"double-click":"fast_publish()",
 			"tool":"mayatools.publishers.publisher",
-			"function":"MayaPublisher.fast_publish()"
+			"function":"MayaPublisher.fast_publish_without_export()"
 		}, {
 				"itemType":"separator"
 		}, {
