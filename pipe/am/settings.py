@@ -2,7 +2,7 @@ import os
 import sys
 import json
 
-projectfile = ".project"
+projectfile = "1.project"
 
 def update_key_value(filepath, **kwargs):
     with open(filepath, "r") as json_file:
