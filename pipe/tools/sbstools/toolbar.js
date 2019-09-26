@@ -7,6 +7,8 @@ var pathToProject = "/texture/main/"
 var pathToCache = pathToProject + "cache/"
 var fbxPostfix = "_texture_main.fbx"
 var savePostfix = "_project.spp"
+var saveBackupPostfix = "_backup.spp"
+var fileExtenLen = 4
 
 // Documentation for substance painter's 'alg' functions:
 // file:///opt/Allegorithmic/Substance_Painter/resources/javascript-doc/alg.html
@@ -43,7 +45,7 @@ function exportMaps(assetName, mediaDir) {
   alg.mapexport.showExportDialog({format:"png", path:exportPath})
 }
 
-// Helper function for saving and closing a file
+// Helper function for saving a backup file and then closing
 function customSaveAndClose(mediaDir) {
   alg.log.info("customSaveAndClose")
   // Break early if nothing needs to be saved
@@ -52,7 +54,9 @@ function customSaveAndClose(mediaDir) {
     return
   }
 
-  // Check if the "default" project is still open from having passed in the mediaDir as an arg at sbs painter startup.
+  // Check if the "default" project is still open. if so, close it. The media dir is passed in
+  // as an arg at sbs painter startup. Normally a projectDir file would be passed
+  // in so the last part of the media directory path becomes the default project name.
   if (alg.project.name() === mediaDir.split("/").pop() ) {
     alg.log.info("closing default project")
     alg.project.close()
@@ -60,6 +64,17 @@ function customSaveAndClose(mediaDir) {
   // Save an already opened file
   else {
     alg.log.info("saving and closing current project")
-    alg.project.saveAndClose()
+    var assetName = getAssetName()
+    var filePath = filePrefix + mediaDir + pathToAssets + assetName + pathToProject + assetName + saveBackupPostfix
+
+    alg.project.save(filePath, alg.project.SaveMode.Incremental)
+    alg.project.close()
   }
+}
+
+// Get the name of the asset currently being worked on
+function getAssetName() {
+  var projName = alg.project.name()
+  // e.g "myAsset_project".length - ("_project.spp".length - 4) = 7
+  return projName.slice(0, projName.length - (savePostfix.length - fileExtenLen))
 }
