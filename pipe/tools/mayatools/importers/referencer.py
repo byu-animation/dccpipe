@@ -54,10 +54,10 @@ class MayaReferencer:
                     continue
 
                 element = body.get_element(department)
-                publish = element.get_last_publish()
+                publish = element.get_app_filepath()
 
                 if publish:
-                    filepath = publish[3]
+                    filepath = publish
                     asset_filepaths.append(filepath)
 
                 else:
