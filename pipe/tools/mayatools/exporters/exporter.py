@@ -18,7 +18,6 @@ class Exporter:
         self.list = ["alembic", "fbx", "json"]
 
     def export(self, alembic=True, fbx=True, json=True, methods=None):
-
         if methods is None:
             methods = self.list
 
@@ -59,7 +58,6 @@ class Exporter:
         methods=[]
 
         for item in export_results.items():
-            print("item:", item)
             if item[0] == "fbx":
                 if item[1] is False:
                     fbx = False
