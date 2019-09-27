@@ -54,10 +54,9 @@ class MayaReferencer:
                     continue
 
                 element = body.get_element(department)
-                publish = element.get_app_filepath()
+                filepath = element.get_app_filepath()
 
-                if publish:
-                    filepath = publish
+                if filepath:
                     asset_filepaths.append(filepath)
 
                 else:
@@ -75,7 +74,16 @@ class MayaReferencer:
                     part_one, part_two = path.split("assets/")
                     asset = part_two.split("/")[0]
 
-                    pm.system.createReference(path, namespace=asset)
+                    while True:
+                        try:
+                            num_references = int(qd.input("How many copies of " + str(asset) + " do you want to reference?"))
+                        except:
+                            qd.warning("Invalid input for " + str(asset) + ". Try again.")
+                            continue
+                        break
+
+                    for i in range(num_references):
+                        pm.system.createReference(path, namespace=asset)
                 else:
                     qd.warning(path, " doesn't exist")
 
