@@ -20,6 +20,7 @@ class AlembicExporter:
     def __init__(self, frame_range=1, gui=True, element=None, show_tagger=False):
         self.frame_range = frame_range
         pm.loadPlugin('AbcExport')
+        self.crease = False
 
     def auto_export(self, asset_name):
         self.get_body_and_export(asset_name, export_all=True)
@@ -43,7 +44,6 @@ class AlembicExporter:
         if type == AssetType.PROP or type == AssetType.ACTOR:
             creases = qd.yes_or_no("Does this asset use creases?")
 
-            self.crease = False
             if creases:
                 self.crease = True
 

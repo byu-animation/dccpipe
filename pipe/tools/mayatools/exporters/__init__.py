@@ -1,6 +1,6 @@
 
 """
-Houdini tools
+Maya exporters
 @author Brigham Young University
 """
 

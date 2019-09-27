@@ -45,11 +45,11 @@
 		}, {
 			"itemType":"button",
 			"icon":"export.png",
-			"annotation":"Export as Alembic",
-			"label":"alembic",
-			"double-click":0,
-			"tool":"mayatools.exporters.alembic_exporter",
-			"function":"AlembicExporter.go()"
+			"annotation":"Export asset. Double-click to choose export options.",
+			"label":"export",
+			"double-click":"export_with_options()",
+			"tool":"mayatools.exporters.exporter",
+			"function":"Exporter.export()"
 		}, {
 				"itemType":"separator"
 		}, {

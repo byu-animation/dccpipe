@@ -51,7 +51,7 @@ def prepare_scene_file(quick_publish=False, department=None, body=None):
 '''
     Publish the asset. Called from creator and publisher.
 '''
-def post_publish(element, user, alembic_export, published=True, comment="No comment."):
+def post_publish(element, user, export, published=True, comment="No comment."):
     scene_file, new_file = get_scene_file()
 
     username = user.get_username()
@@ -61,27 +61,28 @@ def post_publish(element, user, alembic_export, published=True, comment="No comm
     try:
         os.chmod(dst, 0660)
     except:
-        print("Setting file permissions failed badly.")
+        print("Setting file permissions failed.")
 
-
+    print('Publish Complete.')
     body = Project().get_body(element.get_parent())
 
-    if body and body.is_asset():
-        # Export JSON
-        print('Publish Complete. Begin Exporting JSON if set.')
-        if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
-            json_export = JSONExporter()
-            json_export.go(body, body.get_type())
-        # export fbx file to textures folder
-        elif body.get_type() == AssetType.PROP or body.get_type() == AssetType.ACTOR:
-            print("begin fbx export")
-            fbx_exporter = FbxExporter()
-            fbx_exporter.auto_export(body.get_name())
-
-    if alembic_export:
+    if export:
+        print("Begin export process.")
         print("begin alembic export")
         alembic = AlembicExporter()
         alembic.auto_export(body.get_name())
+
+        if body and body.is_asset():
+            if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
+                print("begin json export")
+                json_export = JSONExporter()
+                json_export.go(body, body.get_type())
+
+            # export fbx file to textures folder
+        elif body.get_type() == AssetType.PROP or body.get_type() == AssetType.ACTOR:
+                print("begin fbx export")
+                fbx_exporter = FbxExporter()
+                fbx_exporter.auto_export(body.get_name())
 
     convert_to_education()
 
