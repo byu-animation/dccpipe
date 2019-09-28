@@ -23,10 +23,22 @@ class Creator:
         self.export = True
         self.create_body()
 
+    def create_prop(self):
+        self.create_body(type=AssetType.PROP)
+
+    def create_actor(self):
+        self.create_body(type=AssetType.ACTOR)
+
+    def create_set(self):
+        self.create_body(type=AssetType.SET)
+
+    def create_shot(self):
+        self.create_body(type=AssetType.SHOT)
+
     '''
     This will bring up the create new body UI
     '''
-    def create_body(self):
+    def create_body(self, type=None):
         self.name = qd.input("What's the name of this asset?")
 
         if self.name is None:
@@ -38,6 +50,10 @@ class Creator:
             self.create_body()
             return
         asset_type_list = AssetType().list_maya_types()
+
+        if type:
+            self.results([type])
+            return
 
         self.item_gui = sfl.SelectFromList(l=asset_type_list, parent=maya_main_window(), title="What are you creating?", width=250, height=120)
         self.item_gui.submitted.connect(self.results)

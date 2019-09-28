@@ -5,6 +5,8 @@
 			"icon":"create_asset.png",
 			"annotation":"Create a new body. Double-click to create body and export.",
 			"label":"create",
+			"menu":1,
+			"menu_items":{"Prop":"create_prop()", "Actor":"create_actor()", "Set":"create_set()", "Shot":"create_shot()"},
 			"double-click":"create_body_and_export()",
 			"tool":"mayatools.creators.creator",
 			"function":"Creator.create_body()"
@@ -13,6 +15,8 @@
 			"icon":"clone.png",
 			"annotation":"Clone an asset. Double-click to select a previous publish.",
 			"label":"clone",
+			"menu":1,
+			"menu_items":{"Prop":"clone_prop()", "Actor":"clone_actor()", "Set":"clone_set()", "Shot":"clone_shot()"},
 			"double-click":"clone()",
 			"tool":"mayatools.cloners.cloner",
 			"function":"MayaCloner.quick_clone()"
@@ -21,6 +25,7 @@
 			"icon":"publish.png",
 			"annotation":"Publish an asset. Double-click to publish and export.",
 			"label":"publish",
+			"menu":0,
 			"double-click":"publish()",
 			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.publish_without_export()"
@@ -29,6 +34,7 @@
 			"icon":"quick_publish.png",
 			"annotation":"Publish asset to department most recently cloned or created. Double-click to publish and export.",
 			"label":"quick",
+			"menu":0,
 			"double-click":"fast_publish()",
 			"tool":"mayatools.publishers.publisher",
 			"function":"MayaPublisher.fast_publish_without_export()"
@@ -39,6 +45,7 @@
 			"icon":"video.png",
 			"annotation":"Playblast this shot",
 			"label":"blast",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.submitters.playblaster",
 			"function":"Playblaster.playblast()"
@@ -47,6 +54,7 @@
 			"icon":"export.png",
 			"annotation":"Export asset. Double-click to choose export options.",
 			"label":"export",
+			"menu":0,
 			"double-click":"export_with_options()",
 			"tool":"mayatools.exporters.exporter",
 			"function":"Exporter.export()"
@@ -57,6 +65,7 @@
 			"icon":"tag.png",
 			"annotation":"Tag Selected Objects for Export",
 			"label":"tag",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.tag()"
@@ -65,6 +74,7 @@
 			"icon":"untag.png",
 			"annotation":"Remove Export Tags from Selected Objects",
 			"label":"untag",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag()"
@@ -73,6 +83,7 @@
 			"icon":"tags.png",
 			"annotation":"Select Tagged Objects to Untag",
 			"label":"tags",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.exporters.tagger",
 			"function":"Tagger.untag_multiple()"
@@ -83,6 +94,7 @@
 			"icon":"reference.png",
 			"annotation":"Reference a model or rig",
 			"label":"ref",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.go()"
@@ -91,6 +103,7 @@
 			"icon":"remove_reference.png",
 			"annotation":"Unload References",
 			"label":"de-ref",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.dereference_assets()"
@@ -101,6 +114,7 @@
 			"icon":"education.png",
 			"annotation":"Change the licence to education",
 			"label":"edu",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.utils.education",
 			"function":"education.go()"
@@ -109,6 +123,7 @@
 			"icon":"reload.png",
 			"annotation":"Reload python scripts",
 			"label":"scripts",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go()"
@@ -119,6 +134,7 @@
 			"icon":"person.png",
 			"annotation":"Import reference actor",
 			"label":"obj",
+			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.importers.reference_importer",
 			"function":"ReferenceImporter.go()"
