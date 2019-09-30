@@ -193,7 +193,9 @@ def freeze_transformations():
 '''
 def convert_to_education():
     print("file info: ", pm.FileInfo().items())
-    pm.FileInfo()['license'] = 'commercial'
+    mc.fileInfo( rm="license")
+    print("file info: ", pm.FileInfo().items())
+    # pm.FileInfo()['license'] = 'commercial'
     fileName = pm.sceneName()
     pm.saveFile()
     # qd.info('This Maya file has been converted to an education licence')
