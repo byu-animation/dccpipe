@@ -325,6 +325,7 @@ def find_first_mesh(rootNode):
         curr = stack.pop()
         path = path + "/" + strip_reference(curr.name())
         for child in curr.getChildren():
+            print("child: ", str(child), child)
             if isinstance(child, pm.nodetypes.Shape):
                 firstMesh = child
                 path = path + "/" + strip_reference(child.name())
@@ -337,6 +338,8 @@ def find_first_mesh(rootNode):
                 break
         for child in curr.getChildren():
             stack.append(child)
+
+    print("firstmesh, path: ", firstMesh, path)
 
     return firstMesh, path
 
