@@ -216,7 +216,11 @@ class JSONExporter:
         version_number, version_string = body.version_prop_json(name, filepath)
 
         firstMesh, path = find_first_mesh(rootNode)
-        vertpos1, vertpos2, vertpos3 = get_anchor_points(firstMesh)
+        try:
+            vertpos1, vertpos2, vertpos3 = get_anchor_points(firstMesh)
+        except Exception as e:
+            qd.warning(str(e) + ". Skipping this object.")
+            return None
 
         # Put all relevant data into dictionary object
         json_data = {"asset_name": name,
