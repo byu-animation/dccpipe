@@ -365,12 +365,12 @@ def get_body_from_reference(ref):
 '''
 def get_root_node_from_reference(ref):
     refPath = pm.referenceQuery(unicode(ref), filename=True)
-    print("refpath: ", refpath)
+    print("refpath: ", refPath)
     refNodes = pm.referenceQuery(unicode(refPath), nodes=True )
     print("refNodes: ", refNodes)
-    return rootNode
-    print("rootNode: ", rootNode)
     rootNode = pm.ls(refNodes[0])[0]
+    print("rootNode: ", rootNode)
+    return rootNode
 
 '''
     Helper for JSONExporter
