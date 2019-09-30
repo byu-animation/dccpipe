@@ -230,7 +230,12 @@ class AlembicExporter:
         print("destination: ", destination)
 
         for ref in selection:
-            rootNode = get_root_node_from_reference(ref)
+            try:
+                rootNode = get_root_node_from_reference(ref)
+            except:
+                qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
+                continue
+
             name = str(ref.associatedNamespace(baseName=True))
             parent = ref.parentReference()
             print("ref: ", ref)
@@ -365,6 +370,7 @@ class AlembicExporter:
 
             while parents:
                 p = parents[0]
+                print("parent: ", str(p))
                 root = str(p) + "|" + root
                 parents = p.listRelatives(p=True)
 

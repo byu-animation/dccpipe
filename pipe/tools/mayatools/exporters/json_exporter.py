@@ -116,7 +116,12 @@ class JSONExporter:
 
         for ref in refsSelection:
             print("ref: ", ref)
-            rootNode = get_root_node_from_reference(ref)
+            try:
+                rootNode = get_root_node_from_reference(ref)
+            except:
+                qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
+                continue
+
             body = get_body_from_reference(rootNode)
             currRefName, currRefVerNum = extract_reference_data(ref)
 
@@ -171,7 +176,12 @@ class JSONExporter:
 
         allReferences = []
         for ref in refsSelection:
-            rootNode = get_root_node_from_reference(ref)
+            try:
+                rootNode = get_root_node_from_reference(ref)
+            except:
+                qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
+                continue
+
             print("\t Curr rootNode: ", rootNode)
             propJSON = self.exportPropJSON(filepath, rootNode)
 
@@ -188,15 +198,19 @@ class JSONExporter:
 
     def exportPropJSON(self, filepath, rootNode, isReference=True, name="", version_number=None):
         if isReference:
-            body = get_body_from_reference(rootNode)
+            try:
+                body = get_body_from_reference(rootNode)
+            except:
+                qd.warning("Could not find " + str(filepath) + " in scene. Skipping.")
+                return None
         else:
             body = Project().get_body(name)
 
-        name = body.get_name()
-
         if not body or not body.is_asset() or body.get_type() != AssetType.PROP:
-            print "The asset %s does not exist as a prop, skipping.".format(name)
+            qd.warning("The asset " + str(rootNode) + " does not exist as a prop, skipping.")
             return None
+
+        name = body.get_name()
 
         # Increment the version number
         version_number, version_string = body.version_prop_json(name, filepath)

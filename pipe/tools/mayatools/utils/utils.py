@@ -192,7 +192,8 @@ def freeze_transformations():
     Helper function for post_publish()
 '''
 def convert_to_education():
-    pm.FileInfo()['license'] = 'education'
+    print("file info: ", pm.FileInfo().items())
+    pm.FileInfo()['license'] = 'commercial'
     fileName = pm.sceneName()
     pm.saveFile()
     # qd.info('This Maya file has been converted to an education licence')
@@ -365,11 +366,8 @@ def get_body_from_reference(ref):
 '''
 def get_root_node_from_reference(ref):
     refPath = pm.referenceQuery(unicode(ref), filename=True)
-    print("refpath: ", refPath)
     refNodes = pm.referenceQuery(unicode(refPath), nodes=True )
-    print("refNodes: ", refNodes)
     rootNode = pm.ls(refNodes[0])[0]
-    print("rootNode: ", rootNode)
     return rootNode
 
 '''
