@@ -326,6 +326,7 @@ def find_first_mesh(rootNode):
         path = path + "/" + strip_reference(curr.name())
         for child in curr.getChildren():
             print("child: ", str(child), child)
+            print("type: ", str(mc.nodeType(curr)))
             if isinstance(child, pm.nodetypes.Shape):
                 firstMesh = child
                 path = path + "/" + strip_reference(child.name())
