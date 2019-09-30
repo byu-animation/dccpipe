@@ -76,6 +76,12 @@ class Body(object):
 		else:
 			return False
 
+	def is_set(self):
+		if self.get_type() == AssetType.SET:
+			return True
+		else:
+			return False
+
 	def is_asset(self):
 		return True
 

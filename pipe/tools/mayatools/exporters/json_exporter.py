@@ -206,9 +206,11 @@ class JSONExporter:
         else:
             body = Project().get_body(name)
 
-        if not body or not body.is_asset() or body.get_type() != AssetType.PROP:
-            qd.warning("The asset " + str(rootNode) + " does not exist as a prop, skipping.")
-            return None
+        if not body or not body.is_asset():
+            if body.get_type() == AssetType.SHOT:
+                qd.warning("Shots in sets are not supported. Can't export " + str(rootNode))
+                return None
+            qd.warning(str(rootNode) + " does not exist in pipe.")
 
         name = body.get_name()
 
@@ -219,7 +221,7 @@ class JSONExporter:
         try:
             vertpos1, vertpos2, vertpos3 = get_anchor_points(firstMesh)
         except Exception as e:
-            qd.warning(str(e) + ". Skipping this object.")
+            qd.warning(str(e) + ". Is there a camera associated with this reference? Skipping this object.")
             return None
 
         # Put all relevant data into dictionary object

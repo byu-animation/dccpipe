@@ -267,7 +267,7 @@ class Assembler:
             with open(set_file) as f:
                 set_data = json.load(f)
         except Exception as error:
-            qd.error("No valid JSON file for " + set_name)
+            qd.error("No valid JSON file for " + str(set_name))
             return
 
         node.parm("asset_name").set(set_name)
@@ -962,7 +962,7 @@ class Assembler:
             with open(shot_file) as f:
                 shot_data = json.load(f)
         except Exception as error:
-            qd.error("No valid JSON file for " + shot_name)
+            qd.error("No valid JSON file for " + str(shot_name))
             return
 
         for asset in shot_data:

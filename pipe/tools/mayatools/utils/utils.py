@@ -144,7 +144,7 @@ def scene_prep(quick_publish, body=None, department=None):
     if department == Department.RIG:
         freeze_and_clear = False
 
-    if body.is_shot():
+    if body.is_shot() or body.get_type() == AssetType.SET:
         freeze_and_clear = False
 
     if freeze_and_clear:
