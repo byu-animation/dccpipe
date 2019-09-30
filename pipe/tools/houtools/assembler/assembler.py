@@ -326,9 +326,13 @@ class Assembler:
                 subnet.setParms(newparms)
 
             # Build the set accordingly
+            if body.get_type() == AssetType.ACTOR:
+                subnet = subnet.node("inside").node("geo")
+
             subnet.parm("space").set("set")
             subnet.parm("set").set(set_name)
             subnet.parm("update_mode").set(UpdateModes.list_modes().index(mode))
+
             # Set the data
             subnet.parm("data").set({
                 "asset_name": str(reference["asset_name"]),
