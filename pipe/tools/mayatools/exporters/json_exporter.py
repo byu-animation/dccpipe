@@ -221,7 +221,8 @@ class JSONExporter:
         try:
             vertpos1, vertpos2, vertpos3 = get_anchor_points(firstMesh)
         except Exception as e:
-            qd.warning(str(e) + ". Is there a camera associated with this reference? Skipping this object.")
+            print(str(e))
+            qd.warning("Couldn't export JSON for " + str(rootNode) + ". Is there a camera or a rig associated with this reference? Skipping this object.")
             return None
 
         # Put all relevant data into dictionary object
