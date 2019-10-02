@@ -234,11 +234,11 @@ def get_departments_by_type(asset_type):
     if asset_type == AssetType.PROP:
         department_list = project.prop_export_departments()
     elif asset_type == AssetType.ACTOR:
-        department_list = project.char_export_departments()
+        department_list = ["model", "rig"]
     elif asset_type == AssetType.SET:
         department_list = project.set_export_departments()
     elif asset_type == AssetType.SHOT:
-        department_list = project.shot_export_departments()
+        department_list = ["model", "anim"]
 
     return department_list
 
@@ -324,7 +324,7 @@ def find_first_mesh(rootNode):
     while len(stack) > 0 and firstMesh is None:
         curr = stack.pop()
         path = path + "/" + strip_reference(curr.name())
-        
+
         for child in curr.getChildren():
             if isinstance(child, pm.nodetypes.Shape):
                 firstMesh = child
