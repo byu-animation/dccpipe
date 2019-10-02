@@ -267,7 +267,7 @@ class Assembler:
             with open(set_file) as f:
                 set_data = json.load(f)
         except Exception as error:
-            qd.error("No valid JSON file for " + set_name)
+            qd.error("No valid JSON file for " + str(set_name))
             return
 
         node.parm("asset_name").set(set_name)
@@ -326,9 +326,13 @@ class Assembler:
                 subnet.setParms(newparms)
 
             # Build the set accordingly
+            if body.get_type() == AssetType.ACTOR:
+                subnet = subnet.node("inside").node("geo")
+
             subnet.parm("space").set("set")
             subnet.parm("set").set(set_name)
             subnet.parm("update_mode").set(UpdateModes.list_modes().index(mode))
+
             # Set the data
             subnet.parm("data").set({
                 "asset_name": str(reference["asset_name"]),
@@ -962,7 +966,7 @@ class Assembler:
             with open(shot_file) as f:
                 shot_data = json.load(f)
         except Exception as error:
-            qd.error("No valid JSON file for " + shot_name)
+            qd.error("No valid JSON file for " + str(shot_name))
             return
 
         for asset in shot_data:

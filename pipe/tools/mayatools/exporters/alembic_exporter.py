@@ -20,6 +20,7 @@ class AlembicExporter:
     def __init__(self, frame_range=1, gui=True, element=None, show_tagger=False):
         self.frame_range = frame_range
         pm.loadPlugin('AbcExport')
+        self.crease = False
 
     def auto_export(self, asset_name):
         self.get_body_and_export(asset_name, export_all=True)
@@ -43,7 +44,6 @@ class AlembicExporter:
         if type == AssetType.PROP or type == AssetType.ACTOR:
             creases = qd.yes_or_no("Does this asset use creases?")
 
-            self.crease = False
             if creases:
                 self.crease = True
 
@@ -230,7 +230,12 @@ class AlembicExporter:
         print("destination: ", destination)
 
         for ref in selection:
-            rootNode = get_root_node_from_reference(ref)
+            try:
+                rootNode = get_root_node_from_reference(ref)
+            except:
+                qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
+                continue
+
             name = str(ref.associatedNamespace(baseName=True))
             parent = ref.parentReference()
             print("ref: ", ref)
@@ -365,6 +370,7 @@ class AlembicExporter:
 
             while parents:
                 p = parents[0]
+                print("parent: ", str(p))
                 root = str(p) + "|" + root
                 parents = p.listRelatives(p=True)
 

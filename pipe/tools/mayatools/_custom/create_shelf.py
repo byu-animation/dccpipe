@@ -42,8 +42,10 @@ def load_shelf():
 			annotation = shelf_item['annotation']
 			label = shelf_item['label']
 
-			dcc = shelf_item['double-click']
 			# dcc = double click command: we can add a different command that goes when double clicked.
+			dcc = shelf_item['double-click']
+			# menu = submenu for right-click
+			menu = shelf_item['menu']
 
 			path = "pipe.tools." + shelf_item['tool']
 			function = shelf_item['function']
@@ -51,14 +53,24 @@ def load_shelf():
 			module = class_with_method[0]
 			method = class_with_method[1]
 
-			command = "from " + str(path) + " import " + str(module) + "; shelf_item = " + str(module) + "(); shelf_item." + str(method)
+			command_base = "from " + str(path) + " import " + str(module) + "; shelf_item = " + str(module) + "(); shelf_item."
+			command = command_base + str(method)
 
 			if dcc == 0:
 				dcc = command
 			else:
-				dcc = "from " + str(path) + " import " + str(module) + "; shelf_item = " + str(module) + "(); shelf_item." + str(dcc)
+				dcc = command_base + str(dcc)
 
-			pm.shelfButton(command=command, annotation=annotation, image=icon, l=annotation, iol=label, olb=(0,0,0,0), dcc=dcc)
+			if menu == 0:
+				pm.shelfButton(c=command, ann=annotation, i=icon, l=annotation, iol=label, olb=(0,0,0,0), dcc=dcc)
+			elif menu == 1:
+				menu_items = shelf_item['menu_items']
+				new_menu = build_menu_string(command_base, menu_items)
+				mip = []
+				for i in range (len(new_menu)):
+					mip.append(i)
+				pm.shelfButton(c=command, ann=annotation, i=icon, l=annotation, iol=label, olb=(0,0,0,0), dcc=dcc, mi=new_menu, mip=mip)
+
 		else:
 			pm.separator(horizontal=False, style='shelf', enable=True, width=35, height=35, visible=1, enableBackground=0, backgroundColor=(0.2,0.2,0.2), highlightColor=(0.321569, 0.521569, 0.65098))
 
@@ -68,6 +80,24 @@ def load_shelf():
 	# shelf loaded correctly
 	print("*** Shelf loaded :) ***")
 	sys.path.append(os.getcwd())
+
+def build_menu_string(command_base, menu_items):
+	# mi: Creates menu items for this button by passing in arguments for the menu item label and command for each item. These should be passed as strings: labelcommandfor each use of this flag in the command.
+	# mip: This flag is used to specify that a menu item is in Python. The integer value is the index of the menuItem that is modified by this flag. This is 0 based, so it corresponds to the (index+1)th occurrence of the /-mi/-menuItemflag.
+	# npm: Return the number of popup menus attached to this control.
+
+	menu = []
+	menu_python = [0,1,2,3]
+	for item in menu_items.items():
+		print("item: ", item)
+		menu_command = command_base + str(item[1])
+		label = item[0]
+		new_item = [label, menu_command]
+		menu.append(new_item)
+
+	print("menu: ", menu)
+
+	return menu
 
 def delete_shelf():
 	if pm.shelfLayout(PROJ, exists=True):

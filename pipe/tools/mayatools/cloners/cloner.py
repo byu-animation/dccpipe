@@ -43,6 +43,34 @@ class MayaCloner:
 		else:
 			print 'File does not exist: '+assetName
 
+	def clone_prop(self):
+		self.quick = True
+		project = Project()
+		asset_list = project.list_props()
+		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select a prop to clone")
+		self.item_gui.submitted.connect(self.results)
+
+	def clone_actor(self):
+		self.quick = True
+		project = Project()
+		asset_list = project.list_actors()
+		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select an actor to clone")
+		self.item_gui.submitted.connect(self.results)
+
+	def clone_set(self):
+		self.quick = True
+		project = Project()
+		asset_list = project.list_sets()
+		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select a set to clone")
+		self.item_gui.submitted.connect(self.results)
+
+	def clone_shot(self):
+		self.quick = True
+		project = Project()
+		asset_list = project.list_shots()
+		self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="Select a shot to clone")
+		self.item_gui.submitted.connect(self.results)
+
 	def go(self):
 		project = Project()
 		asset_list = project.list_assets()
