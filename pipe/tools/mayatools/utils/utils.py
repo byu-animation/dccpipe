@@ -317,12 +317,14 @@ def strip_reference(input):
     Helper for JSONExporter
 '''
 def find_first_mesh(rootNode):
+    print("root: ", str(rootNode))
     firstMesh = None
     path = ""
     stack = []
     stack.append(rootNode)
     while len(stack) > 0 and firstMesh is None:
-        curr = stack.pop()
+        curr = stack.pop(0)
+        print("curr: ", curr)
         path = path + "/" + strip_reference(curr.name())
 
         for child in curr.getChildren():
@@ -338,6 +340,8 @@ def find_first_mesh(rootNode):
                 break
         for child in curr.getChildren():
             stack.append(child)
+
+    # import pdb; pdb.set_trace()
 
     print("firstmesh, path: ", firstMesh, path)
 
