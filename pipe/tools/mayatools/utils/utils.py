@@ -306,7 +306,8 @@ def extract_reference_data(ref):
     Helper for JSONExporter
 '''
 def strip_reference(input):
-    i = input.rfind(":")
+    # i = input.rfind(":")  # commenting out because find may cause problems, if not, then we are keeping it.
+    i = input.find(":")
 
     if i == -1:
         return input
