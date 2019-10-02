@@ -82,20 +82,13 @@ def load_shelf():
 	sys.path.append(os.getcwd())
 
 def build_menu_string(command_base, menu_items):
-	# mi: Creates menu items for this button by passing in arguments for the menu item label and command for each item. These should be passed as strings: labelcommandfor each use of this flag in the command.
-	# mip: This flag is used to specify that a menu item is in Python. The integer value is the index of the menuItem that is modified by this flag. This is 0 based, so it corresponds to the (index+1)th occurrence of the /-mi/-menuItemflag.
-	# npm: Return the number of popup menus attached to this control.
-
 	menu = []
 	menu_python = [0,1,2,3]
 	for item in menu_items.items():
-		print("item: ", item)
 		menu_command = command_base + str(item[1])
 		label = item[0]
 		new_item = [label, menu_command]
 		menu.append(new_item)
-
-	print("menu: ", menu)
 
 	return menu
 
