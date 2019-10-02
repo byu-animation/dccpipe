@@ -38,7 +38,7 @@ class MayaCloner:
 			print 'no file'
 			return
 		if os.path.exists(filePath):
-			mc.file(filePath, open=True, force=True)
+			mc.file(filePath, open=True, force=True, ignoreVersion=True)
 			print "open file " + assetName
 		else:
 			print 'File does not exist: '+assetName
@@ -185,7 +185,7 @@ class MayaCloner:
 				mc.file(save=True, force=True)
 				print "New file: " + selected_scene_file
 			else:
-				mc.file(selected_scene_file, open=True, force=True)
+				mc.file(selected_scene_file, open=True, force=True, ignoreVersion=True)
 				print "File opened: " + selected_scene_file
 
 			return True
