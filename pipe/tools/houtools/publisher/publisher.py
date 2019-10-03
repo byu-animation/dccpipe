@@ -337,7 +337,7 @@ class Publisher:
         src = hou.hipFile.name()
 
         #Publish
-        user = Environment().get_user()        
+        user = Environment().get_user()
         pipeline_io.set_permissions(src)
         dst = self.publish_element(element, user, src, comment)
         pipeline_io.set_permissions(dst)
@@ -423,7 +423,11 @@ class Publisher:
             node = inside.node(department)
             src = node.type().definition().libraryFilePath()
 
-            self.publish_src_node_to_department(src, node, department, user, comment)
+            try:
+                self.publish_src_node_to_department(src, node, department, user, comment)
+            except Exception as e:
+                print(str(e))
+                qd.warning("Something went wrong.")
 
         success_message = "Success! Published to " + str(departments_to_publish)
         self.print_success_message(success_message)
