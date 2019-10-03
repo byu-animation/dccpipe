@@ -11,7 +11,7 @@ from am.registry import Registry
 
 class Project:
 	'''
-	Class describing an animation project.
+	Class describing a dcc project.
 	'''
 
 	def __init__(self):
@@ -111,6 +111,12 @@ class Project:
 		return the absolute filepath to the users directory of this project
 		'''
 		return self._env.get_users_dir()
+
+	def get_submission_location(self):
+		return pipeline_io.get_settings_info(self.get_project_dir(), "submission_location")
+
+	def set_submission_location(self, location):
+		return pipeline_io.set_settings_info(self.get_project_dir(), "submission_location", location)
 
 	def get_user(self, username=None):
 		'''

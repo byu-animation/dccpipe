@@ -27,19 +27,36 @@ class Playblaster:
         project = Project()
         self.body = project.get_body(chosen_asset)
 
-    	start_frame = mc.playbackOptions(q=True, min=True)
-    	end_frame = mc.playbackOptions(q=True, max=True)
+        start_frame = mc.playbackOptions(q=True, min=True)
+        end_frame = mc.playbackOptions(q=True, max=True)
 
         playblast_element = self.body.get_element(Department().RENDER)
         playblast_dir = playblast_element.get_render_dir()
-        playblast_filename = chosen_asset + "_playblast.mov"
-        path = os.path.join(playblast_dir, playblast_filename)
 
-    	self.simpleBlast(start_frame, end_frame, path)
+        submission_location = Project().get_submission_location()
+        playblast_filename = chosen_asset + "_playblast.mov"
+        path = os.path.join(submission_location, playblast_filename)
+
+        self.simpleBlast(start_frame, end_frame, path)
         qd.info("Playblast created at " + str(path))
 
     def simpleBlast(self, start_frame, end_frame, filename):
-    	mc.playblast(st=start_frame, et=end_frame, fmt="qt", compression="png", qlt=100, forceOverwrite=True, filename=filename, offScreen=True, percent=100, v=False)
+        print("vars: ", start_frame, end_frame, filename)
+        mc.playblast(st=start_frame, et=end_frame, fmt="qt", compression="jpeg", qlt=100, forceOverwrite=True, filename=filename, offScreen=True, percent=100, v=False)
         pipeline_io.set_permissions(filename)
 
-        return
+    def snapshot(self):
+        pass
+
+    def set_submission_location(self):
+        submission_location = Project().get_submission_location()
+
+        option = qd.yes_or_no("Current location is:\n" + str(submission_location) + "\nSet new submission location?")
+
+        if option:
+            new_location = qd.input("New location: ")
+        else:
+            return
+
+        if new_location and not new_location == "":
+            Project().set_submission_location(new_location)

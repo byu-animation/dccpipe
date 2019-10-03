@@ -139,3 +139,37 @@ def get_project_info(project_dir, key):
 		json_data = json.load(json_file)
 
 	return json_data[key]
+
+def get_settings_info(project_dir, key):
+	'''
+	opens .settings and gets information from this file
+	'''
+	filepath = os.path.join(project_dir, ".settings")
+	with open(filepath, "r") as json_file:
+		json_data = json.load(json_file)
+
+	return json_data[key]
+
+def get_settings(project_dir):
+	'''
+	opens .settings and returns JSON dict
+	'''
+	filepath = os.path.join(project_dir, ".settings")
+	with open(filepath, "r") as json_file:
+		json_data = json.load(json_file)
+
+	return json_data
+
+def set_settings_info(project_dir, key, value):
+	'''
+	opens .settings and sets a value
+	'''
+
+	data = get_settings(project_dir)
+	data[key] = value
+
+	filepath = os.path.join(project_dir, ".settings")
+	writefile(filepath, data)
+	set_permissions(filepath)
+
+	return True
