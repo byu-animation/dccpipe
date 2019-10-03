@@ -29,10 +29,10 @@ export PYTHONPATH=${PYTHONPATH}:${HOUDINI_TOOLS}
 export HOUDINI_PATH=${HOUDINI_PATH}:${HOUDINI_TOOLS}"/_custom;&":${HOUDINI_TOOLS}:${MEDIA_PROJECT_DIR}"/production;&":${MEDIA_PROJECT_DIR}"/production/hdas;&"
 export HOUDINI_DSO_PATH=${HOUDINI_DSO_PATH}:${MEDIA_PROJECT_DIR}"/production/dso;&"
 
-# Renderman paths (Renderman 22)
-export RMANTREE="/opt/pixar/RenderManProServer-22.6"
-export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
-export HOUDINI_PATH=$RFHTREE"/17.5;&"
+# Renderman paths (Renderman 22) for use with Hou 17.5
+# export RMANTREE="/opt/pixar/RenderManProServer-22.6"
+# export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
+# export HOUDINI_PATH=$RFHTREE"/17.5;&"
 
 export HOUDINI_MENU_PATH=${HOUDINI_TOOLS}"/_custom/menus;&"
 export HOUDINI_TOOLBAR_PATH=${MEDIA_PROJECT_DIR}"/production/tabs;&"
