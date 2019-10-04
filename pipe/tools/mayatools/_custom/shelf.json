@@ -43,13 +43,13 @@
 		}, {
 			"itemType":"button",
 			"icon":"video.png",
-			"annotation":"Playblast this shot. Double-click to set location.",
-			"label":"blast",
+			"annotation":"Playblast or snapshot this asset. Double-click to set location. Right-click to choose between snap or blast.",
+			"label":"snap",
 			"menu":1,
 			"menu_items":{"Playblast":"playblast()", "Snapshot":"snapshot()"},
 			"double-click":"set_submission_location()",
 			"tool":"mayatools.submitters.playblaster",
-			"function":"Playblaster.playblast()"
+			"function":"Playblaster.snapshot()"
 		}, {
 			"itemType":"button",
 			"icon":"export.png",
