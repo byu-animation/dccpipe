@@ -176,13 +176,14 @@ if node:
 	if node.type().definition() is not None:
 		node_path = node.path()
 		node_name = node.type().name()
+		if str(node_name) == "dcc_camera":
+			return 0
 		index = node_name.rfind('_')
 		node_name = node_name[:index]
 		if not str(node_name) == "dcc":
 			return 0
-		name = node_path.split('/')[-1]
-		first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
-		name = first_char_to_lower(name)
+
+		name = node.parm("asset_name").evalAsString()
 		node_body = Project().get_body(name)
 		if node_body:
 			if node_body.is_asset():
@@ -199,12 +200,10 @@ if node:
 	import hou
 	publisher = publisher.Publisher()
 	hou.session.publisher = publisher
-	node_path = node.path()
-	name = node_path.split('/')[-1]
-	first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
-	name = first_char_to_lower(name)
 
+	name = node.parm("asset_name").evalAsString()
 	node_body = Project().get_body(name)
+
 	if node_body.get_type() == AssetType.SET:
 		publisher.publish_set(node=node, name=name)
 	else:
