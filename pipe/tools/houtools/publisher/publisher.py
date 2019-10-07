@@ -28,7 +28,7 @@ class Publisher:
     def publish_content_hda_comment(self, value):
         node = self.node
         comment = value
-        if comment is None:
+        if not comment:
             comment = "published by " + str(user.get_username()) + " in department " + str(department)
         node_name = node.type().name()
         index = node_name.rfind('_')
@@ -44,13 +44,18 @@ class Publisher:
         success_message = "Success! Published " + asset_name + " to " + str(department)
         self.print_success_message(success_message)
 
-    def publish_asset(self, node=None, name=None):
+    def publish_asset(self, node=None, name=None, inner=False):
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
 
         if node:
             self.node_name = name
             print("node: ", node)
             print("name: ", name)
+        if inner:
+            #node = 
+            #name = 
+            #self.node_name = name
+            
 
         self.publish(selectedHDA=node)
 
@@ -337,7 +342,7 @@ class Publisher:
         src = hou.hipFile.name()
 
         #Publish
-        user = Environment().get_user()        
+        user = Environment().get_user()
         pipeline_io.set_permissions(src)
         dst = self.publish_element(element, user, src, comment)
         pipeline_io.set_permissions(dst)
@@ -380,18 +385,22 @@ class Publisher:
 
     def publish_hda(self, value):
         comment = value
-        if comment is None:
+        if not comment:
             comment = "publish by " + str(user.get_username()) + " in department " + str(department)
 
         project = Project()
         environment = Environment()
         user = environment.get_user()
         selectedHDA = self.selectedHDA
+        if selectedHDA is None:
+            print("No HDA selected!")
         src = self.src
         body = self.body
         asset_type = body.get_type()
 
-        inside = self.selectedHDA.node("inside")
+        inside = selectedHDA.node("inside")
+        if inside is None:
+            print("No inside node found!")
         modify = inside.node("modify")
         material = inside.node("material")
         hair = inside.node("hair")
@@ -405,16 +414,18 @@ class Publisher:
 
         departments_to_publish = []
 
-        if not modify is None:
+        if modify is not None:
+            print("Found modify")
             departments_to_publish.append("modify")
-        if not material is None:
+        if material is not None:
+            print("Found material")
             departments_to_publish.append("material")
-        if not hair is None:
+        if hair is not None:
             departments_to_publish.append("hair")
-        if not cloth is None:
+        if cloth is not None:
             departments_to_publish.append("cloth")
 
-        if body is None:
+        if body is not None:
             qd.error("Asset not found in pipe.")
             return
 
