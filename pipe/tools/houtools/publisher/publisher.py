@@ -454,7 +454,8 @@ class Publisher:
                 return
 
             try:
-                node.matchCurrentDefinition()  # this function locks the node for editing.
+                # FIXME: THIS IS WHAT IS CAUSING THE CRASH DURING PUBLISH. WHY IS IT CRASHING DURING MATERIAL CHANGE?
+                # node.matchCurrentDefinition()  # this function locks the node for editing.
             except hou.OperationFailed, e:
                 qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
                 print(str(e))
@@ -464,10 +465,13 @@ class Publisher:
 
             print("dst: ", dst)
 
-            hou.hda.installFile(dst)
-            definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
-            definition.setPreferred(True)
-            node.allowEditingOfContents()
+            try:
+                hou.hda.installFile(dst)
+                definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
+                definition.setPreferred(True)
+                node.allowEditingOfContents()
+            except Exception as e:
+                qd.error("Publish failed for " + str(department), details=str(e))
 
         else:
             qd.error('File does not exist', details=src)
