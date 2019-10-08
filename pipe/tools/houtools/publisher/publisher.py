@@ -453,13 +453,6 @@ class Publisher:
                 print(str(e))
                 return
 
-            try:
-                # FIXME: THIS IS WHAT IS CAUSING THE CRASH DURING PUBLISH. WHY IS IT CRASHING DURING MATERIAL CHANGE?
-                # node.matchCurrentDefinition()  # this function locks the node for editing.
-            except hou.OperationFailed, e:
-                qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
-                print(str(e))
-
             element = self.body.get_element(department, Element.DEFAULT_NAME)
             dst = self.publish_element(element, user, src, comment)
 
