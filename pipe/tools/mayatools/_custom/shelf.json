@@ -96,7 +96,7 @@
 			"annotation":"Reference a model or rig. Double-click to reference any asset.",
 			"label":"ref",
 			"menu":0,
-			"double-click":"reference_asset()",
+			"double-click":"reference_any()",
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.reference_prop_or_actor()"
 		}, {

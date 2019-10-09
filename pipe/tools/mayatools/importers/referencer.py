@@ -24,7 +24,7 @@ class MayaReferencer:
         self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="What do you want to reference?", multiple_selection=True)
         self.item_gui.submitted.connect(self.post_reference)
 
-    def reference_asset(self):
+    def reference_any(self):
         self.project = Project()
         asset_list = self.project.list_assets()
 
