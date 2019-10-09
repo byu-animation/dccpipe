@@ -43,12 +43,13 @@
 		}, {
 			"itemType":"button",
 			"icon":"video.png",
-			"annotation":"Playblast this shot",
-			"label":"blast",
-			"menu":0,
-			"double-click":0,
+			"annotation":"Playblast or snapshot this asset. Double-click to set location. Right-click to choose between snap or blast.",
+			"label":"snap",
+			"menu":1,
+			"menu_items":{"Playblast":"playblast()", "Snapshot":"snapshot()"},
+			"double-click":"set_submission_location()",
 			"tool":"mayatools.submitters.playblaster",
-			"function":"Playblaster.playblast()"
+			"function":"Playblaster.snapshot()"
 		}, {
 			"itemType":"button",
 			"icon":"export.png",
@@ -92,12 +93,12 @@
 		}, {
 			"itemType":"button",
 			"icon":"reference.png",
-			"annotation":"Reference a model or rig",
+			"annotation":"Reference a model or rig. Double-click to reference any asset.",
 			"label":"ref",
 			"menu":0,
-			"double-click":0,
+			"double-click":"reference_asset()",
 			"tool":"mayatools.importers.referencer",
-			"function":"MayaReferencer.go()"
+			"function":"MayaReferencer.reference_prop_or_actor()"
 		}, {
 			"itemType":"button",
 			"icon":"remove_reference.png",

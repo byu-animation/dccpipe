@@ -17,7 +17,14 @@ class MayaReferencer:
     def __init__(self):
         self.item_gui = None
 
-    def go(self):
+    def reference_prop_or_actor(self):
+        self.project = Project()
+        asset_list = self.project.list_props_and_actors()
+
+        self.item_gui = sfl.SelectFromList(l=asset_list, parent=maya_main_window(), title="What do you want to reference?", multiple_selection=True)
+        self.item_gui.submitted.connect(self.post_reference)
+
+    def reference_asset(self):
         self.project = Project()
         asset_list = self.project.list_assets()
 

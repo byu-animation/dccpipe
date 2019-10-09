@@ -234,11 +234,11 @@ def get_departments_by_type(asset_type):
     if asset_type == AssetType.PROP:
         department_list = project.prop_export_departments()
     elif asset_type == AssetType.ACTOR:
-        department_list = project.char_export_departments()
+        department_list = ["model", "rig"]
     elif asset_type == AssetType.SET:
         department_list = project.set_export_departments()
     elif asset_type == AssetType.SHOT:
-        department_list = project.shot_export_departments()
+        department_list = ["model", "anim"]
 
     return department_list
 
@@ -306,7 +306,8 @@ def extract_reference_data(ref):
     Helper for JSONExporter
 '''
 def strip_reference(input):
-    i = input.rfind(":")
+    # i = input.rfind(":")  # commenting out because find may cause problems, if not, then we are keeping it.
+    i = input.find(":")
 
     if i == -1:
         return input
@@ -317,14 +318,16 @@ def strip_reference(input):
     Helper for JSONExporter
 '''
 def find_first_mesh(rootNode):
+    print("root: ", str(rootNode))
     firstMesh = None
     path = ""
     stack = []
     stack.append(rootNode)
     while len(stack) > 0 and firstMesh is None:
-        curr = stack.pop()
+        curr = stack.pop(0)
+        print("curr: ", curr)
         path = path + "/" + strip_reference(curr.name())
-        
+
         for child in curr.getChildren():
             if isinstance(child, pm.nodetypes.Shape):
                 firstMesh = child
@@ -338,6 +341,8 @@ def find_first_mesh(rootNode):
                 break
         for child in curr.getChildren():
             stack.append(child)
+
+    # import pdb; pdb.set_trace()
 
     print("firstmesh, path: ", firstMesh, path)
 

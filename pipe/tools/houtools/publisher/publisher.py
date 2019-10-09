@@ -337,7 +337,7 @@ class Publisher:
         src = hou.hipFile.name()
 
         #Publish
-        user = Environment().get_user()        
+        user = Environment().get_user()
         pipeline_io.set_permissions(src)
         dst = self.publish_element(element, user, src, comment)
         pipeline_io.set_permissions(dst)
@@ -423,7 +423,11 @@ class Publisher:
             node = inside.node(department)
             src = node.type().definition().libraryFilePath()
 
-            self.publish_src_node_to_department(src, node, department, user, comment)
+            try:
+                self.publish_src_node_to_department(src, node, department, user, comment)
+            except Exception as e:
+                print(str(e))
+                qd.warning("Something went wrong.")
 
         success_message = "Success! Published to " + str(departments_to_publish)
         self.print_success_message(success_message)
@@ -449,21 +453,18 @@ class Publisher:
                 print(str(e))
                 return
 
-            try:
-                node.matchCurrentDefinition()  # this function locks the node for editing.
-            except hou.OperationFailed, e:
-                qd.warning('There was a problem while trying to match the current definition. It\'s not a critical problem. Look at it and see if you can resolve the problem. Publish was successful.')
-                print(str(e))
-
             element = self.body.get_element(department, Element.DEFAULT_NAME)
             dst = self.publish_element(element, user, src, comment)
 
             print("dst: ", dst)
 
-            hou.hda.installFile(dst)
-            definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
-            definition.setPreferred(True)
-            node.allowEditingOfContents()
+            try:
+                hou.hda.installFile(dst)
+                definition = hou.hdaDefinition(node.type().category(), node.type().name(), dst)
+                definition.setPreferred(True)
+                node.allowEditingOfContents()
+            except Exception as e:
+                qd.error("Publish failed for " + str(department), details=str(e))
 
         else:
             qd.error('File does not exist', details=src)

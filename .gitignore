@@ -5,6 +5,7 @@ pipe/tools/houtools/_custom/otls/backup/
 
 # Project file ignores
 .project
+.settings
 *.desktop
 
 # DCC-specific ignores
