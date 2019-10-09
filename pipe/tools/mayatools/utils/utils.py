@@ -354,18 +354,9 @@ def find_first_mesh(rootNode):
 def get_anchor_points(mesh):
     verts = mesh.vtx
 
-    size = len(verts)
-    vert1 = verts[0]
-    vert2 = verts[size//2]
-    vert3 = verts[size-1]
-
     vertpos1 = verts[0].getPosition(space='world')
     vertpos2 = verts[1].getPosition(space='world')
     vertpos3 = verts[2].getPosition(space='world')
-
-    vertpos1 = vert1.getPosition(space='world')
-    vertpos2 = vert2.getPosition(space='world')
-    vertpos3 = vert3.getPosition(space='world')
 
     return vertpos1, vertpos2, vertpos3
 
