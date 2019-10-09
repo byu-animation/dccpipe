@@ -45,6 +45,7 @@ class SelectFromList(QtWidgets.QWidget):
         self.list = l
         self.values = []
         self.multiple_selection = multiple_selection
+        self.case_sensitive = False
 
         self.setWindowTitle(title)
         self.setObjectName('SelectFromList')
@@ -71,11 +72,17 @@ class SelectFromList(QtWidgets.QWidget):
         self.searchBox.setStyleSheet("color: white")
         self.searchBox.setFocus()
         hbox.addWidget(self.searchBox)
+        label = QtWidgets.QLabel("Case Sensitive:")
+        hbox.addWidget(label)
+        self.checkBox = QtWidgets.QCheckBox()
+        self.checkBox.stateChanged.connect(self.checked)
+        hbox.addWidget(self.checkBox)
         self.vbox.addLayout(hbox)
 
     def initializeListWidget(self):
         self.listWidget = ItemList(self.list, self.multiple_selection)
         self.listWidget.itemSelectionChanged.connect(self.select)
+        self.listWidget.itemDoubleClicked.connect(self.double_clicked)
         self.vbox.addWidget(self.listWidget)
         self.listWidget.shown_items = self.list
         self.listWidget.set_list(self.listWidget.shown_items)
@@ -87,6 +94,8 @@ class SelectFromList(QtWidgets.QWidget):
         self.button.clicked.connect(self.submit)
         self.button.setEnabled(False)
         self.button.setAutoDefault(True)
+        if self.multiple_selection:
+            self.button.setFocus()
         self.vbox.addWidget(self.button)
 
     def set_values(self, values):
@@ -103,14 +112,32 @@ class SelectFromList(QtWidgets.QWidget):
         else:
             self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
+    def checked(self):
+        checked = self.checkBox.checkState()
+
+        if checked:
+            self.case_sensitive = True
+        else:
+            self.case_sensitive = False
+
+        self.textEdited(str(self.searchBox.text()))
+
+    def double_clicked(self, item):
+        print(str(item) + " selected")
+        self.submit()
+
     '''
     Update the shown list items when a user types in the search bar
     '''
     def textEdited(self, newText):
         self.listWidget.shown_items = []
         for item in self.listWidget.all_items:
-            if newText in item:
-                self.listWidget.shown_items.append(item)
+            if self.case_sensitive:
+                if newText in item:
+                    self.listWidget.shown_items.append(item)
+            else:
+                if newText.lower() in item.lower():
+                    self.listWidget.shown_items.append(item)
         self.listWidget.set_list(self.listWidget.shown_items)
         self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
