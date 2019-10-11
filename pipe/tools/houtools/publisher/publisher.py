@@ -198,7 +198,7 @@ class Publisher:
 
                 for set_item in set_data:
                     if str(set_item['asset_name']) == str(name):
-                        if set_item['version_number'] == current_version:
+                        if set_item['version_number'] <= current_version:
                             print("updating ", set_item, " with version ", new_version)
                             set_item['version_number'] = new_version
                             break
@@ -257,13 +257,29 @@ class Publisher:
 
     def update_points_by_geo(self, out, a, b, c):
         geo = out.geometry()
-        point_a = geo.iterPoints()[0]
-        point_b = geo.iterPoints()[1]
-        point_c = geo.iterPoints()[2]
+        path = geo.attribValue("path")
 
-        prim = point_a.prims()
-        print("prim for point" + str(point_a) + ": ", prim)
-        # FIXME: continue here
+        starting_point = None
+        found = False
+        for point in geo.points():
+            for prim in point.prims():
+                if str(path) in str(prim.attribValue("path")):
+                    starting_point = point
+                    found = True
+                    break
+            if found is True:
+                break
+
+        if not starting_point:
+            qd.warning("Could not find the correct path for " + str(path) + ". Transform may be incorrect.")
+            start_num = 0
+        else:
+            print("start point: ", starting_point)
+            start_num = starting_point.number()
+
+        point_a = geo.iterPoints()[start_num]
+        point_b = geo.iterPoints()[start_num+1]
+        point_c = geo.iterPoints()[start_num+2]
 
         a_x = point_a.position()[0]
         a_y = point_a.position()[1]
