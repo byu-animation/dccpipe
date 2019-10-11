@@ -93,9 +93,10 @@
 		}, {
 			"itemType":"button",
 			"icon":"reference.png",
-			"annotation":"Reference a model or rig. Double-click to reference any asset.",
+			"annotation":"Reference a model or rig. Double-click to reference any asset. Right-click to choose asset type to reference.",
 			"label":"ref",
-			"menu":0,
+			"menu":1,
+			"menu_items":{"Prop":"reference_prop()", "Actor":"reference_actor()", "Set":"reference_set()"},
 			"double-click":"reference_any()",
 			"tool":"mayatools.importers.referencer",
 			"function":"MayaReferencer.reference_prop_or_actor()"
