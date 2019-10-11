@@ -152,15 +152,20 @@ class Publisher:
         #         set_data.append
 
         for child in children:
-            print("child: ", child)
-            inside = child.node("inside")
+            if child.type().name() == "dcc_geo":
+                inside = child.node("inside")
+                import_node = child.node("import")
+            else:
+                inside = child.node("inside")
+                geo = inside.node("geo")
+                inside = geo.node("inside")
+                import_node = geo.node("import")
+
             out = inside.node("OUT")
-            modify = inside.node("modify")
             set_transform = inside.node("set_dressing_transform")
             current_version = child.parm("version_number").evalAsInt()
 
-            modify_name = modify.type().name()
-            name = modify_name.split("_")[0]
+            name = child.parm("asset_name").evalAsString()
 
             child_body = project.get_body(name)
             if child_body is None:
@@ -193,7 +198,7 @@ class Publisher:
 
                 for set_item in set_data:
                     if str(set_item['asset_name']) == str(name):
-                        if set_item['version_number'] == current_version:
+                        if set_item['version_number'] <= current_version:
                             print("updating ", set_item, " with version ", new_version)
                             set_item['version_number'] = new_version
                             break
@@ -234,7 +239,7 @@ class Publisher:
 
             self.clear_transform(set_transform)
             self.set_space(child, set_name, name, new_version)
-            import_node = child.node("import")
+
             read_from_json = import_node.node("read_from_json")
             read_from_json.parm("reload").pressButton()
 
@@ -252,9 +257,29 @@ class Publisher:
 
     def update_points_by_geo(self, out, a, b, c):
         geo = out.geometry()
-        point_a = geo.iterPoints()[0]
-        point_b = geo.iterPoints()[1]
-        point_c = geo.iterPoints()[2]
+        path = geo.attribValue("path")
+
+        starting_point = None
+        found = False
+        for point in geo.points():
+            for prim in point.prims():
+                if str(path) in str(prim.attribValue("path")):
+                    starting_point = point
+                    found = True
+                    break
+            if found is True:
+                break
+
+        if not starting_point:
+            qd.warning("Could not find the correct path for " + str(path) + ". Transform may be incorrect.")
+            start_num = 0
+        else:
+            print("start point: ", starting_point)
+            start_num = starting_point.number()
+
+        point_a = geo.iterPoints()[start_num]
+        point_b = geo.iterPoints()[start_num+1]
+        point_c = geo.iterPoints()[start_num+2]
 
         a_x = point_a.position()[0]
         a_y = point_a.position()[1]
@@ -285,10 +310,12 @@ class Publisher:
         return x, y, z
 
     def set_space(self, child, set_name, child_name, version_number):
-        child.parm("space").set("set")
-        child.parm("space").eval()
-        child.parm("set").set(set_name)
-        child.parm("set").eval()
+        if child.type().name() == "dcc_geo":
+            child.parm("space").set("set")
+            child.parm("space").eval()
+            child.parm("set").set(set_name)
+            child.parm("set").eval()
+
         child.parm("asset_name").set(child_name)
         child.parm("asset_name").eval()
         child.parm("version_number").set(version_number)

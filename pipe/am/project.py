@@ -296,7 +296,9 @@ class Project:
 		for item in list:
 			asset = self.get_asset(item)
 			if asset.get_type() == AssetType.SHOT:
-				shot_list.append(item)
+				shot_list.append(str(item))
+
+		shot_list.sort(key=str.lower)
 
 		return shot_list
 
@@ -339,7 +341,9 @@ class Project:
 		for item in list:
 			asset = self.get_asset(item)
 			if asset.get_type() == AssetType.SET:
-				set_list.append(item)
+				set_list.append(str(item))
+
+		set_list.sort(key=str.lower)
 
 		return set_list
 
@@ -350,6 +354,8 @@ class Project:
 		pa_list = self.list_actors()
 		pa_list.extend(self.list_props())
 
+		pa_list.sort(key=str.lower)
+
 		return pa_list
 
 	def list_actors(self):
@@ -359,7 +365,9 @@ class Project:
 		for item in list:
 			asset = self.get_asset(item)
 			if asset.get_type() == AssetType.ACTOR:
-				actors.append(item)
+				actors.append(str(item))
+
+		actors.sort(key=str.lower)
 
 		return actors
 
@@ -370,7 +378,9 @@ class Project:
 		for item in list:
 			asset = self.get_asset(item)
 			if asset.get_type() == AssetType.PROP:
-				props.append(item)
+				props.append(str(item))
+
+		props.sort(key=str.lower)
 
 		return props
 

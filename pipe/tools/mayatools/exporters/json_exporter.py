@@ -207,10 +207,16 @@ class JSONExporter:
             body = Project().get_body(name)
 
         if not body or not body.is_asset():
-            if body.get_type() == AssetType.SHOT:
-                qd.warning("Shots in sets are not supported. Can't export " + str(rootNode))
+            if body:
+                if body.get_type() == AssetType.SHOT:
+                    qd.warning("Shots in sets are not supported. Can't export " + str(rootNode))
+                    return None
+            else:
+                qd.warning("Asset not found in pipe: " + str(rootNode))
                 return None
+
             qd.warning(str(rootNode) + " does not exist in pipe.")
+            return None
 
         name = body.get_name()
 

@@ -15,9 +15,12 @@ class Exporter:
     def __init__(self):
         self.body = None
         self.item_gui = None
-        self.list = ["alembic", "fbx", "json"]
+        self.list = ["alembic", "fbx", "json", "usd"]
 
-    def export(self, alembic=True, fbx=True, json=True, methods=None):
+    def export_one(self, alembic=False, fbx=False, json=False, usd=False, methods=None):
+        self.export(alembic=alembic, fbx=fbx, json=json, usd=usd, methods=methods)
+
+    def export(self, alembic=True, fbx=True, json=True, usd=True, methods=None):
         if methods is None:
             methods = self.list
 
@@ -45,7 +48,14 @@ class Exporter:
                 else:
                     methods.remove("fbx")
 
-        qd.info("Successfully exported " + str(asset_name) + " as " + str(methods))
+        if usd:
+            print("USD isn't supported... yet :|")
+            methods.remove("usd")
+
+        if methods:
+            qd.info("Successfully exported " + str(asset_name) + " as " + str(methods))
+        else:
+            qd.info("Nothing was exported.")
 
     def export_with_options(self):
         self.item_gui = co.CheckBoxOptions(parent=maya_main_window(), title="Select export methods:", options=self.list)
@@ -55,6 +65,7 @@ class Exporter:
         fbx = True
         alembic = True
         json = True
+        usd = True
         methods=[]
 
         for item in export_results.items():
@@ -76,4 +87,10 @@ class Exporter:
                 else:
                     methods.append("json")
 
-        self.export(alembic=alembic, fbx=fbx, json=json, methods=methods)
+            elif item[0] == "usd":
+                if item[1] is False:
+                    usd = False
+                else:
+                    methods.append("usd")
+
+        self.export(alembic=alembic, fbx=fbx, json=json, usd=usd, methods=methods)

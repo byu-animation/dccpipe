@@ -374,11 +374,23 @@ class AlembicExporter:
                 root = str(p) + "|" + root
                 parents = p.listRelatives(p=True)
 
-            root += str(node)
+            print("root: ", root)
+            root += self.strip_pipe(str(node))
+            print("root: ", root)
         else:
-            root = str(node)
+            root = self.strip_pipe(str(node))
 
         return root
+
+    def strip_pipe(self, input):
+        pipe = input.find("|")
+        i = None
+        if pipe:
+                i = pipe
+        else:
+            return input
+
+        return input[i + 1:]
 
     def getTaggedNodes(self, node, tag):
         # Looks for a tagged node that has the DCC Alembic Export flag on it.

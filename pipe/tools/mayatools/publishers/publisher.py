@@ -58,6 +58,9 @@ class MayaPublisher:
         self.body = project.get_body(chosen_asset)
 
         asset_type = self.body.get_type()
+        if asset_type == AssetType.ACTOR or asset_type == AssetType.PROP:
+            self.export = True
+
         department_list = get_departments_by_type(asset_type)
 
         self.item_gui = sfl.SelectFromList(l=department_list, parent=maya_main_window(), title="Select department for this publish")

@@ -307,7 +307,11 @@ def extract_reference_data(ref):
 '''
 def strip_reference(input):
     # i = input.rfind(":")  # commenting out because find may cause problems, if not, then we are keeping it.
-    i = input.find(":")
+    pipe = input.find("|")
+    if pipe:
+        i = input.rfind(":")
+    else:
+        i = input.find(":")
 
     if i == -1:
         return input
@@ -353,6 +357,7 @@ def find_first_mesh(rootNode):
 '''
 def get_anchor_points(mesh):
     verts = mesh.vtx
+
     vertpos1 = verts[0].getPosition(space='world')
     vertpos2 = verts[1].getPosition(space='world')
     vertpos3 = verts[2].getPosition(space='world')
