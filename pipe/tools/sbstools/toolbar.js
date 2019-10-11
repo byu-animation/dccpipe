@@ -78,3 +78,15 @@ function getAssetName() {
   // e.g "myAsset_project".length - ("_project.spp".length - 4) = 7
   return projName.slice(0, projName.length - (savePostfix.length - fileExtenLen))
 }
+
+function isValidProject(mediaDir) {
+  if (!alg.project.isOpen()) {
+    return false
+  } else if (alg.project.name() === mediaDir.split("/").pop() ) {
+      return false
+  } else if (alg.project.name() === "Untitled" ) {
+      return false
+  }
+  // else
+  return true
+}
