@@ -53,9 +53,15 @@
 		}, {
 			"itemType":"button",
 			"icon":"export.png",
-			"annotation":"Export asset. Double-click to choose export options.",
+			"annotation":"Export asset. Double-click to choose export options. Right-click to choose a specific method.",
 			"label":"export",
-			"menu":0,
+			"menu":1,
+			"menu_items":{
+				"Alembic":"export_one(alembic=True, methods=['alembic'])",
+				"FBX":"export_one(fbx=True, methods=['fbx'])",
+				"JSON":"export_one(json=True, methods=['json'])",
+				"USD": "export_one(usd=True, methods=['usd'])"
+			},
 			"double-click":"export_with_options()",
 			"tool":"mayatools.exporters.exporter",
 			"function":"Exporter.export()"
