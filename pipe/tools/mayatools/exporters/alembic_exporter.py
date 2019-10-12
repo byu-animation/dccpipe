@@ -237,6 +237,12 @@ class AlembicExporter:
                 qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
                 continue
 
+            if node_is_tagged_with_flag(rootNode):
+                print("node is tagged: " + str(rootNode))
+            else:
+                print("ref is not tagged: " + str(ref))
+                continue
+
             name = str(ref.associatedNamespace(baseName=True))
             parent = ref.parentReference()
             print("ref: ", ref)
@@ -249,10 +255,10 @@ class AlembicExporter:
                 root = self.get_parent_root_string(rootNode)
                 root_strings = [root]
 
-                if tag:
-                    command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
-                else:
-                    command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
+                # if tag:
+                #     command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
+                # else:
+                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
             else:
                 continue
 
@@ -378,12 +384,11 @@ class AlembicExporter:
                 root = str(p) + "|" + root
                 parents = p.listRelatives(p=True)
 
-            print("root: ", root)
             root += self.strip_pipe(str(node))
-            print("root: ", root)
         else:
             root = self.strip_pipe(str(node))
 
+        print("root: ", root)
         return root
 
     def strip_pipe(self, input):

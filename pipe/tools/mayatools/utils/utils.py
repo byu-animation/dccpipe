@@ -238,7 +238,7 @@ def get_departments_by_type(asset_type):
     elif asset_type == AssetType.SET:
         department_list = project.set_export_departments()
     elif asset_type == AssetType.SHOT:
-        department_list = ["model", "anim"]
+        department_list = ["anim"]
 
     return department_list
 
