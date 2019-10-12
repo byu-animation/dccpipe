@@ -48,6 +48,7 @@ class AlembicExporter:
                 self.crease = True
 
         if type == AssetType.SHOT:
+            export_all = False
             self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
 
             if self.frame_range is None or self.frame_range == u'':
