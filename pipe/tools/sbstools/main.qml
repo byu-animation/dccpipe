@@ -12,12 +12,10 @@ PainterPlugin {
   }
 
   AssetList {
-    id: saveWindow
-  }
-
-  AssetList {
     id: loadWindow
   }
+
+  // saveWindow AssetList is handled in toolbar.qml
 
   Component.onCompleted: {
     // alg.log.info(Qt.application.arguments[1])
@@ -29,7 +27,7 @@ PainterPlugin {
 
     importWindow.xmlFile = assetXml
     publishWindow.xmlFile = assetXml
-    saveWindow.xmlFile = assetXml
+    // saveWindow.xmlFile = assetXml
     loadWindow.xmlFile = assetXml
 
     // possible alg.ui methods: addDockWidget, addToolBarWidget, addWidgetToPluginToolBar, clickButton
@@ -49,13 +47,12 @@ PainterPlugin {
     publishTool.toolImage = iconDir + "export.png"
     publishTool.tooltipMessage = "Export maps to asset"
 
+    // Window reference variables are assigned as necessary in toolbar.qml
     var saveTool = alg.ui.addToolBarWidget("toolbar.qml")
-    saveTool.windowReference = saveWindow
-    saveTool.windowReference.action = "save"
-    saveTool.windowReference.mediaDir = mediaDir
-    saveTool.windowReference.windowTitle = "Choose an asset to save to"
     saveTool.toolImage = iconDir + "save.png"
     saveTool.tooltipMessage = "Save current project"
+    saveTool.action = "save"
+    saveTool.mediaDir = mediaDir
 
     var loadTool = alg.ui.addToolBarWidget("toolbar.qml")
     loadTool.windowReference = loadWindow
@@ -65,4 +62,6 @@ PainterPlugin {
     loadTool.toolImage = iconDir + "load.png"
     loadTool.tooltipMessage = "Load a project"
   }
+
+
 }
