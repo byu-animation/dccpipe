@@ -255,13 +255,16 @@ class AlembicExporter:
                 refAbcFilePath = os.path.join(destination, name + ".abc")
                 print("ref abc filepath: ", refAbcFilePath)
 
+                if tag:
+                    rootNode = get_first_child_with_flag(rootNode, tag)
+
                 root = self.get_parent_root_string(rootNode)
                 root_strings = [root]
 
-                if tag:
-                    command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
-                else:
-                    command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
+                # if tag:
+                #     command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
+                # else:
+                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
             else:
                 continue
 
