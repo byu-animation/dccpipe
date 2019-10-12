@@ -431,10 +431,13 @@ def node_is_tagged_with_flag(node, flag):
         return True
 
 def children_tagged_with_flag(node, flag):
-    for child in node.listRelatives(allDescendants=True):
-        if node_is_tagged_with_flag(child, flag):
-            return True
-    return False
+    try:
+        for child in node.listRelatives(ad=True):
+            if node_is_tagged_with_flag(child, flag):
+                return True
+        return False
+    except:
+        return False
 
 def get_first_child_with_flag(node, flag):
     stack = []
