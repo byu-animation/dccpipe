@@ -240,8 +240,11 @@ class AlembicExporter:
             print("root node: ", rootNode)
 
             if tag:
-                if children_tagged_with_flag(rootNode, tag):
-                    print("node is tagged: " + str(rootNode))
+                if node_is_tagged_with_flag(rootNode, tag):
+                    print("root node is tagged: " + str(rootNode))
+                elif children_tagged_with_flag(rootNode, tag):
+                    rootNode = get_first_child_with_flag(rootNode, tag)
+                    print("child node is tagged for: " + str(rootNode))
                 else:
                     print("ref is not tagged: " + str(ref))
                     continue
@@ -254,9 +257,6 @@ class AlembicExporter:
                 # then this is either an animated prop, a char, or a set. Export an alembic for each accordingly, with the correct file name
                 refAbcFilePath = os.path.join(destination, name + ".abc")
                 print("ref abc filepath: ", refAbcFilePath)
-
-                if tag:
-                    rootNode = get_first_child_with_flag(rootNode, tag)
 
                 root = self.get_parent_root_string(rootNode)
                 root_strings = [root]
