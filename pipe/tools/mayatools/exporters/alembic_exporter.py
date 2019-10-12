@@ -220,7 +220,7 @@ class AlembicExporter:
         Gets all loaded references, then loops through them and if it's a top level reference
         i.e. a actor, set, or animated prop, exports an alembic file to the destination specified
     '''
-    def exportReferences(self, destination, tag="DCC_Alembic_Export_Flag", startFrame=1, endFrame=1):
+    def exportReferences(self, destination, tag=None, startFrame=1, endFrame=1):
         selection = get_loaded_references()
 
         if selection is None:
@@ -248,7 +248,10 @@ class AlembicExporter:
                 root = self.get_parent_root_string(rootNode)
                 root_strings = [root]
 
-                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
+                if tag:
+                    command = self.buildTaggedAlembicCommand(filepath, tag, startFrame, endFrame)
+                else:
+                    command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
             else:
                 continue
 
