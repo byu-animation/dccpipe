@@ -237,6 +237,8 @@ class AlembicExporter:
                 qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
                 continue
 
+            print("root node: ", rootNode)
+            
             if tag:
                 if node_is_tagged_with_flag(rootNode, tag):
                     print("node is tagged: " + str(rootNode))
