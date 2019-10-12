@@ -249,7 +249,7 @@ class AlembicExporter:
                 root_strings = [root]
 
                 if tag:
-                    command = self.buildTaggedAlembicCommand(filepath, tag, startFrame, endFrame)
+                    command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
                 else:
                     command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
             else:
