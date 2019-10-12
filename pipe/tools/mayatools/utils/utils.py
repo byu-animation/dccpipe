@@ -433,6 +433,7 @@ def node_is_tagged_with_flag(node, flag):
 def children_tagged_with_flag(node, flag):
     try:
         for child in node.listRelatives(ad=True):
+            print("child: ", child)
             if node_is_tagged_with_flag(child, flag):
                 return True
         return False
