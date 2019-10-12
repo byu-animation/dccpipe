@@ -237,11 +237,12 @@ class AlembicExporter:
                 qd.warning("Could not find " + str(ref) + " in scene. Skipping.")
                 continue
 
-            if node_is_tagged_with_flag(rootNode):
-                print("node is tagged: " + str(rootNode))
-            else:
-                print("ref is not tagged: " + str(ref))
-                continue
+            if tag:
+                if node_is_tagged_with_flag(rootNode, tag):
+                    print("node is tagged: " + str(rootNode))
+                else:
+                    print("ref is not tagged: " + str(ref))
+                    continue
 
             name = str(ref.associatedNamespace(baseName=True))
             parent = ref.parentReference()
