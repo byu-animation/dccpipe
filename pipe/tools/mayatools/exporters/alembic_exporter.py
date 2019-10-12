@@ -238,9 +238,9 @@ class AlembicExporter:
                 continue
 
             print("root node: ", rootNode)
-            
+
             if tag:
-                if node_is_tagged_with_flag(rootNode, tag):
+                if children_tagged_with_flag(rootNode, tag):
                     print("node is tagged: " + str(rootNode))
                 else:
                     print("ref is not tagged: " + str(ref))
@@ -258,10 +258,10 @@ class AlembicExporter:
                 root = self.get_parent_root_string(rootNode)
                 root_strings = [root]
 
-                # if tag:
-                #     command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
-                # else:
-                command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
+                if tag:
+                    command = self.buildTaggedAlembicCommand(refAbcFilePath, tag, startFrame, endFrame)
+                else:
+                    command = self.buildAlembicCommand(refAbcFilePath, startFrame, endFrame, geoList=root_strings)
             else:
                 continue
 
