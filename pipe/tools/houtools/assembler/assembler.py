@@ -464,7 +464,7 @@ class Assembler:
     '''
         This function tabs in a DCC Geo node and fills its contents according to the appropriate asset name.
     '''
-    def dcc_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], actor=False, mode=UpdateModes.CLEAN):
+    def dcc_geo(self, parent, asset_name, already_tabbed_in_node=None, excluded_departments=[], actor=False, mode=UpdateModes.CLEAN, shot=None):
         # Set up the body/elements and check if it's an asset.
         body = Project().get_body(asset_name)
         if not body.is_asset():
@@ -487,14 +487,14 @@ class Assembler:
         node.parm("data").set(data)
 
         # Set the contents to the nodes that belong to the asset
-        self.update_contents_geo(node, asset_name, excluded_departments, mode)
+        self.update_contents_geo(node, asset_name, excluded_departments, mode, shot=None)
 
         return node
 
     '''
         This function sets the dynamic inner contents of a DCC Geo node.
     '''
-    def update_contents_geo(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART):
+    def update_contents_geo(self, node, asset_name, excluded_departments=[], mode=UpdateModes.SMART, shot=None):
 
         # Set up the body/elements and make sure it's not an actor. Just do some simple error checking.
         body = Project().get_body(asset_name)
@@ -525,6 +525,12 @@ class Assembler:
                 self.destroy_if_there(inside, department)
 
         inside.layoutChildren()
+
+        # If this prop is being animated, set parms accordingly
+        if shot is not None:
+            node.parm("space").set("anim")
+            node.parm("asset_department").set("rig")
+            node.parm("shot").set(shot)
 
         return node
 

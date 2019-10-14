@@ -111,6 +111,8 @@ class Importer:
             try:
                 # get the most recent data for this reference
                 asset_name = actor["asset_name"]
+                body = Project().get_body(asset_name)
+                asset_type = body.get_type()
 
                 try:
                     from pipe.tools.houtools.cloner.cloner import Cloner
@@ -125,12 +127,20 @@ class Importer:
                 # actor_node = Assembler().dcc_actor(hou.node("/obj"), actor["asset_name"],shot=shot_name)
 
                 # TODO: add the shot name in the dcc_geo inside dcc_actor
-                inside = actor_node.node("inside")
-                geo = inside.node("geo")
-                geo.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
-                geo.parm("space").set("anim")
-                geo.parm("asset_department").set("rig")
-                geo.parm("shot").set(shot_name)
+                if asset_type == AssetType.ACTOR:
+                    inside = actor_node.node("inside")
+                    geo = inside.node("geo")
+                    geo.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
+                    geo.parm("space").set("anim")
+                    geo.parm("asset_department").set("rig")
+                    geo.parm("shot").set(shot_name)
+
+                elif asset_type == AssetType.PROP:
+                    actor_node.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
+                    actor_node.parm("space").set("anim")
+                    actor_node.parm("asset_department").set("rig")
+                    actor_node.parm("shot").set(shot_name)
+
 
                 actor_nodes.append(actor_node)
             except:
