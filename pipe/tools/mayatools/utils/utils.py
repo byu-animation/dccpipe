@@ -153,17 +153,22 @@ def scene_prep(quick_publish, body=None, department=None):
         print("deleting cameras:", cam_list)
 
         for cam in cam_list:
-            parents = cam.listRelatives(p=True)
-            while parents:
-                if "camera" in str(parents[0]):
-                    cam = parents[0]
-                else:
-                    break
+            if str(cam) == "perspShape" or str(cam) == "topShape" or str(cam) == "frontShape" or str(cam) == "sideShape":
+                continue
 
+            cam_response = qd.yes_or_no("Camera " + str(cam) + " found in scene. Cameras will cause problems if left in the asset. \n\nProceed to delete this camera?")
+            if cam_response:
                 parents = cam.listRelatives(p=True)
+                while parents:
+                    if "camera" in str(parents[0]):
+                        cam = parents[0]
+                    else:
+                        break
 
-            print("parents: ", parents)
-            pm.delete(cam)
+                    parents = cam.listRelatives(p=True)
+
+                print("parents: ", parents)
+                pm.delete(cam)
 
     if freeze_and_clear:
         print("clearing construction history")
