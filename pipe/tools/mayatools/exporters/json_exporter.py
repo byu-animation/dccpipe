@@ -133,7 +133,7 @@ class JSONExporter:
                 parent_is_set = has_parent_set(rootNode)
                 if parent_is_set:
                     continue
-                props.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
+                actors.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
 
             elif body.get_type() == AssetType.ACTOR:
                 actors.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
