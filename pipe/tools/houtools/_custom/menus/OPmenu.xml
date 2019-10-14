@@ -160,7 +160,12 @@ if node:
 	import hou
 	publisher = publisher.Publisher()
 	hou.session.publisher = publisher
-	node_name = node.parm(asset_name)
+	if node.type().definition() is not None:
+		node_name = node.type().name()
+		index = node_name.rfind('_')
+		node_name = node_name[:index]
+	else:
+		node_name = None
 	publisher.publish_asset(node=node, name=node_name, inner=True)
 				]]>
 			</scriptCode>

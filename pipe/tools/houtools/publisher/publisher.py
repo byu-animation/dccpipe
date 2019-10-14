@@ -48,14 +48,14 @@ class Publisher:
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
 
         if node:
-            self.node_name = name
+            if inner:
+                if node.type().name() == 'byu_inside' or node.type().name() == 'byu_objectinside':
+                    node = node.parent()
+                if node.parent().parent().type().name() == 'dcc_character':
+                    node = node.parent().parent()
+            self.node_name = node.parm("asset_name").eval()
             print("node: ", node)
-            print("name: ", name)
-        if inner:
-            #node = 
-            #name = 
-            #self.node_name = name
-            
+            print("name: ", self.node_name)
 
         self.publish(selectedHDA=node)
 
@@ -425,7 +425,7 @@ class Publisher:
         if cloth is not None:
             departments_to_publish.append("cloth")
 
-        if body is not None:
+        if body is None:
             qd.error("Asset not found in pipe.")
             return
 
