@@ -147,6 +147,24 @@ def scene_prep(quick_publish, body=None, department=None):
     if body.is_shot() or body.get_type() == AssetType.SET:
         freeze_and_clear = False
 
+    if not body.get_type() == AssetType.SHOT:
+        # delete cameras
+        cam_list = pm.ls(ca=True)
+        print("deleting cameras:", cam_list)
+
+        for cam in cam_list:
+            parents = cam.listRelatives(p=True)
+            while parents:
+                if "camera" in str(parents[0]):
+                    cam = parents[0]
+                else:
+                    break
+
+                parents = cam.listRelatives(p=True)
+
+            print("parents: ", parents)
+            pm.delete(cam)
+
     if freeze_and_clear:
         print("clearing construction history")
         try:
