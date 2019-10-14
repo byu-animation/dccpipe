@@ -94,7 +94,7 @@ def check_unsaved_changes():
 
     if unsaved_changes:
         response = qd.yes_or_no("Unsaved changes detected. Would you like to publish them before you proceed? (You can ignore this message if you just created a new scene or opened Maya.)")
-        if response:
+        if response is True:
             # instead of saving, publish.
             scene = mc.file(q=True, sceneName=True)
             dir_path = scene.split("assets/")
