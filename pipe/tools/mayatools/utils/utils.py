@@ -227,14 +227,17 @@ def group_top_level():
         if shapes and "group" not in str(node):
             pm.group(top_level_nodes)
 
-def get_departments_by_type(asset_type):
+def get_departments_by_type(asset_type, export=False):
     department_list = []
     project = Project()
 
     if asset_type == AssetType.PROP:
         department_list = project.prop_export_departments()
     elif asset_type == AssetType.ACTOR:
-        department_list = ["model", "rig"]
+        if export is True:
+            department_list = ["model"]
+        else:
+            department_list = ["model", "rig"]
     elif asset_type == AssetType.SET:
         department_list = project.set_export_departments()
     elif asset_type == AssetType.SHOT:

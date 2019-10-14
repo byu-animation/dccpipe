@@ -63,7 +63,7 @@ class AlembicExporter:
         self.body.set_frame_range(self.frame_range)
 
         asset_type = self.body.get_type()
-        department_list = get_departments_by_type(asset_type)
+        department_list = get_departments_by_type(asset_type, export=True)
 
         if export_all:
             # tag top level nodes
