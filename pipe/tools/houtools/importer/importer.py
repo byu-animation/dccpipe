@@ -111,8 +111,8 @@ class Importer:
             try:
                 # get the most recent data for this reference
                 asset_name = actor["asset_name"]
-                body = Project().get_body(asset_name)
-                asset_type = body.get_type()
+                actor_body = Project().get_body(asset_name)
+                asset_type = actor_body.get_type()
 
                 try:
                     from pipe.tools.houtools.cloner.cloner import Cloner
@@ -138,7 +138,7 @@ class Importer:
                 elif asset_type == AssetType.PROP:
                     actor_node.parm("version_number").setExpression("ch(\"../../version_number\")", language=hou.exprLanguage.Hscript)
                     actor_node.parm("space").set("anim")
-                    actor_node.parm("asset_department").set("rig")
+                    actor_node.parm("asset_department").set("model")
                     actor_node.parm("shot").set(shot_name)
 
 
