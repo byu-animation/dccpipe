@@ -48,11 +48,12 @@ class Publisher:
         self.departments = [Department.MODIFY, Department.MATERIAL, Department.HAIR, Department.CLOTH]
 
         if node:
-            if inner:
+            if inner:  # TODO: clean this up
                 if node.type().name() == 'byu_inside' or node.type().name() == 'byu_objectinside':
                     node = node.parent()
                 if node.parent().parent().type().name() == 'dcc_character':
                     node = node.parent().parent()
+
             self.node_name = node.parm("asset_name").eval()
             print("node: ", node)
             print("name: ", self.node_name)

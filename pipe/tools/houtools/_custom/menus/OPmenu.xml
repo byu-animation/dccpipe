@@ -161,9 +161,7 @@ if node:
 	publisher = publisher.Publisher()
 	hou.session.publisher = publisher
 	if node.type().definition() is not None:
-		node_name = node.type().name()
-		index = node_name.rfind('_')
-		node_name = node_name[:index]
+		node_name = node.parent().parm("asset_name")
 	else:
 		node_name = None
 	publisher.publish_asset(node=node, name=node_name, inner=True)
