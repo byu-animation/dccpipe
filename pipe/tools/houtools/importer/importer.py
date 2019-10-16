@@ -78,8 +78,8 @@ class Importer:
 
             try:
                 set_node = Assembler().tab_in(hou.node("/obj"), set["asset_name"])
-            except:
-                print "Error with {0}".format(set)
+            except Exception as e:
+                print "Error with {0}: ".format(set) + str(e)
                 continue
 
             set_nodes.append(set_node)
@@ -143,8 +143,8 @@ class Importer:
 
 
                 actor_nodes.append(actor_node)
-            except:
-                print "Error with {0}".format(actor)
+            except Exception as e:
+                print "Error with {0}: ".format(actor) + str(e)
                 continue
             #shot_parm = actor_node.parm("shot")
             #shot_parm.set(shot_name)
