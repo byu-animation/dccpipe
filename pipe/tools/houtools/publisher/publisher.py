@@ -503,8 +503,8 @@ class Publisher:
         #Ensure file has correct permissions
         try:
             os.chmod(dst, 0660)
-        except:
-            qd.error("Error setting file permissions.")
+        except Exception as e:
+            print("Error setting file permissions: " + str(e))
 
         return dst
 
