@@ -118,19 +118,13 @@ class Cloner:
         self.item_gui = sfl.SelectFromList(l=asset_list, parent=houdini_main_window(), title="Select an asset to clone")
         self.item_gui.submitted.connect(self.asset_results)
 
-    def asset_results(self, value):
-        print("Selected asset: ", value[0])
-        filename = value[0]
+    def get_department_paths(self, body):
+        self.modify_element = body.get_element("modify")
+        self.material_element = body.get_element("material")
+        self.hair_element = body.get_element("hair")
+        self.cloth_element = body.get_element("cloth")
 
-        project = Project()
-        self.body = project.get_body(filename)
-
-        self.modify_element = self.body.get_element("modify")
-        self.material_element = self.body.get_element("material")
-        self.hair_element = self.body.get_element("hair")
-        self.cloth_element = self.body.get_element("cloth")
-
-        self.filepath = self.body.get_filepath()
+        self.filepath = body.get_filepath()
 
         modify_publish = self.modify_element.get_last_publish()
         material_publish = self.material_element.get_last_publish()
@@ -155,7 +149,18 @@ class Cloner:
             self.cloth_publish = cloth_publish[3]
             department_paths['cloth'] = self.cloth_publish
 
-        from pipe.tools.houtools.assembler.assembler import Assembler  # put import here to remove cross import issue FIXME
+        return department_paths
+
+    def asset_results(self, value):
+        print("Selected asset: ", value[0])
+        filename = value[0]
+
+        project = Project()
+        self.body = project.get_body(filename)
+
+        department_paths = self.get_department_paths(self.body)
+
+        from pipe.tools.houtools.assembler.assembler import Assembler  # we put import here to avoid cross import issue #63 FIXME
         node, created_instances =  Assembler().create_hda(filename, body=self.body, department_paths=department_paths)
         layout_object_level_nodes()
 

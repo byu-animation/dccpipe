@@ -5,6 +5,20 @@ import json
 import subprocess
 
 
+project_dict = {"reference_dir": "production/reference_geo/",
+     "name": "TestProject",
+     "assets_dir": "production/assets/",
+     "users_dir": "production/users/",
+     "nickname": "test",
+     "crowds_dir": "production/crowds/",
+     "tools_dir": "production/tools/",
+     "shots_dir": "production/rendered_shots/",
+     "email_address": "none@a.com",
+     "hda_dir": "production/hdas/",
+     "email_password": "password",
+     "production_dir": "production/"}
+
+
 '''
 Python script to initialize the production side of the pipe.
 Usage - python create_project.py nameOfProject nicknameOfProject
@@ -19,6 +33,7 @@ def create_project():
     # get the command line arguments 1 - name, 2 - nickname
     name = sys.argv[1]
     nickname = sys.argv[2]
+    create_project_config()
     modify_project_config(name, nickname)
 
     pipe_dict = pipeline_io.readfile(".project")
@@ -36,16 +51,21 @@ def create_project():
 
     print("Production project successfully created!")
 
+def create_project_config():
+    with open(".project", "w") as jsonFile:
+        json.dump(project_dict, jsonFile)
+
+
 def modify_project_config(name, nickname):
-        with open(".project", "r") as jsonFile:
-            data = json.load(jsonFile)
+    with open(".project", "r") as jsonFile:
+        data = json.load(jsonFile)
 
-        # tmp = data["name"]
-        data["name"] = name
-        data["nickname"] = nickname
+    # tmp = data["name"]
+    data["name"] = name
+    data["nickname"] = nickname
 
-        with open(".project", "w") as jsonFile:
-            json.dump(data, jsonFile)
+    with open(".project", "w") as jsonFile:
+        json.dump(data, jsonFile)
 
 def create_project_shortcuts(nickname="test", name="test"):
     cwd = os.getcwd()

@@ -64,8 +64,9 @@ class Rollback:
                 selected_scene_file = publish[3]
 
         print("selected file: ", selected_scene_file)
-        definitions = hou.hda.definitionsInFile(selected_scene_file)
-        definition = definitions[0]
+        # definitions = hou.hda.definitionsInFile(selected_scene_file)
+        # definition = definitions[0]
+        definition = selected_scene_file
 
         source_path = self.node.type().sourcePath()
         hou.hda.installFile(selected_scene_file)
