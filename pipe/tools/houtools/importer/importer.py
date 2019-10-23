@@ -192,4 +192,6 @@ class Importer:
         camera_node = hou.node("/obj").createNode("dcc_camera")
         camera_node.parm("shot").set(shot_name)
         camera_node.parm("cam").set(camera_file)
+        camera_node.allowEditingOfContents()
+        camera_node.parm("buildHierarchy").pressButton()
         return camera_node
