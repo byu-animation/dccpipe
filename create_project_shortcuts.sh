@@ -74,7 +74,7 @@ function icon {
 }
 
 
-# icon -n "${nickname}aya" ${PROJECT_NAME} ${PROJECT_PATH} Maya pipe/tools/_resources/dcc-maya-icon.png launch/unix/maya.sh
-# icon -n "${nickname}ini" ${PROJECT_NAME} ${PROJECT_PATH} Houdini pipe/tools/_resources/dcc-houdini-icon.png launch/unix/hou.sh
+icon -n "${nickname}aya" ${PROJECT_NAME} ${PROJECT_PATH} Maya pipe/tools/_resources/dcc-maya-icon.png launch/unix/maya.sh
+icon -n "${nickname}ini" ${PROJECT_NAME} ${PROJECT_PATH} Houdini pipe/tools/_resources/dcc-houdini-icon.png launch/unix/hou.sh
 icon -n "${nickname}uke" ${PROJECT_NAME} ${PROJECT_PATH} Nuke pipe/tools/_resources/dcc-nuke-icon.png launch/unix/nuke.sh
-# icon -n "${nickname}stancePainter" ${PROJECT_NAME} ${PROJECT_PATH} SubstancePainter pipe/tools/_resources/dcc-substancePainter-icon.png launch/unix/sbs.sh
+icon -n "${nickname}stancePainter" ${PROJECT_NAME} ${PROJECT_PATH} SubstancePainter pipe/tools/_resources/dcc-substancePainter-icon.png launch/unix/sbs.sh
