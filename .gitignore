@@ -2,6 +2,7 @@
 # https://github.com/kennethreitz/samplemod/blob/master/.gitignore
 
 pipe/tools/houtools/_custom/otls/backup/
+studiolibrary-2.6.3/
 
 # Project file ignores
 .project
