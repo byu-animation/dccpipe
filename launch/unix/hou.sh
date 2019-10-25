@@ -34,9 +34,9 @@ export HOUDINI_TOOLBAR_PATH=${MEDIA_PROJECT_DIR}"/production/tabs;&"
 export HOUDINI_UI_ICON_PATH=${MEDIA_PROJECT_DIR}"/pipe/tools/_resources/tool-icons;&"
 
 # Renderman paths (Renderman 22) for use with Hou 17.5
-# export RMANTREE="/opt/pixar/RenderManProServer-22.6"
-# export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
-# export HOUDINI_PATH=${HOUDINI_PATH}:$RFHTREE"/17.5:&"
+export RMANTREE="/opt/pixar/RenderManProServer-22.6"
+export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
+export HOUDINI_PATH=${HOUDINI_PATH}:$RFHTREE"/17.5:&"
 
 echo "Starting Houdini..."
 cd ~/
