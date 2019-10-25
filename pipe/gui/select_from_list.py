@@ -5,6 +5,9 @@ try:
 except ImportError:
     from PySide2 import QtWidgets, QtGui, QtCore
 
+from pipe.am.project import Project
+import os
+
 
 def select_from_list(list, parent):  # TODO: finish this.
     window = QtWidgets.QWidget()
@@ -146,6 +149,11 @@ class SelectFromList(QtWidgets.QWidget):
     close the window. Use connect() on submitted to set up the receiving func.
     '''
     def submit(self):
+        self.button.setText("Loading...")
+        icon_path = os.path.join(Project().get_project_dir(), "pipe", "tools", "_resources", "loading_indicator_transparent.gif")
+        icon = QtGui.QIcon(icon_path)
+        self.button.setIcon(icon)
+        self.button.setEnabled(False)
         self.submitted.emit(self.values)
         self.close()
 

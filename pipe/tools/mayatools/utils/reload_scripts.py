@@ -13,6 +13,8 @@ from pipe.tools.mayatools.importers import reference_importer as reference_impor
 from pipe.tools.mayatools.exporters import tagger as maya_tagger
 from pipe.tools.mayatools.submitters import playblaster as maya_playblaster
 
+from pipe.gui import select_from_list as sfl
+
 
 class ReloadScripts:
 
@@ -31,3 +33,4 @@ class ReloadScripts:
         reload(reference_importer)
         reload(maya_tagger)
         reload(maya_playblaster)
+        reload(sfl)
