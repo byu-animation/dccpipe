@@ -187,8 +187,15 @@ if node:
 		if not str(node_name) == "dcc":
 			return 0
 
-		name = node.parm("asset_name").evalAsString()
-		node_body = Project().get_body(name)
+		name = node.parm("asset_name")
+		if name:
+			name = name.evalAsString()
+		else:
+			return 0
+		try:
+			node_body = Project().get_body(name)
+		except:
+			return 0
 		if node_body:
 			if node_body.is_asset():
 				return 1
