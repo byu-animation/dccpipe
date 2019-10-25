@@ -12,9 +12,7 @@ from pipe.am.project import Project
 from pipe.am.element import Element
 from pipe.am.body import Body, AssetType
 import pipe.gui.quick_dialogs as qd
-from pipe.tools.mayatools.exporters.alembic_exporter import AlembicExporter
-from pipe.tools.mayatools.exporters.fbx_exporter import FbxExporter
-from pipe.tools.mayatools.exporters.json_exporter import JSONExporter
+from pipe.tools.mayatools.exporters.exporter import Exporter
 from pipe.tools.mayatools.publishers.publisher import MayaPublisher as Publisher
 
 import maya.cmds as mc
@@ -68,21 +66,8 @@ def post_publish(element, user, export, published=True, comment="No comment."):
 
     if export:
         print("Begin export process.")
-        print("begin alembic export")
-        alembic = AlembicExporter()
-        alembic.auto_export(body.get_name())
-
-        if body and body.is_asset():
-            if body.get_type() == AssetType.SET or body.get_type() == AssetType.SHOT:
-                print("begin json export")
-                json_export = JSONExporter()
-                json_export.go(body, body.get_type())
-
-            # export fbx file to textures folder
-        elif body.get_type() == AssetType.PROP or body.get_type() == AssetType.ACTOR:
-                print("begin fbx export")
-                fbx_exporter = FbxExporter()
-                fbx_exporter.auto_export(body.get_name())
+        exporter = Exporter()
+        exporter.auto_export_all()
 
     convert_to_education()
 

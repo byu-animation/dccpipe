@@ -17,6 +17,9 @@ class Exporter:
         self.item_gui = None
         self.list = ["alembic", "fbx", "json", "usd"]
 
+    def auto_export_all(self):
+        self.export()
+
     def export_one(self, alembic=False, fbx=False, json=False, usd=False, methods=None):
         self.export(alembic=alembic, fbx=fbx, json=json, usd=usd, methods=methods)
 
