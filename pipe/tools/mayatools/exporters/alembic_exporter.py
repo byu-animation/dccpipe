@@ -49,7 +49,7 @@ class AlembicExporter:
 
         if type == AssetType.SHOT:
             export_all = False
-            self.frame_range = qd.input("Enter frame range (as numeric input) or leave blank if none:")
+            self.frame_range = qd.input("Enter number of last keyframed frame:")
 
             if self.frame_range is None or self.frame_range == u'':
                 self.frame_range = 1
@@ -125,9 +125,9 @@ class AlembicExporter:
             endFrame = pm.playbackOptions(q=True, animationEndTime=True)
 
         if body.is_shot():
-            startFrame -= 5
+            startFrame -= 1
             endFrame = int(endFrame)
-            endFrame += 5
+            endFrame += 1
             endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
             files.extend(self.export_cameras(body, startFrame, endFrame))
