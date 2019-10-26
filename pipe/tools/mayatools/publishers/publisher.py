@@ -3,6 +3,7 @@ import os
 # Other export scripts
 from pipe.tools.mayatools.utils.utils import *
 from pipe.am.environment import Environment
+from pipe.am.environment import Department
 from pipe.am.body import Body
 from pipe.am.project import Project
 import pipe.gui.quick_dialogs as qd
@@ -73,6 +74,9 @@ class MayaPublisher:
 
         print("value: ", value)
         print("dept: ", chosen_department)
+
+        if chosen_department == Department.RIG:
+            self.export = False
 
         # get the element for the model dept and the user, and using that publish
         selected_element = self.body.get_element(chosen_department)
