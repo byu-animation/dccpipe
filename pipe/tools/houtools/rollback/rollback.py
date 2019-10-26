@@ -24,6 +24,7 @@ class Rollback:
 
     def rollback_element(self, node, department, name):
         self.node = node
+        self.department = department
 
         project = Project()
         body = project.get_body(name)
@@ -50,6 +51,22 @@ class Rollback:
         self.item_gui = sfl.SelectFromList(l=self.sanitized_publish_list, parent=houdini_main_window(), title="Select publish to clone")
         self.item_gui.submitted.connect(self.publish_selection_results)
 
+    def get_definition_by_department(self, source_path):
+        definition = None
+        print("dept: ", self.department)
+
+        if self.department == Department.MATERIAL:
+            definition = hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_material", source_path)
+        elif self.department == Department.MODIFY:
+            definition = hou.hdaDefinition(hou.sopNodeTypeCategory(), "dcc_modify", source_path)
+        elif self.department == Department.HAIR:
+            definition = hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_hair", source_path)
+        elif self.department == Department.CLOTH:
+            definition = hou.hdaDefinition(hou.objNodeTypeCategory(), "dcc_cloth", source_path)
+
+
+        return definition
+
     def publish_selection_results(self, value):
 
         selected_publish = None
@@ -57,43 +74,66 @@ class Rollback:
             if value[0] == item:
                 selected_publish = item
 
-        selected_scene_file = None
+        selected_file = None
         for publish in self.publishes:
             label = publish[0] + " " + publish[1] + " " + publish[2]
             if label == selected_publish:
-                selected_scene_file = publish[3]
+                selected_file = publish[3]
 
-        print("selected file: ", selected_scene_file)
-        # definitions = hou.hda.definitionsInFile(selected_scene_file)
-        # definition = definitions[0]
-        definition = selected_scene_file
+        print("selected file: ", selected_file)
 
-        source_path = self.node.type().sourcePath()
-        hou.hda.installFile(selected_scene_file)
-        definition.setPreferred(True)
+        definitions = hou.hda.definitionsInFile(selected_file)
+        definition = definitions[0]
 
+        parent = self.node.parent()
         print("node: ", self.node, str(self.node))
         type = self.node.type().name()
         print("type: ", str(type))
+        self.node.destroy()
 
-        parent = self.node.parent()
-        new_node = parent.createNode(str(type))
+        # source_path = self.node.type().sourcePath()
+        # print("source path: ", source_path)
+        hou.hda.installFile(selected_file)
+        hou.hda.reloadFile(selected_file)
+        # definition = self.get_definition_by_department(selected_file)
 
-        try:
-            self.node.type().definition().updateFromNode(new_node)
-        except hou.OperationFailed, e:
-            qd.error('There was a problem during rollback.\n')
-            print(str(e))
+        print("def: ", definition)
+        definition.setPreferred(True)
+
+        new_node = parent.createNode(str(type), node_name=self.department)
+        print("new node: ", new_node)
+        new_node.allowEditingOfContents()
+
+        geo = parent.node("geo")
+        if geo is None:
+            qd.error("There should be a geo network. Something went wrong, so you'll need to place the node manually.")
+            parent.layoutChildren()
             return
 
-        try:
-            self.node.matchCurrentDefinition()  # this function locks the node for editing.
-        except hou.OperationFailed, e:
-            qd.warning('There was a problem while trying to match the current definition.')
-            print(str(e))
+        if self.department == Department.HAIR or self.department == Department.CLOTH:
+            new_node.setInput(0, geo)
 
-        self.node.allowEditingOfContents()
-        new_node.destroy()
+        elif self.department == Department.MODIFY:
+            # If there is a material node, put the modify node in between material and geo.
+            material = parent.node("material")
+            if material is not None:
+                new_node.setInput(0, geo)
+                material.setInput(0, new_node)
+            else:  # Else, stick it between geo and shot_modeling.
+                new_node.setInput(0, geo)
+                shot_modeling.setInput(0, new_node)
+
+        elif self.department == Department.MATERIAL:
+            # If there is a modify node, put the material node in between modify and shot_modeling.
+            modify = parent.node("modify")
+            if modify is not None:
+                new_node.setInput(0, modify)
+                shot_modeling.setInput(0, new_node)
+            else:  # Else, stick it between geo and shot_modeling.
+                new_node.setInput(0, geo)
+                shot_modeling.setInput(0, new_node)
+
+        parent.layoutChildren()
 
     def rollback_asset(self, node=None):
         pass
