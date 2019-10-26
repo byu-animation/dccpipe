@@ -129,13 +129,10 @@ class JSONExporter:
                 print "Asset \"{0}\" does not exist.".format(currRefName)
                 continue
 
-            if body.get_type() == AssetType.PROP:
+            if body.get_type() == AssetType.PROP or body.get_type() == AssetType.ACTOR:
                 parent_is_set = has_parent_set(rootNode)
                 if parent_is_set:
                     continue
-                actors.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
-
-            elif body.get_type() == AssetType.ACTOR:
                 actors.append({"asset_name" : currRefName, "version_number" : int(currRefVerNum if len(currRefVerNum) > 0 else 0)})
 
             else:

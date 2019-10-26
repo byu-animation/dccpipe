@@ -49,7 +49,7 @@ class AlembicExporter:
 
         if type == AssetType.SHOT:
             export_all = False
-            self.frame_range = qd.input("Enter number of last keyframed frame:")
+            self.frame_range = qd.input("How many frames are in this shot?")
 
             if self.frame_range is None or self.frame_range == u'':
                 self.frame_range = 1
