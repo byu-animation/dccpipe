@@ -534,10 +534,12 @@ class Assembler:
 
         return node
 
-    def assemble_set(self, node):
+    def get_set_contents(self, node):
         instances = []
 
-
+        children = node.children()[0].children()
+        for child in children:
+            instances.append(child.parm("asset_name").evalAsString())
 
         return instances
 
@@ -561,7 +563,7 @@ class Assembler:
         node = already_tabbed_in_node if already_tabbed_in_node else self.tab_in(hou.node("/obj"), asset_name) #, excluded_departments=[department])
 
         if type == AssetType.SET:
-            return node, self.assemble_set(node)
+            return node, self.get_set_contents(node)
 
         departments = self.get_departments(type)
 
@@ -641,8 +643,6 @@ class Assembler:
         # CREATE NEW HDA DEFINITION
         if content_hda_filepath is None:
             content_hda_filepath = checkout_file
-
-        print("content hda filepath: ", content_hda_filepath)
 
         operator_name = str(element.get_parent() + "_" + element.get_department())
         operator_label = str((asset_name.replace("_", " ") + " " + element.get_department()).title())
