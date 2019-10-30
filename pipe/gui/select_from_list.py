@@ -145,14 +145,24 @@ class SelectFromList(QtWidgets.QWidget):
         self.set_values([x.text() for x in self.listWidget.selectedItems()])
 
     '''
+    Get the current state of the loading indicator gif as an icon
+    '''
+    def setButtonIcon(self, frame):
+        icon = QtGui.QIcon(self.movie.currentPixmap())
+        self.button.setIcon(icon)
+
+    '''
     Send the selected values to a function set up in the calling class and
     close the window. Use connect() on submitted to set up the receiving func.
     '''
     def submit(self):
         self.button.setText("Loading...")
         icon_path = os.path.join(Project().get_project_dir(), "pipe", "tools", "_resources", "loading_indicator_transparent.gif")
-        icon = QtGui.QIcon(icon_path)
-        self.button.setIcon(icon)
+        self.movie = QtGui.QMovie(icon_path)
+        self.movie.frameChanged.connect(self.setButtonIcon)
+        if not self.movie.loopCount() == -1:
+            self.movie.finished().connect(self.movie.start())
+        self.movie.start()
         self.button.setEnabled(False)
         self.submitted.emit(self.values)
         self.close()

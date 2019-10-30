@@ -5,6 +5,10 @@ try:
 except ImportError:
 	from PySide2 import QtWidgets, QtGui, QtCore
 
+import os
+from pipe.am.project import Project
+
+
 def error(errMsg, details=None, title='Error'):
 	'''
 	Reports a critical error
@@ -137,11 +141,26 @@ class HoudiniInput(QtWidgets.QWidget):
 		self.values = newText
 
     '''
+    Get the current state of the loading indicator gif as an icon
+    '''
+    def setButtonIcon(self, frame):
+        icon = QtGui.QIcon(self.movie.currentPixmap())
+        self.button.setIcon(icon)
+
+    '''
     	Send the selected values to a function set up in the calling class and
     	close the window. Use connect() on submitted to set up the receiving func.
     '''
     def submit(self):
 		print(self.values)
+		self.button.setText("Loading...")
+		icon_path = os.path.join(Project().get_project_dir(), "pipe", "tools", "_resources", "loading_indicator_transparent.gif")
+		self.movie = QtGui.QMovie(icon_path)
+		self.movie.frameChanged.connect(self.setButtonIcon)
+		if not self.movie.loopCount() == -1:
+			self.movie.finished().connect(self.movie.start())
+		self.movie.start()
+		self.button.setEnabled(False)
 		self.submitted.emit(self.values)
 		self.close()
 
