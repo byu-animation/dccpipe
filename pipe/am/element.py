@@ -4,7 +4,6 @@ import os
 import shutil
 from pipe.am.environment import Environment
 import pipeline_io
-import pwd
 
 
 class Checkout:
@@ -424,13 +423,12 @@ class Element:
 
         dst_addresses = []
         for checkout_username in self.list_checkout_users():
-            checkout_user = self._env.get_user(checkout_username)
+            try:
+                checkout_user = self._env.get_user(checkout_username)
+            except:
+                print('User ' + str(checkout_username) + ' does not exist.')
+                continue
             if checkout_user and checkout_user.has_email() and checkout_username != username:
-                try:
-                    pwd.getpwnam(str(checkout_username))
-                except KeyError:
-                    print('User ' + str(checkout_username) + ' does not exist.')
-                    continue
                 dst_addresses.append(checkout_user.get_email())
         if dst_addresses:
             subject = self.get_long_name()+" new publish"
