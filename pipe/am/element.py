@@ -427,9 +427,9 @@ class Element:
             checkout_user = self._env.get_user(checkout_username)
             if checkout_user and checkout_user.has_email() and checkout_username != username:
                 try:
-                    pwd.getpwnam(str(checkout_user))
+                    pwd.getpwnam(str(checkout_username))
                 except KeyError:
-                    print('User ' + str(checkout_user) + ' does not exist.')
+                    print('User ' + str(checkout_username) + ' does not exist.')
                     continue
                 dst_addresses.append(checkout_user.get_email())
         if dst_addresses:
