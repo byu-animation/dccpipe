@@ -466,7 +466,7 @@ class Publisher:
                 self.publish_src_node_to_department(src, node, department, user, comment)
             except Exception as e:
                 print(str(e))
-                qd.warning("Something went wrong.")
+                qd.warning("Something went wrong, but it's probably okay.")
 
         success_message = "Success! Published to " + str(departments_to_publish)
         self.print_success_message(success_message)
