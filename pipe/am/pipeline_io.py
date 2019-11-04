@@ -40,7 +40,7 @@ def set_permissions(path):
 		from pipe.gui import quick_dialogs as qd
 		os.chmod(path, 0777)
 	except:
-		qd.warning("Couldn't set permissions.")
+		print("Couldn't set permissions.")
 
 def version_file(filepath):
 	"""
