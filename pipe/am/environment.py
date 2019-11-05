@@ -102,6 +102,13 @@ class Environment:
         '''
         return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "hda_dir"))
 
+    def get_templates_dir(self):
+        '''
+        return the absolute filepath to the templates directory of the current project
+        (in a nuke pipeline, this is the template directory)
+        '''
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "templates_dir"))
+
     def get_otl_dir(self):
         '''
         return the absolute filepath to the assembly directory of the current project

@@ -86,6 +86,11 @@ class Project:
 		'''
 		return self._env.get_assets_dir()
 
+	def get_rendered_shots_dir(self):
+		rendered_shots = Environment().get_shots_dir()
+
+		return rendered_shots
+
 	def get_tools_dir(self):
 		'''
 		return the absolute filepath to the tools directory of this project
@@ -97,7 +102,6 @@ class Project:
 		return the absolute filepath to the crowds directory of this project
 		'''
 		return self._env.get_crowds_dir()
-
 
 		#TODO create a get tabs dir in the byuam environment module
 	def get_tabs_dir(self):

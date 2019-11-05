@@ -10,6 +10,7 @@ export ICONS_DIR=${MEDIA_PROJECT_DIR}'/pipe/tools/_resources/'
 export NUKE_LOCATION=/opt/Nuke11.3v5/Nuke11.3
 export NUKE_TOOLS_DIR=${MEDIA_PROJECT_DIR}'/pipe/tools/nuketools/'
 export NUKE_PATH=${NUKE_TOOLS_DIR}
+export DCC_NUKE_ASSET_NAME=''
 
 alias nuke=${NUKE_LOCATION}
 
@@ -17,5 +18,7 @@ alias nuke=${NUKE_LOCATION}
 cd
 
 echo "Starting Nuke..."
-nuke
+gnome-terminal -e "${NUKE_LOCATION} $@"
+cd -
 
+# nuke

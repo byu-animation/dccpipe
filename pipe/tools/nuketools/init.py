@@ -5,4 +5,5 @@ import os
 icons_dir = os.environ.get("ICONS_DIR")
 
 nuke.pluginAddPath(icons_dir)
-# nuke.pluginAddPath('./scripts')
+nuke.pluginAddPath('./importers')
+nuke.pluginAddPath('./nukeutils')
