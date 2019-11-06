@@ -48,3 +48,4 @@ class NukePublisher:
         comp_element.publish(user, temp_filepath, comment)
 
         os.environ["DCC_NUKE_ASSET_NAME"] = shot_name;
+        qd.info(shot_name + " published successfully.")

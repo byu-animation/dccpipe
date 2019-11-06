@@ -126,7 +126,6 @@ class SelectFromList(QtWidgets.QWidget):
         self.textEdited(str(self.searchBox.text()))
 
     def double_clicked(self, item):
-        print(str(item) + " selected")
         self.submit()
 
     '''
