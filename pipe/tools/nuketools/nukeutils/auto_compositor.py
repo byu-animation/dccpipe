@@ -15,33 +15,42 @@ class AutoCompositor:
         pass
 
     def auto_comp(self):
-        nodes = nuke.selectedNodes()
+        nodes = nuke.allNodes()
         leafNodes = []
         mergeNodes = []
 
+        reads = False
         for node in nodes:
             if node.Class() == 'Read':
-                channels = node.channels()
-                layers = list( set([channel.split('.')[1] for channel in channels]) )
-                layers.sort()
+                reads = True
+                name = node.fullName()
 
-                for layer in layers:
-                    # shuffle_node = nuke.nodes.Shuffle(label=layer,inputs=[node])
-                    # shuffle_node['in'].setValue( layer )
-                    # shuffle_node['postage_stamp'].setValue(True)
-                    unpremult_node = nuke.nodes.Unpremult(label=layer,inputs=[node])
-                    color_correct_node = nuke.nodes.ColorCorrect(label=layer,inputs=[unpremult_node])
-                    hue_shift_node = nuke.nodes.HueShift(label=layer,inputs=[color_correct_node])
-                    premult_node = nuke.nodes.Premult(label=layer,inputs=[hue_shift_node])
-                    premult_node['postage_stamp'].setValue(True)
-                    premult_node['alpha'].setValue(layer)
+                color_correct_node = nuke.nodes.ColorCorrect(label=name,inputs=[node])
+                hue_shift_node = nuke.nodes.HueShift(label=name,inputs=[color_correct_node])
+                hue_shift_node['postage_stamp'].setValue(True)
+                leafNodes.append(hue_shift_node)
 
-                    leafNodes.append(premult_node)
-                    if layer == layers[-1]:
-                        merge = nuke.nodes.Merge(operation='plus',inputs=leafNodes)
-                        merge['postage_stamp'].setValue(True)
-                        leafNodes = []
-                        mergeNodes.append(merge)
+        if reads:
+            merge = nuke.createNode("Merge")
+            for i in range(len(leafNodes)):
+                if i >= 2:
+                    merge.setInput(i+1, leafNodes[i])
+                else:
+                    merge.setInput(i, leafNodes[i])
 
-        merge = nuke.nodes.Merge(operation='over',inputs=mergeNodes)
-        merge['postage_stamp'].setValue(True)
+            merge['postage_stamp'].setValue(True)
+
+            selection = os.environ.get("DCC_NUKE_ASSET_NAME")
+            if not selection or selection == "":
+                comp_filepath = ""
+            else:
+                shot = Project().get_body(selection)
+                comp_element = shot.get_element(Department.COMP)
+                comp_filepath = str(comp_element.get_cache_dir())
+                comp_filepath = os.path.join(comp_filepath, str(selection) + ".####.jpg")
+
+            write = nuke.createNode("Write", "file " + str(comp_filepath))
+            write.setInput(0, merge)
+
+            viewer = nuke.createNode("Viewer")
+            viewer.setInput(0, merge)
