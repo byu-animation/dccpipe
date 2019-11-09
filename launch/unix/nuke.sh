@@ -18,7 +18,7 @@ alias nuke=${NUKE_LOCATION}
 cd
 
 echo "Starting Nuke..."
-gnome-terminal -e "${NUKE_LOCATION} $@"
-cd -
+# gnome-terminal -e "${NUKE_LOCATION} $@"
+# cd -
 
-# nuke
+nuke
