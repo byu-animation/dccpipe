@@ -243,16 +243,19 @@ class Assembler:
     def matches_reference(self, child, reference):
 
         # Grab data off the node. This data is stored as a key-value map parameter
-        data = child.parm("data").evalAsJSONMap()
+        try:
+            data = child.parm("data").evalAsJSONMap()
 
-        print "{0}:\n\t checked {1} against {2}".format(str(child), str(data), str(reference))
+            print "{0}:\n\t checked {1} against {2}".format(str(child), str(data), str(reference))
 
-        # If it matches both the asset_name and version_number, it's a valid entry in the list
-        if data["asset_name"] == reference["asset_name"] and data["version_number"] == str(reference["version_number"]):
-            print "\tand it matched"
-            return True
-        else:
-            print "\tand it didn't match"
+            # If it matches both the asset_name and version_number, it's a valid entry in the list
+            if data["asset_name"] == reference["asset_name"] and data["version_number"] == str(reference["version_number"]):
+                print "\tand it matched"
+                return True
+            else:
+                print "\tand it didn't match"
+                return False
+        except:
             return False
 
     '''
@@ -279,11 +282,26 @@ class Assembler:
         # Grab current DCC Dynamic Content Subnets that have been tabbed in
         current_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
 
-        # Smart updating will only destroy assets that no longer exist in the Set's JSON list
+        # Smart updating rebuilds via each inner nodes parameter, retaining info stored in shot_modeling
         if mode == UpdateModes.SMART:
-            non_matching = [child for child in current_children if len([reference for reference in set_data if self.matches_reference(child, reference)]) == 0]
-            for non_match in non_matching:
-                non_match.destroy()
+            # non_matching = [child for child in current_children if len([reference for reference in set_data if self.matches_reference(child, reference)]) == 0]
+            # for non_match in non_matching:
+            #     non_match.destroy()
+
+            new_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
+
+            for child in new_children:
+                try:
+                    name = child.parm("asset_name").evalAsString()
+                    if Project().get_body(name):
+                        child.parm("build").pressButton()
+                    else:
+                        print("Could not find rebuild for " + str(child))
+                except:
+                    print("Could not find rebuild for " + str(child))
+
+            inside.layoutChildren()
+            return
 
         # Clean updating will destroy all children.
         elif mode == UpdateModes.CLEAN:

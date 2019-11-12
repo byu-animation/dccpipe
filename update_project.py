@@ -6,7 +6,7 @@ import argparse
 
 
 '''
-Script used to determine what aspects of dccpipe to update
+Script used to determine what aspects of the production project to update
 '''
 def get_arguments_and_run():
     parser = argparse.ArgumentParser(description='Usage: python update_project.py --shortcuts --name myName --nickname myNick --email myEmail')
