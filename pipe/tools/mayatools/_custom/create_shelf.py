@@ -74,6 +74,19 @@ def load_shelf():
 		else:
 			pm.separator(horizontal=False, style='shelf', enable=True, width=35, height=35, visible=1, enableBackground=0, backgroundColor=(0.2,0.2,0.2), highlightColor=(0.321569, 0.521569, 0.65098))
 
+	project_tools = get_production_scripts()
+	if project_tools:
+		pm.separator(horizontal=False, style='shelf', enable=True, width=35, height=35, visible=1, enableBackground=0, backgroundColor=(0.2,0.2,0.2), highlightColor=(0.321569, 0.521569, 0.65098))
+
+		for tool in project_tools:
+			name = tool['name']
+			description = tool['description']
+			icon = os.path.join(Environment().get_tools_dir(), tool['icon'])
+			label = tool['label']
+			function = tool['function']
+
+			pm.shelfButton(c=get_production_tool_command(function), ann=description, i=icon, l=name, iol=label, olb=(0,0,0,0), dcc=dcc)
+
 	# Set default preferences
 	pm.env.optionVars['generateUVTilePreviewsOnSceneLoad'] = 1
 
@@ -95,3 +108,23 @@ def build_menu_string(command_base, menu_items):
 def delete_shelf():
 	if pm.shelfLayout(PROJ, exists=True):
 		pm.deleteUI(PROJ)
+
+def get_production_scripts():
+	scripts_dir = Environment().get_tools_dir()
+	scripts_json = os.path.join(scripts_dir, "maya_scripts.json")
+	json_file = file(scripts_json)
+	data = json.loads(json_file.read())
+
+	return data["scripts"]
+
+def get_production_tool_command(function):
+	import os
+	try:
+		user_paths = os.environ['PYTHONPATH'].split(os.pathsep)
+	except KeyError:
+		user_paths = []
+	print("user paths: ", user_paths)
+	module = function.split(".")[0]
+	command = "from tools import " + str(module) + "; " + function
+
+	return command

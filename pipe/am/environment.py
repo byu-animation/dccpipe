@@ -85,7 +85,7 @@ class Environment:
 
     def get_tools_dir(self):
         '''
-        return the absolute filepath to the tools directory of the current project
+        return the absolute filepath to the tools directory of the current project (project-specific maya scripts are here)
         '''
         return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "tools_dir"))
 
