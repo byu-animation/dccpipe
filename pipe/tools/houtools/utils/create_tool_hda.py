@@ -93,7 +93,7 @@ class CreateToolHda:
                 return
 
         assetTypeDef = hda_node.type().definition()
-        assetTypeDef.setIcon(environment.get_project_dir() + '/byu-pipeline-tools/assets/images/icons/hda-icon.png')
+        assetTypeDef.setIcon(environment.get_project_dir() + '/pipe/tools/_resources/2_shot.png')
 
         if not copyHDA:
             nodeParms = hda_node.parmTemplateGroup()

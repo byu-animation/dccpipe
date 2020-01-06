@@ -42,7 +42,17 @@ class Cloner:
 
         hou.hda.installFile(source)
         obj = hou.node("/obj")
-        hda = obj.createNode(tool_name)
+
+        try:
+            hda = obj.createNode(tool_name)
+        except:
+            try:
+                out = hou.node("/out")
+                hda = out.createNode(tool_name)
+            except Exception as e:
+                qd.error("Could not find the correct context for tool: " + str(tool_name), details=str(e))
+                return
+
         definition = hou.hdaDefinition(hda.type().category(), hda.type().name(), source)
         definition.setPreferred(True)
 
@@ -51,7 +61,7 @@ class Cloner:
         try:
             hda.setName(tool_name)
         except:
-            qd.warning(str(tool_name) + " cloned but could not be renamed correctly.")
+            print(str(tool_name) + " cloned but could not be renamed correctly.")
 
         layout_object_level_nodes()
 

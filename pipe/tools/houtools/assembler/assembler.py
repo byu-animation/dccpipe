@@ -284,10 +284,6 @@ class Assembler:
 
         # Smart updating rebuilds via each inner nodes parameter, retaining info stored in shot_modeling
         if mode == UpdateModes.SMART:
-            # non_matching = [child for child in current_children if len([reference for reference in set_data if self.matches_reference(child, reference)]) == 0]
-            # for non_match in non_matching:
-            #     non_match.destroy()
-
             new_children = [child for child in inside.children() if child.type().name() in ["dcc_set", "dcc_character", "dcc_geo"]]
 
             for child in new_children:
