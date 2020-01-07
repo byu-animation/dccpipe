@@ -222,18 +222,20 @@ create_tool_hda.run()
 			</scriptItem>
 			<!-- ============================ End Create HDA Tool =========================== -->
 
-			<!-- ============================ Start Create HDA Tool =========================== -->
-			<scriptItem id="h.create_hda">
+			<!-- ============================ Start Snapshot Tool =========================== -->
+			<scriptItem id="h.snapshot_tool">
 				<label>Snapshot</label>
 				<scriptCode scriptType="python">
 					<![CDATA[
-from pipe.tools.houtools.utils import snapshot_tool
-snapshot_program = SnapshotTool()
-snapshot_program.run()
+from pipe.tools.houtools.utils.snapshot_tool import SnapshotTool
+import hou
+snapshot_tool = SnapshotTool()
+hou.session.snapshot_tool = snapshot_tool
+snapshot_tool.run()
 					]]>
 				</scriptCode>
 			</scriptItem>
-			<!-- ============================ End Create HDA Tool =========================== -->
+			<!-- ============================ End Snapshot Tool =========================== -->
 		</subMenu>
 		<!-- ============================ End Utilities subMenu =========================== -->
 
