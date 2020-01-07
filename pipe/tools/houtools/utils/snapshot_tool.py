@@ -2,6 +2,7 @@ import hou
 import os
 
 from PySide2 import QtGui, QtWidgets, QtCore
+import pipe.gui.select_from_list as sfl
 
 from pipe.am.environment import Department, Environment
 from pipe.am.project import Project
@@ -14,23 +15,21 @@ class SnapshotTool:
     def __init__(self):
         pass
 
-    def go(self):
+    def run(self):
         self.environment = Environment()
         self.project = Project()
         hda_dir = self.environment.get_hda_dir()
-
-        from time import gmtime, strftime
 
         # GET LIST OF CAMERAS
         self.cameraList = hou.node('/').recursiveGlob('*', hou.nodeTypeFilter.ObjCamera)
         cameraNameList = [ camera.name() for camera in self.cameraList]
 
-
-        self.item_gui = sfl.SelectFromList(l=cameraList, parent=houdini_main_window(), title="Select cameras to snapshot from", multiple_selection=True)
+        self.item_gui = sfl.SelectFromList(l=cameraNameList, parent=houdini_main_window(), title="Select cameras to snapshot from", multiple_selection=True)
         self.item_gui.submitted.connect(self.camera_results)
+        print self.item_gui
 
     def camera_results(self, value):
-
+        print(str(value))
         cameras = [cam for cam in self.cameraList if cam.name() in value]
 
         cur_desktop = hou.ui.curDesktop()
@@ -38,11 +37,9 @@ class SnapshotTool:
         panetab = cur_desktop.paneTabOfType(hou.paneTabType.SceneViewer)
         persp = panetab.curViewport().name()
 
-        from time import gmtime, strftime
-
         for cam in cameras:
-            hou.ui.findPaneTab('panetab1').curViewport().setCamera(cam)
-            default_filename = cam.name() + '_screenshot'
+            panetab.curViewport().setCamera(cam)
+            default_filename = cam.name() + '_screenshot.jpg'
             persp = panetab.curViewport().name()
             filename = hou.ui.selectFile(start_directory=Project().get_submission_location(), title='Select Screenshot File', default_value=default_filename, file_type=hou.fileType.Image )
             if filename is not None:
