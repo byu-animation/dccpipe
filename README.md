@@ -48,6 +48,14 @@ Installs missing packages with pip/yum. Note: if you are missing an rpm, you mus
 sudo config/unix/fedora/install.sh --installmissing
 ```
 
+## Create Project:
+1. run project initialization script:
+    python create_project.py nameOfProject nicknameOfProject
+2. Check that application launching icons were created (Maya, Houdini, Substance Painter, Nuke)
+3. Check that production directory was created with several subdirectories inside
+4. If 2 and 3 look right, you're good to go!
+
+
 ## Compatibility
 This project was inspired by previous BYU Animation pipeline repositories, such as [BYU Animation Tools](https://github.com/byu-animation/byu-animation-tools) and [BYU Pipeline Tools](https://github.com/byu-animation/byu-pipeline-tools). Therefore, it is created with a very specific use case. However, the pipeline is built in such a way that other distros/operating systems could be supported in a future release.
 
