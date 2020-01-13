@@ -60,7 +60,8 @@
 				"Alembic":"export_one(alembic=True, methods=['alembic'])",
 				"FBX":"export_one(fbx=True, methods=['fbx'])",
 				"JSON":"export_one(json=True, methods=['json'])",
-				"USD": "export_one(usd=True, methods=['usd'])"
+				"USD": "export_one(usd=True, methods=['usd'])",
+				"NoCameras":"export_without_cameras()"
 			},
 			"double-click":"export_with_options()",
 			"tool":"mayatools.exporters.exporter",

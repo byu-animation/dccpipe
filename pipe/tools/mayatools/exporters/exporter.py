@@ -16,6 +16,7 @@ class Exporter:
         self.body = None
         self.item_gui = None
         self.list = ["alembic", "fbx", "json", "usd"]
+        self.cameras = True
 
     def auto_export_all(self):
         self.export()
@@ -35,7 +36,7 @@ class Exporter:
         self.body = Project().get_body(asset_name)
 
         if alembic:
-            AlembicExporter().auto_export(asset_name)
+            AlembicExporter().auto_export(asset_name, self.cameras)
 
         if self.body and self.body.is_asset():
             if json:
@@ -59,6 +60,10 @@ class Exporter:
             qd.info("Successfully exported " + str(asset_name) + " as " + str(methods))
         else:
             qd.info("Nothing was exported.")
+
+    def export_without_cameras(self):
+        self.cameras = False
+        self.export()
 
     def export_with_options(self):
         self.item_gui = co.CheckBoxOptions(parent=maya_main_window(), title="Select export methods:", options=self.list)

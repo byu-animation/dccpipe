@@ -21,8 +21,10 @@ class AlembicExporter:
         self.frame_range = frame_range
         pm.loadPlugin('AbcExport')
         self.crease = False
+        self.cameras = False
 
-    def auto_export(self, asset_name):
+    def auto_export(self, asset_name, cameras=True):
+        self.cameras = cameras
         self.get_body_and_export(asset_name, export_all=True)
 
     def go(self):
@@ -130,7 +132,8 @@ class AlembicExporter:
             endFrame += 1
             endFrame = str(endFrame)
             files = self.exportReferences(abcFilePath, tag='DCC_Alembic_Export_Flag', startFrame=startFrame, endFrame=endFrame)
-            files.extend(self.export_cameras(body, startFrame, endFrame))
+            if self.cameras:
+                files.extend(self.export_cameras(body, startFrame, endFrame))
 
         elif body.is_asset():
             if body.get_type() == AssetType.SET:
@@ -380,7 +383,7 @@ class AlembicExporter:
         return list
 
     def get_parent_root_string(self, node):
-        parents = node.listRelatives(p=True)
+        parents = node.listRelatives(p=True)  # might need to use ap=True instead of p=True
         if parents:
             root = ""
 
