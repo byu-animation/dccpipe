@@ -78,7 +78,7 @@ def check_unsaved_changes():
     unsaved_changes = mc.file(q=True, modified=True)
 
     if unsaved_changes:
-        response = qd.yes_or_no("Unsaved changes detected. Would you like to publish them before you proceed? (You can ignore this message if you just created a new scene or opened Maya.)")
+        response = qd.yes_or_no("Would you like to publish the current asset before you proceed?", title="Unsaved changes detected", details="(Press No if you just created a new scene or opened Maya.)")
         if response is True:
             # instead of saving, publish.
             scene = mc.file(q=True, sceneName=True)
@@ -90,17 +90,19 @@ def check_unsaved_changes():
                 qd.error("Publish failed. Please publish manually before cloning the new asset.")
                 return
             asset_name = asset_path[0]
+            try:
+                department = asset_path[1].split("/")[0]
+                print("department " + department)
+            except:
+                department = None
 
-            model = qd.binary_option("Which department for your unsaved changes to " + str(asset_name) + "?", "Model", "Rig", title="Select department")
-            if model:
-                department = "model"
-            elif model is not None:
-                department = "rig"
+            if department:
+                print("department found")
             else:
                 qd.warning("Skipping changes to " + str(asset_name))
                 return
 
-            publisher = Publisher(quick_publish=True)
+            publisher = Publisher(quick_publish=True, export=False)
             publisher.non_gui_publish(asset_name, department)
 
 '''
@@ -122,8 +124,8 @@ def scene_prep(quick_publish, body=None, department=None):
     if quick_publish:
         print("skipping check for unsaved changes")
     else:
-        save_scene_file()
         check_unsaved_changes()
+        # save_scene_file()
 
     freeze_and_clear = True
     if department == Department.RIG:

@@ -24,9 +24,9 @@ except ImportError:
 '''
 class MayaPublisher:
 
-    def __init__(self, gui=True, src=None, quick_publish=False):
+    def __init__(self, gui=True, src=None, quick_publish=False, export=True):
         self.quick_publish = quick_publish
-        self.export = True
+        self.export = export
 
     def fast_publish(self):
         asset_name = os.environ.get("DCC_ASSET_NAME")
