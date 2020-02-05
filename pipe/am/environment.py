@@ -71,6 +71,12 @@ class Environment:
         '''
         return os.path.abspath(self._project_dir)
 
+    def get_production_dir(self):
+        '''
+        return the absolute filepath to the production directory of the current project
+        '''
+        return os.path.join(self._project_dir, pipeline_io.get_project_info(self._project_dir, "production_dir"))
+
     def get_assets_dir(self):
         '''
         return the absolute filepath to the assets directory of the current project

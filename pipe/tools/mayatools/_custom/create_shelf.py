@@ -78,6 +78,13 @@ def load_shelf():
 	if project_tools:
 		pm.separator(horizontal=False, style='shelf', enable=True, width=35, height=35, visible=1, enableBackground=0, backgroundColor=(0.2,0.2,0.2), highlightColor=(0.321569, 0.521569, 0.65098))
 
+		custom_modules = []
+		for tool in project_tools:
+			module = tool['function'].split(".")[0]
+			custom_modules.append(module)
+
+		create_tools_init(custom_modules)
+
 		for tool in project_tools:
 			name = tool['name']
 			description = tool['description']
@@ -110,6 +117,7 @@ def delete_shelf():
 		pm.deleteUI(PROJ)
 
 def get_production_scripts():
+	create_production_init()
 	scripts_dir = Environment().get_tools_dir()
 	scripts_json = os.path.join(scripts_dir, "maya_scripts.json")
 	json_file = file(scripts_json)
@@ -118,13 +126,20 @@ def get_production_scripts():
 	return data["scripts"]
 
 def get_production_tool_command(function):
-	import os
-	try:
-		user_paths = os.environ['PYTHONPATH'].split(os.pathsep)
-	except KeyError:
-		user_paths = []
-	print("user paths: ", user_paths)
 	module = function.split(".")[0]
-	command = "from tools import " + str(module) + "; " + function
+	command = "try:\n  from production.tools import " + str(module) + "; " + function
+	command += "\nexcept Exception as e:\n  print(str(e))"
 
 	return command
+
+def create_tools_init(modules):
+	tools_dir = Environment().get_tools_dir()
+
+	init_file = open(tools_dir + "/__init__.py", "w")
+	init_file.write("__all__ = " + str(modules))
+
+def create_production_init():
+	production_dir = Environment().get_production_dir()
+
+	init_file = open(production_dir + "/__init__.py", "w")
+	init_file.write("__all__ = ['tools']")
