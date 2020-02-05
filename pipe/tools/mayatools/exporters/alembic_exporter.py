@@ -154,7 +154,12 @@ class AlembicExporter:
         for abcFile in files:
             os.system('chmod 774 ' + abcFile)
 
-        print("Alembic file(s): ", files)
+        exported_asset_names = ""
+        for file in files:
+            asset_file_name = str(file).rpartition('/')[2]
+            exported_asset_names += asset_file_name + '\n'
+        qd.info("Alembics exported successfully: " + '\n' + exported_asset_names)
+
         return files
 
     def exportSelected(self, selection, destination, tag=None, startFrame=1, endFrame=1, disregardNoTags=False):
