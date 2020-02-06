@@ -6,26 +6,8 @@
  a single file. -->
 
   <toolshelf name="dcc_tools" label="DCC Tools">
-    <memberTool name="new_body"/>
-    <memberTool name="publish_shot"/>
-    <memberTool name="rollback_shot"/>
     <memberTool name="checkout_shot"/>
     <memberTool name="checkout_asset"/>
-    <memberTool name="inspire"/>
-    <memberTool name="test_geo"/>
-    <memberTool name="renderman_setup"/>
-    <memberTool name="assemble"/>
-    <memberTool name="reload_scripts"/>
-    <memberTool name="publish_asset"/>
-    <memberTool name="rollback_asset"/>
-    <memberTool name="reassemble"/>
     <memberTool name="checkout_tool"/>
-    <memberTool name="publish_tool"/>
-    <memberTool name="rollback_tool"/>
-    <memberTool name="xml_tool"/>
-    <memberTool name="reload_shelves"/>
-    <memberTool name="clear_console"/>
-    <memberTool name="convert_V1_to_V2"/>
-    <memberTool name="commit_con"/>
   </toolshelf>
 </shelfDocument>
