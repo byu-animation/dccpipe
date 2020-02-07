@@ -7,7 +7,7 @@ export CURRENT_PROGRAM='nuke'
 cd ${USER_DIR}
 
 export ICONS_DIR=${MEDIA_PROJECT_DIR}'/pipe/tools/_resources/'
-export NUKE_LOCATION=/opt/Nuke11.3v5/Nuke11.3
+export NUKE_LOCATION="/opt/Nuke11.3v5/Nuke11.3 --nukex"
 export NUKE_TOOLS_DIR=${MEDIA_PROJECT_DIR}'/pipe/tools/nuketools/'
 export NUKE_PATH=${NUKE_TOOLS_DIR}
 export DCC_NUKE_ASSET_NAME=''
@@ -18,7 +18,10 @@ alias nuke=${NUKE_LOCATION}
 cd
 
 echo "Starting Nuke..."
-# gnome-terminal -e "${NUKE_LOCATION} $@"
-# cd -
 
 nuke
+
+# try other path for monsters
+export NUKE_LOCATION_2="/usr/local/Nuke11.2v5/Nuke11.2 --nukex"
+alias nuke_monster=${NUKE_LOCATION_2}
+nuke_monster
