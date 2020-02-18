@@ -10,7 +10,11 @@ class Tagger:
         self.selected_string = self.get_selected_string()
 
     def tag(self):
-        response = qd.binary_option("Add Alembic tag to:\n" + str(self.selected_string), "Yes", "No", title='Add Alembic Tag')
+        if self.selected:
+            response = qd.binary_option("Add Alembic tag to:\n" + str(self.selected_string), "Yes", "No", title='Add Alembic Tag')
+        else:
+            qd.error("Nothing is selected")
+            return
 
         if response:
             for node in self.selected:
