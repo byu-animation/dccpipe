@@ -13,7 +13,7 @@ class Tagger:
         if self.selected:
             response = qd.binary_option("Add Alembic tag to:\n" + str(self.selected_string), "Yes", "No", title='Add Alembic Tag')
         else:
-            qd.error("Nothing is selected")
+            qd.warning("Nothing is selected")
             return
 
         if response:
