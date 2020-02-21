@@ -37,9 +37,13 @@ class NukeCloner:
         else:
             # get the latest publish
             username = Environment().get_current_username()
-            filepath = comp_element.checkout(username)
+            try:
+                filepath = comp_element.checkout(username)
+            except:
+                filepath = comp_element.get_last_publish()[3]
 
             if os.path.exists(filepath):
+                qd.info("Opening file, please wait.")
                 nuke.scriptOpen(filepath)
             else:
                 qd.error("Couldn't find the file.")
