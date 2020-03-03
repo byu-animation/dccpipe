@@ -23,6 +23,11 @@ fi
 PROJECT_NAME="$1"
 PROJECT_PATH="$2"
 
+if [[ ! -d ${PROJECT_PATH} ]]; then
+	echo "error: project directory '${PROJECT_PATH}' does not exist."
+	exit 1
+fi
+
 function icon {
 	icon_usage() { echo "icon: [-n NICKNAME] projectName projectDir scriptName scriptIcon script" 1>&2; exit; }
 	local nickname=""
