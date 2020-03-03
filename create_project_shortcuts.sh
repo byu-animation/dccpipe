@@ -56,21 +56,22 @@ function icon {
 	fi
 
 	NOSPACES=${SOFTWARE_NAME// /-}
-	FILENAME=${PROJECT_PATH}"/dcc_${NOSPACES,,}"
+	NOSPACES_PROJECT=${PROJECT_NAME// /-}
+	FILENAME=${PROJECT_PATH}"/dcc_${NOSPACES_PROJECT,,}_${NOSPACES,,}.desktop"
 
-	echo "#!/usr/bin/env xdg-open" > ${FILENAME}.desktop
-	echo "[Desktop Entry]" >> ${FILENAME}.desktop
-	echo "Version=0.1" >> ${FILENAME}.desktop
-	echo "Name=${PROGRAM_NAME}" >> ${FILENAME}.desktop
-	echo "Name[en_US]=${PROGRAM_NAME}" >> ${FILENAME}.desktop
-	echo "Comment=DCC Pipe shortcut for ${SOFTWARE_NAME}" >> ${FILENAME}.desktop
-	echo "Exec=${PROJECT_PATH}/${SCRIPT}" >> ${FILENAME}.desktop
-	echo "Icon=${PROJECT_PATH}/${ICON}" >> ${FILENAME}.desktop
-	echo "Terminal=false" >> ${FILENAME}.desktop
-	echo "Type=Application" >> ${FILENAME}.desktop
-	echo "Categories=Utility;Application;" >> ${FILENAME}.desktop
+	echo "#!/usr/bin/env xdg-open" > ${FILENAME}
+	echo "[Desktop Entry]" >> ${FILENAME}
+	echo "Version=0.1" >> ${FILENAME}
+	echo "Name=${PROGRAM_NAME}" >> ${FILENAME}
+	echo "Name[en_US]=${PROGRAM_NAME}" >> ${FILENAME}
+	echo "Comment=DCC Pipe shortcut for ${SOFTWARE_NAME}" >> ${FILENAME}
+	echo "Exec=${PROJECT_PATH}/${SCRIPT}" >> ${FILENAME}
+	echo "Icon=${PROJECT_PATH}/${ICON}" >> ${FILENAME}
+	echo "Terminal=false" >> ${FILENAME}
+	echo "Type=Application" >> ${FILENAME}
+	echo "Categories=Utility;Application;" >> ${FILENAME}
 
-	chmod 770 ${FILENAME}.desktop
+	chmod 770 ${FILENAME}
 }
 
 
