@@ -480,3 +480,17 @@ class Project:
 		'''
 		if crowd_cycle in self.list_crowd_cycles():
 			shutil.rmtree(os.path.join(self.get_crowds_dir(), crowd_cycle))
+
+	def delete_ribs_for_bodies(self, bodies):
+		for body in bodies:
+			body = self.get_body(body)
+			element = body.get_element(Department.RIB_ARCHIVE)
+
+			rib_cache_dir = element.get_cache_dir()
+			# delete the rib cache dir
+			shutil.rmtree(rib_cache_dir)
+
+			# create a new cache dir
+			pipeline_io.mkdir(rib_cache_dir)
+
+		print("deleted ribs for " + str(bodies))
