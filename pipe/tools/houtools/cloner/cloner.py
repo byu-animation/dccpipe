@@ -116,7 +116,7 @@ class Cloner:
 
         if selected_scene_file is not None:
             if not os.path.exists(selected_scene_file):
-                qd.error('Filepath doesn\'t exist')
+                qd.error('Filepath doesn\'t exist', details="Publish may have been deleted to conserve space.")
                 return
             else:
                 hou.hipFile.load(selected_scene_file)
