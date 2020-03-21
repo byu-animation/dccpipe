@@ -144,7 +144,7 @@
 			"menu":0,
 			"double-click":0,
 			"tool":"mayatools.utils.clear_ribs",
-			"function":"ReloadScripts.go()"
+			"function":"ClearRibs.go()"
 		}, {
 			"itemType":"separator"
 		}, {
