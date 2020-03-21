@@ -137,6 +137,15 @@
 			"tool":"mayatools.utils.reload_scripts",
 			"function":"ReloadScripts.go()"
 		}, {
+			"itemType":"button",
+			"icon":"y.svg",
+			"annotation":"Clear RIBs/IFDs for selected shots",
+			"label":"ribs",
+			"menu":0,
+			"double-click":0,
+			"tool":"mayatools.utils.clear_ribs",
+			"function":"ReloadScripts.go()"
+		}, {
 			"itemType":"separator"
 		}, {
 			"itemType":"button",

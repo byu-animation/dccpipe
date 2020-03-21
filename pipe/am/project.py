@@ -487,10 +487,13 @@ class Project:
 			element = body.get_element(Department.RIB_ARCHIVE)
 
 			rib_cache_dir = element.get_cache_dir()
-			# delete the rib cache dir
-			shutil.rmtree(rib_cache_dir)
+			try:
+				# delete the rib cache dir
+				shutil.rmtree(rib_cache_dir)
 
-			# create a new cache dir
-			pipeline_io.mkdir(rib_cache_dir)
+			except:
+				# create a new cache dir
+				pipeline_io.mkdir(rib_cache_dir)
+
 
 		print("deleted ribs for " + str(bodies))
