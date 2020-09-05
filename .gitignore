@@ -10,6 +10,7 @@ studiolibrary-2.6.3/
 *.desktop
 
 # DCC-specific ignores
+Icons/
 production/
 bin/
 .pyside/

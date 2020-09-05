@@ -73,6 +73,7 @@ This project was inspired by previous BYU Animation pipeline repositories, such 
 \* Will be automatically installed using the `--installmissing/-im` flag.
 
 ### Supported DCC's
+### FIXME: Update 2018 to 2019 and 17.5 to 18.0
 
 | DCC                             | Version | Module          |
 |:--------------------------------|--------:|:----------------|
