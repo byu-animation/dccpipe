@@ -39,7 +39,11 @@ export RMANTREE="/opt/pixar/RenderManProServer-22.6"
 export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
 export HOUDINI_PATH=${HOUDINI_PATH}:$RFHTREE"/17.5:&"
 
+# set current houdini path for installation
+# hou_launch_path=`python -c "import json; print json.load(file('.settings'))['hou_launch_path']"`
+
 echo "Starting Houdini..."
 cd ~/
 gnome-terminal -e "houdinifx -foreground $@"
+# gnome-terminal -e ${DCC_HOUDINI_LAUNCH_PATH}" -foreground $@"
 cd -

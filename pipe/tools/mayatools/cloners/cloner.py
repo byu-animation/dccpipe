@@ -180,10 +180,14 @@ class MayaCloner:
 			setPublishEnvVar(self.body.get_name(), self.department)
 
 			if not os.path.exists(selected_scene_file):
-				mc.file(new=True, force=True)
-				mc.file(rename=selected_scene_file)
-				mc.file(save=True, force=True)
-				print "New file: " + selected_scene_file
+				try:
+					mc.file(new=True, force=True)
+					mc.file(rename=selected_scene_file)
+					mc.file(save=True, force=True)
+					print "New file: " + selected_scene_file
+				except Exception as e:
+					qd.error("That publish is missing. It may have been deleted to clear up space.", details=str(e))
+					return False
 			else:
 				mc.file(selected_scene_file, open=True, force=True, ignoreVersion=True)
 				print "File opened: " + selected_scene_file
