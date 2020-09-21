@@ -41,6 +41,11 @@ class AlembicExporter:
     def get_body_and_export(self, chosen_asset, export_all=False):
         project = Project()
         self.body = project.get_body(chosen_asset)
+        try:
+            print("asset type: " + self.body.get_type())
+        except:
+            qd.error("Error: Asset does not have a valid type. Was it created properly?")
+
         type = self.body.get_type()
 
         if type == AssetType.PROP or type == AssetType.ACTOR:

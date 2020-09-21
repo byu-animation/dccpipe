@@ -319,6 +319,7 @@ def extract_reference_data(ref):
     Helper for JSONExporter
 '''
 def strip_reference(input):
+    #FIXME: This is causing issues with Sets not updating position
     # i = input.rfind(":")  # commenting out because find may cause problems, if not, then we are keeping it.
     pipe = input.find("|")
     if pipe:
