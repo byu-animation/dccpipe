@@ -134,6 +134,20 @@ def scene_prep(quick_publish, body=None, department=None):
     if body.is_shot() or body.get_type() == AssetType.SET:
         freeze_and_clear = False
 
+    if body.get_type() == AssetType.PROP:
+        #remove References
+        print("removing name references")
+        names = mc.ls(tr=True)
+        names.remove("persp")
+        names.remove("top")
+        names.remove("front")
+        names.remove("side")
+        print(names)
+        for i in names:
+            mc.select(i)
+            newName = strip_reference(i)
+            mc.rename(newName)
+
     if not body.get_type() == AssetType.SHOT:
         # delete cameras
         cam_list = pm.ls(ca=True)
