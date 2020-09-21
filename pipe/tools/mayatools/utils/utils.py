@@ -319,18 +319,9 @@ def extract_reference_data(ref):
     Helper for JSONExporter
 '''
 def strip_reference(input):
-    #FIXME: This is causing issues with Sets not updating position
+    #TODO:Is there a way for this to selectively avoid props?
     # i = input.rfind(":")  # commenting out because find may cause problems, if not, then we are keeping it.
-    pipe = input.find("|")
-    if pipe:
-        i = input.rfind(":")
-    else:
-        i = input.find(":")
-
-    if i == -1:
-        return input
-
-    return input[i + 1:]
+    return input.split('|')[-1].split(':')[-1]
 
 '''
     Helper for JSONExporter
