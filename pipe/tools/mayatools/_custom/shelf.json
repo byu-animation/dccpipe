@@ -156,6 +156,17 @@
 			"double-click":0,
 			"tool":"mayatools.importers.reference_importer",
 			"function":"ReferenceImporter.go()"
+		}, {
+			"itemType":"separator"
+		}, {
+			"itemType":"button",
+			"icon":"reload.png",
+			"annotation":"Center object at origin",
+			"label":"origin",
+			"menu":0,
+			"double-click":0,
+			"tool":"mayatools.utils.centerOrigin",
+			"function":"centerOrigin.go()"
 		}
 	]
 }

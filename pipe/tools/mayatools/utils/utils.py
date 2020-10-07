@@ -138,15 +138,15 @@ def scene_prep(quick_publish, body=None, department=None):
         #remove References
         print("removing name references")
         names = mc.ls(tr=True)
-        names.remove("persp")
-        names.remove("top")
-        names.remove("front")
-        names.remove("side")
+        names = remove_cameras(names)
         print(names)
         for i in names:
             mc.select(i)
             newName = strip_reference(i)
             mc.rename(newName)
+
+        #center prop at the origin
+        #center_object_at_origin()
 
     if not body.get_type() == AssetType.SHOT:
         # delete cameras
@@ -486,3 +486,32 @@ def save_scene_file():
     if untitled:
         pm.system.renameFile(filename)
     return pm.system.saveFile()
+
+'''
+    Resets the transfrom of the object to be at (0,0,0)
+'''
+def center_object_at_origin():
+    print("Centering prop at origin...")
+    #select object
+    nodes = mc.ls("|*")
+    #print(nodes)
+    nodes = remove_cameras(nodes)
+    #print(nodes)
+    select = mc.select(nodes[0])
+
+    #get local space pivot
+    pivot = mc.xform(query=True, scalePivot=True, worldSpace=False)
+    #print(pivot)
+
+    #apply the opposite of that to transform
+    transform = mc.xform(t=[-pivot[0],-pivot[1],-pivot[2]])
+
+    #freeze transofrmations
+    mc.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+
+def remove_cameras(list):
+        list.remove("persp")
+        list.remove("top")
+        list.remove("front")
+        list.remove("side")
+        return list
