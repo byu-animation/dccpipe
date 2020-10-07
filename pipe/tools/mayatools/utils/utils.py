@@ -358,7 +358,7 @@ def find_first_mesh(rootNode):
                 break
             elif not isinstance(child, pm.nodetypes.Transform):
                 continue
-            if child.getShape() is not None:
+            if is_acceptable_anchor(child.getShape()):      #child.getShape() is not None:
                 firstMesh = child.getShape()
                 path = path + "/" + strip_reference(child.name()) + "/" + strip_reference(child.getShape().name())
                 break
@@ -370,6 +370,14 @@ def find_first_mesh(rootNode):
     print("firstmesh, path: ", firstMesh, path)
 
     return firstMesh, path
+
+def is_acceptable_anchor(possibleMesh):
+    return (
+        possibleMesh
+        and isinstance(possibleMesh, pm.nodetypes.Mesh)
+        and not possibleMesh.isIntermediateObject()
+        and len(possibleMesh.vtx) > 2)
+
 
 '''
     Helper for JSONExporter
