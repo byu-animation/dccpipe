@@ -494,20 +494,26 @@ def center_object_at_origin():
     print("Centering prop at origin...")
     #select object
     nodes = mc.ls("|*")
-    #print(nodes)
     nodes = remove_cameras(nodes)
-    #print(nodes)
-    select = mc.select(nodes[0])
+    for i in range(0, len(nodes)):
 
-    #get local space pivot
-    pivot = mc.xform(query=True, scalePivot=True, worldSpace=False)
-    #print(pivot)
+        select = mc.select(nodes[i])
 
-    #apply the opposite of that to transform
-    transform = mc.xform(t=[-pivot[0],-pivot[1],-pivot[2]])
+        #get local space pivot
+        pivot = mc.xform(query=True, scalePivot=True, worldSpace=False)
 
-    #freeze transofrmations
-    mc.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+        #save that pivot as a custom attribute in case we need it later
+        mc.addAttr(longName='oldPos', attributeType='double3')
+        mc.addAttr(longName='oldPosX', attributeType='double', parent='oldPos')
+        mc.addAttr(longName='oldPosY', attributeType='double', parent='oldPos')
+        mc.addAttr(longName='oldPosZ', attributeType='double', parent='oldPos')
+        mc.setAttr(str(nodes[i]) + '.oldPos',pivot[0],pivot[1],pivot[2])
+
+        #apply the opposite of that to transform
+        transform = mc.xform(t=[-pivot[0],-pivot[1],-pivot[2]])
+
+        #freeze transofrmations
+        mc.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
 
 def remove_cameras(list):
         list.remove("persp")
