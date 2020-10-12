@@ -493,7 +493,7 @@ def save_scene_file():
 def center_object_at_origin():
     print("Centering prop at origin...")
     #select object
-    nodes = mc.ls("|*")
+    nodes = mc.ls(assemblies=True)
     nodes = remove_cameras(nodes)
     for i in range(0, len(nodes)):
 
@@ -514,6 +514,31 @@ def center_object_at_origin():
 
         #freeze transofrmations
         mc.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+
+def reposition_object_to_old_pos():
+    print("Repositioning object to its old position")
+    #select object
+    nodes = mc.ls(assemblies=True)
+    nodes.remove("persp")
+    nodes.remove("top")
+    nodes.remove("front")
+    nodes.remove("side")
+    for i in range(0, len(nodes)):
+
+        select = mc.select(nodes[i])
+
+        #get oldPos attribute OR if it doesn't exist don't transform it
+        try:
+            x = mc.getAttr(str(nodes[i]) + '.oldPosX')
+            y = mc.getAttr(str(nodes[i]) + '.oldPosY')
+            z = mc.getAttr(str(nodes[i]) + '.oldPosZ')
+            result = mc.xform(t=[x,y,z])
+            #mc.deleteAttr(str(nodes[i]) + '.oldPos')
+            print("successfully moved " + str(nodes[i]))
+        except:
+            print("Exception occurred while moving object")
+
+
 
 def remove_cameras(list):
         list.remove("persp")

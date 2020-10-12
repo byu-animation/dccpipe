@@ -167,6 +167,15 @@
 			"double-click":0,
 			"tool":"mayatools.utils.centerOrigin",
 			"function":"centerOrigin.go()"
+		}, {
+			"itemType":"button",
+			"icon":"reload.png",
+			"annotation":"reposition_object_to_old_pos",
+			"label":"Position",
+			"menu":0,
+			"double-click":0,
+			"tool":"mayatools.utils.resetPosition",
+			"function":"resetPosition.go()"
 		}
 	]
 }
