@@ -40,6 +40,36 @@ creator.run(type="actor")
 				</scriptCode>
 			</scriptItem>
 			<!-- ============================ End Create Actor Tool =========================== -->
+
+			<!-- ============================ Start Create Set Tool =========================== -->
+			<scriptItem id="h.createSet">
+				<label>Set</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.creator import creator
+import hou
+creator = creator.Creator()
+hou.session.creator = creator
+creator.run(type="set")
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Create Set Tool =========================== -->
+
+			<!-- ============================ Start Create Shot Tool =========================== -->
+			<scriptItem id="h.createShot">
+				<label>Shot</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.creator import creator
+import hou
+creator = creator.Creator()
+hou.session.creator = creator
+creator.run(type="shot")
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Create Shot Tool =========================== -->
 		</subMenu>
 		<!-- ============================ End creator subMenu =========================== -->
 
