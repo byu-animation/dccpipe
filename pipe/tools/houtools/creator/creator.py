@@ -64,6 +64,8 @@ class Creator:
             if body == None:
                 # print a message about failure/duplicate
                 qd.error("Asset with name " + name + " already exists in pipeline.")
+            elif self.type == AssetType.SHOT:
+                qd.info("Asset created successfully.", "Success")
             else:
                 assembler = Assembler()
                 assembler.create_hda(name, body=body)

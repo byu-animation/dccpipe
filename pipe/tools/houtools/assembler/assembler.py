@@ -186,8 +186,10 @@ class Assembler:
             return self.dcc_geo(parent, asset_name, already_tabbed_in_node, excluded_departments)
         elif body.get_type() == AssetType.SET:
             return self.dcc_set(parent, asset_name, already_tabbed_in_node)
+        elif body.get_type() == AssetType.SHOT:
+            return
         else:
-            qd.error("Pipeline error: this asset isn't a actor, prop or set.")
+            qd.error("Pipeline error: this asset isn't an actor, prop, shot, or set.")
             return
 
     '''
@@ -213,7 +215,7 @@ class Assembler:
         elif body.get_type() == AssetType.SET:
             return "dcc_set"
         else:
-            qd.error("Pipeline error: this asset isn't a actor, prop or set.")
+            qd.error("Pipeline error: this asset isn't an actor, prop or set.")
             return
 
 
