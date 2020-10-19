@@ -35,10 +35,15 @@ export HOUDINI_UI_ICON_PATH=${MEDIA_PROJECT_DIR}"/pipe/tools/_resources/tool-ico
 
 # Renderman paths (Renderman 22) for use with Hou 17.5
 # FIXME: This is now going to be obsolete for houdini 18
-export RMANTREE="/opt/pixar/RenderManProServer-22.6"
-export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
+#export RMANTREE="/opt/pixar/RenderManProServer-22.6"
+#export RFHTREE="/opt/pixar/RenderManForHoudini-22.6"
 #export RMAN_PROCEDURALPATH=$RFHTREE/18.0.532/openvdb:&
-export HOUDINI_PATH=${HOUDINI_PATH}:$RFHTREE"/17.5:&"
+#export HOUDINI_PATH=${HOUDINI_PATH}:$RFHTREE"/17.5:&"
+
+export RMANTREE="/opt/pixar/RenderManProServer-23.4"
+export RFHTREE="/opt/pixar/RenderManForHoudini-23.4"
+export RMAN_PROCEDURALPATH=$RFHTREE/18.0.532/openvdb:&
+export HOUDINI_PATH=${HOUDINI_PATH}:$RFHTREE"/18.0.532:&"
 
 # set current houdini path for installation
 # hou_launch_path=`python -c "import json; print json.load(file('.settings'))['hou_launch_path']"`

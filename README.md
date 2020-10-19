@@ -77,8 +77,8 @@ This project was inspired by previous BYU Animation pipeline repositories, such 
 
 | DCC                             | Version | Module          |
 |:--------------------------------|--------:|:----------------|
-| Autodesk Maya                   | 2018    | pipe.tools.maya |
-| SideFX Houdini                  | 17.5    | pipe.tools.hou  |
+| Autodesk Maya                   | 2019    | pipe.tools.maya |
+| SideFX Houdini                  | 18.0    | pipe.tools.hou  |
 | Foundry Nuke                    | 11.3    | pipe.tools.nuke |
 | Allegorithmic Substance Painter | 2018.3  | pipe.tools.sbs  |
 
