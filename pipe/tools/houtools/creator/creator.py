@@ -67,6 +67,9 @@ class Creator:
             elif self.type == AssetType.SHOT:
                 qd.info("Asset created successfully.", "Success")
             else:
+                if self.type == AssetType.SET:
+                    # create whole_set.json
+                    
                 assembler = Assembler()
                 assembler.create_hda(name, body=body)
 
