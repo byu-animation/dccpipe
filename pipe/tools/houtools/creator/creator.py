@@ -7,6 +7,7 @@ from pipe.am.body import AssetType
 from pipe.tools.houtools.utils.utils import *
 from pipe.am import pipeline_io
 from pipe.tools.houtools.assembler.assembler import Assembler
+from pipe.tools.houtools.exporter.json_exporter import JSONExporter
 import re
 from PySide2 import QtWidgets
 
@@ -69,7 +70,11 @@ class Creator:
             else:
                 if self.type == AssetType.SET:
                     # create whole_set.json
-                    
+                    #FIXME: write this to better fit the pipe and remove the manual filepath
+                    filepath = "/groups/stowaway/Pipe/dccpipe/production/assets/" + str(name) + "/model/main/cache/"
+                    exporter = JSONExporter()
+                    exporter.createWholeSetJSON(filepath)
+
                 assembler = Assembler()
                 assembler.create_hda(name, body=body)
 
