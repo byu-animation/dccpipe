@@ -32,7 +32,7 @@ class JSONExporter:
         path = os.path.join(filepath, "whole_set.json")
 
         with open(path, "w") as f:
-            f.write("{}")
+            f.write("[]")
             f.close()
 
 

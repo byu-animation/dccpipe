@@ -210,6 +210,9 @@ class Publisher:
                             break
 
             else:
+                # right now it's looking for the path detail attribute, which doesn't exist on a prop
+                # both in the object space and the set space,
+                # the path attribute only appears when it's part of an already exported set
                 print(str(name) + " not found in set file.")
                 path = self.get_prim_path(out)
                 prop_data = {"asset_name": name, "version_number": 0, "path" : str(path), "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
@@ -259,11 +262,21 @@ class Publisher:
 
     def get_prim_path(self, out):
         geo = out.geometry()
-        return geo.findPrimAttrib("path").strings()[0]
+        try:
+            path = geo.findPrimAttrib("path").strings()[0]
+            print("path: " + str(path))
+        except:
+            print("path attribute doesn't exist on object (error in get_prim_path)")
+        return path
 
     def update_points_by_geo(self, out, a, b, c):
         geo = out.geometry()
-        path = geo.attribValue("path")
+        path = ""
+        try:
+            path = geo.attribValue("path")
+        except:
+            print("path attribute doesn't exist on object (error in update_points_by_geo)")
+            return
 
         starting_point = None
         found = False
