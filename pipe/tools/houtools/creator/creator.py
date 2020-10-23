@@ -72,9 +72,7 @@ class Creator:
             else:
                 if self.type == AssetType.SET:
                     # create whole_set.json
-                    #FIXME: write this to better fit the pipe and remove the manual filepath
                     setPath = os.path.join(Project().get_assets_dir(), str(name), "model", "main", "cache", "")
-                    #filepath = "/groups/stowaway/Pipe/dccpipe/production/assets/" + str(name) + "/model/main/cache/"
                     exporter = JSONExporter()
                     exporter.createWholeSetJSON(setPath)
 
