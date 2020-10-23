@@ -7,7 +7,7 @@ export CURRENT_PROGRAM='nuke'
 cd ${USER_DIR}
 
 export ICONS_DIR=${MEDIA_PROJECT_DIR}'/pipe/tools/_resources/'
-export NUKE_LOCATION="/opt/Nuke11.3v5/Nuke11.3 --nukex"
+export NUKE_LOCATION="/opt/Nuke12.2v3/Nuke12.2 --nukex"
 export NUKE_TOOLS_DIR=${MEDIA_PROJECT_DIR}'/pipe/tools/nuketools/'
 export NUKE_PATH=${NUKE_TOOLS_DIR}
 export DCC_NUKE_ASSET_NAME=''
