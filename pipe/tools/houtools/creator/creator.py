@@ -1,3 +1,5 @@
+import os
+
 import pipe.gui.quick_dialogs as qd
 import pipe.gui.select_from_list as sfl
 from pipe.am.project import Project
@@ -71,9 +73,10 @@ class Creator:
                 if self.type == AssetType.SET:
                     # create whole_set.json
                     #FIXME: write this to better fit the pipe and remove the manual filepath
-                    filepath = "/groups/stowaway/Pipe/dccpipe/production/assets/" + str(name) + "/model/main/cache/"
+                    setPath = os.path.join(Project().get_assets_dir(), str(name), "model", "main", "cache", "")
+                    #filepath = "/groups/stowaway/Pipe/dccpipe/production/assets/" + str(name) + "/model/main/cache/"
                     exporter = JSONExporter()
-                    exporter.createWholeSetJSON(filepath)
+                    exporter.createWholeSetJSON(setPath)
 
                 assembler = Assembler()
                 assembler.create_hda(name, body=body)
