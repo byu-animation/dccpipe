@@ -126,6 +126,7 @@ class Publisher:
         except Exception as error:
             qd.error("No valid JSON file for " + str(set_name))
             return
+        print("INITIAL SET_DATA: " + str(set_data))
 
         items_in_set = []
         for item in set_data:
@@ -133,7 +134,10 @@ class Publisher:
             item_version = item['version_number']
             items_in_set.append(item_name)
 
+        print("Items in set: " + str(items_in_set))
+
         child_names = []
+        print("Children: " + str(children))
         for child in children:
             child_path = child.path()
             first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
@@ -157,7 +161,10 @@ class Publisher:
         #     if name not in items_in_set:
         #         set_data.append
 
+        print("starting to work on children")
         for child in children:
+            print("child: " + str(child))
+            print("current set_data: " + str(set_data))
             if child.type().name() == "dcc_geo":
                 inside = child.node("inside")
                 import_node = child.node("import")
@@ -199,7 +206,7 @@ class Publisher:
                     with open(prop_file) as f:
                         prop_data = json.load(f)
                 except Exception as error:
-                    qd.warning("No valid JSON file for " + str(name) + ". Skipping changes made to this asset.")
+                    print("No valid JSON file for " + str(name) + ". Skipping changes made to this asset.")
                     continue
 
                 for set_item in set_data:
@@ -217,8 +224,11 @@ class Publisher:
                 path = self.get_prim_path(out)
                 prop_data = {"asset_name": name, "version_number": 0, "path" : str(path), "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
                 set_data.append({"asset_name": str(name), "version_number": 0})
+                print("appended set_data: " + str(set_data))
                 new_version = 0
                 items_in_set.append(name)
+
+            print("current set_data: " + str(set_data))
 
             new_prop_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", str(name) + "_" + str(new_version) + ".json")
 
@@ -245,18 +255,20 @@ class Publisher:
             outfile.close()
 
             print("prop file updated for " + str(name))
+            print("")
 
             self.clear_transform(set_transform)
             self.set_space(child, set_name, name, new_version)
 
-            read_from_json = import_node.node("read_from_json")
-            read_from_json.parm("reload").pressButton()
 
-            outfile = open(set_file, "w")
-            print("set data: ", set_data)
-            updated_set_data = json.dumps(set_data)
-            outfile.write(updated_set_data)
-            outfile.close()
+        read_from_json = import_node.node("read_from_json")
+        read_from_json.parm("reload").pressButton()
+
+        outfile = open(set_file, "w")
+        print("set data: ", set_data)
+        updated_set_data = json.dumps(set_data)
+        outfile.write(updated_set_data)
+        outfile.close()
 
         qd.info("Set " + str(set_name) + " published successfully!")
 
