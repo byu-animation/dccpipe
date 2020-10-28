@@ -114,11 +114,13 @@ class Publisher:
             qd.error("No set found with that name. Please check naming and try again.")
             return
 
+        #get set node
         print("set: ", set)
         inside = set.node("inside")
         children = inside.children()
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
 
+        #get set data from JSON
         set_data = []
         try:
             with open(set_file) as f:
@@ -126,7 +128,7 @@ class Publisher:
         except Exception as error:
             qd.error("No valid JSON file for " + str(set_name))
             return
-        print("INITIAL SET_DATA: " + str(set_data))
+        print("SET_DATA FROM JSON: " + str(set_data))
 
         items_in_set = []
         for item in set_data:
@@ -134,18 +136,33 @@ class Publisher:
             item_version = item['version_number']
             items_in_set.append(item_name)
 
-        print("Items in set: " + str(items_in_set))
+        print("Items in set from JSON: " + str(items_in_set))
 
+        #make list of props in houdini's set
         child_names = []
-        print("Children: " + str(children))
+        print("Items IN HOUDINI: " + str(children))
+        print("Asset Names:")
         for child in children:
             child_path = child.path()
-            first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
-            name = child_path.split('/')[-1]
-            name = first_char_to_lower(name)
+            #first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
+            #name = child_path.split('/')[-1]
+            #name = first_char_to_lower(name)
+            name = node.parm('asset_name').eval()
+            print(name)
             child_names.append(name)
-        print("child names; ", child_names)
+        #print("child names; ", child_names)
 
+        '''
+        Basically the idea here is to get the set data from whole_set.json,
+        get the set data from Houdini, and then compare the two.
+        Here are the possible scenarios:
+            1. There are items in the JSON file that aren't in the Houdini Set
+                -remove the item from the Json file
+            2. There are items in the Houdini Set that aren't in the JSON file
+                -Add those to the JSON file
+        '''
+
+        #Remove props from set if they were removed in houdini
         for item in set_data:
             if str(item['asset_name']) not in child_names:
                 set_data.remove(item)
@@ -161,7 +178,7 @@ class Publisher:
         #     if name not in items_in_set:
         #         set_data.append
 
-        print("starting to work on children")
+        print("starting to work on children\n")
         for child in children:
             print("child: " + str(child))
             print("current set_data: " + str(set_data))
