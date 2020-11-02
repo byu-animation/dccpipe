@@ -358,7 +358,7 @@ def find_first_mesh(rootNode):
                 break
             elif not isinstance(child, pm.nodetypes.Transform):
                 continue
-            if is_acceptable_anchor(child.getShape()):      #child.getShape() is not None:
+            if child.getShape() is not None: #is_acceptable_anchor(child.getShape()):
                 firstMesh = child.getShape()
                 path = path + "/" + strip_reference(child.name()) + "/" + strip_reference(child.getShape().name())
                 break
