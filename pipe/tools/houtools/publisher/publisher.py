@@ -147,7 +147,7 @@ class Publisher:
             #first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
             #name = child_path.split('/')[-1]
             #name = first_char_to_lower(name)
-            name = node.parm('asset_name').eval()
+            name = child.parm('asset_name').eval()
             print(name)
             child_names.append(name)
         #print("child names; ", child_names)
