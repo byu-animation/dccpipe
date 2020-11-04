@@ -163,9 +163,13 @@ class Publisher:
         '''
 
         #Remove props from set if they were removed in houdini
+        #print("checking to see if items were removed...")
         for item in set_data:
+            print("Current Item: " + str(item))
             if str(item['asset_name']) not in child_names:
+                print("\tRemoving item from the set because it's not in houdini: " + str(item))
                 set_data.remove(item)
+                items_in_set.remove(item['asset_name'])
 
         # TODO: To allow adding multiple copies of the same prop to a set in houdini, we'll want to add as many copies to the whole_set.json file
         # for child_name in child_names:
@@ -237,6 +241,7 @@ class Publisher:
                 # right now it's looking for the path detail attribute, which doesn't exist on a prop
                 # both in the object space and the set space,
                 # the path attribute only appears when it's part of an already exported set
+                # HOWEVER, the path attribute IS present in the primitives
                 print(str(name) + " not found in set file.")
                 path = self.get_prim_path(out)
                 prop_data = {"asset_name": name, "version_number": 0, "path" : str(path), "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
@@ -299,10 +304,16 @@ class Publisher:
         return path
 
     def update_points_by_geo(self, out, a, b, c):
+        print("Updating points by geo:")
+        print("Out is " + str(out))
+        print("a: " + str(a))
+        print("b: " + str(b))
+        print("c: " + str(c))
         geo = out.geometry()
         path = ""
         try:
-            path = geo.attribValue("path")
+            #path = geo.attribValue("path")
+            path = geo.findPrimAttrib("path").strings()[0]
         except:
             print("path attribute doesn't exist on object (error in update_points_by_geo)")
             return
