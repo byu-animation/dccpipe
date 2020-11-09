@@ -205,9 +205,9 @@ class Publisher:
                 continue
 
             # get transform parms: t is translate, r rotate and s scale (with associated x,y,z vals)
-            tx, ty, tz = self.get_transform(set_transform, "tx", "ty", "tz")
-            rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
-            sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
+            #tx, ty, tz = self.get_transform(set_transform, "tx", "ty", "tz")
+            #rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
+            #sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
 
             cache_dir = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache")
             print("filepath: ", cache_dir)
