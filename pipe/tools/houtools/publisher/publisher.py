@@ -164,7 +164,7 @@ class Publisher:
 
         #edit lists to only contain items that were explicitly in the set in Houdini
         set_data[:] = [item for item in set_data if str(item['asset_name']) in child_names]
-        items_in_set[:] = [item for item in set_data if str(item['asset_name']) in child_names]
+        items_in_set[:] = [item['asset_name'] for item in set_data if str(item['asset_name']) in child_names]
         print("new set data: " + str(set_data))
         print("new items in set: " + str(items_in_set))
 
