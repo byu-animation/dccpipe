@@ -162,14 +162,12 @@ class Publisher:
                 -Add those to the JSON file
         '''
 
-        #Remove props from set if they were removed in houdini
-        #print("checking to see if items were removed...")
-        for item in set_data:
-            print("Current Item: " + str(item))
-            if str(item['asset_name']) not in child_names:
-                print("\tRemoving item from the set because it's not in houdini: " + str(item))
-                set_data.remove(item)
-                items_in_set.remove(item['asset_name'])
+        #edit lists to only contain items that were explicitly in the set in Houdini
+        set_data[:] = [item for item in set_data if str(item['asset_name']) in child_names]
+        items_in_set[:] = [item for item in set_data if str(item['asset_name']) in child_names]
+        print("new set data: " + str(set_data))
+        print("new items in set: " + str(items_in_set))
+
 
         # TODO: To allow adding multiple copies of the same prop to a set in houdini, we'll want to add as many copies to the whole_set.json file
         # for child_name in child_names:
