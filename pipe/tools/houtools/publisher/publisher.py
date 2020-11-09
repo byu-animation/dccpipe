@@ -281,8 +281,11 @@ class Publisher:
             self.set_space(child, set_name, name, new_version)
 
 
-        read_from_json = import_node.node("read_from_json")
-        read_from_json.parm("reload").pressButton()
+        try:
+            read_from_json = import_node.node("read_from_json")
+            read_from_json.parm("reload").pressButton()
+        except:
+            print("no nodes are in the set, cannot read from JSON")
 
         outfile = open(set_file, "w")
         print("set data: ", set_data)
