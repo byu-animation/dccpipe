@@ -114,6 +114,9 @@ class Publisher:
             qd.error("No set found with that name. Please check naming and try again.")
             return
 
+        #migrate transforms for all the children to set_dressing_transform
+        self.update_set_dressing_transform(set)
+
         #get set node
         print("set: ", set)
         inside = set.node("inside")
@@ -144,13 +147,9 @@ class Publisher:
         print("Asset Names:")
         for child in children:
             child_path = child.path()
-            #first_char_to_lower = lambda s: s[:1].lower() + s[1:] if s else ''
-            #name = child_path.split('/')[-1]
-            #name = first_char_to_lower(name)
             name = child.parm('asset_name').eval()
             print(name)
             child_names.append(name)
-        #print("child names; ", child_names)
 
         '''
         Basically the idea here is to get the set data from whole_set.json,
@@ -204,11 +203,6 @@ class Publisher:
                 qd.warning(str(name) + " not found in pipe. Please check that node is named correctly.")
                 continue
 
-            # get transform parms: t is translate, r rotate and s scale (with associated x,y,z vals)
-            #tx, ty, tz = self.get_transform(set_transform, "tx", "ty", "tz")
-            #rx, ry, rz = self.get_transform(set_transform, "rx", "ry", "rz")
-            #sx, sy, sz = self.get_transform(set_transform, "sx", "sy", "sz")
-
             cache_dir = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache")
             print("filepath: ", cache_dir)
             latest_version, version_string = self.body.version_prop_json(name, cache_dir)
@@ -236,10 +230,7 @@ class Publisher:
                             break
 
             else:
-                # right now it's looking for the path detail attribute, which doesn't exist on a prop
-                # both in the object space and the set space,
-                # the path attribute only appears when it's part of an already exported set
-                # HOWEVER, the path attribute IS present in the primitives
+                # create blank prop data and add it to the set
                 print(str(name) + " not found in set file.")
                 path = self.get_prim_path(out)
                 prop_data = {"asset_name": name, "version_number": 0, "path" : str(path), "a" : [0, 0, 0], "b" : [0, 0, 0], "c" : [0, 0, 0] }
@@ -362,12 +353,20 @@ class Publisher:
         c[1] = c_y
         c[2] = c_z
 
-    def get_transform(self, child, parm1, parm2, parm3):
-        x = child.parm(parm1).evalAsFloat()
-        y = child.parm(parm2).evalAsFloat()
-        z = child.parm(parm3).evalAsFloat()
+    def get_full_transform(self, child):
+        tx = child.parm("tx").evalAsFloat()
+        ty = child.parm("ty").evalAsFloat()
+        tz = child.parm("tz").evalAsFloat()
+        rx = child.parm("rx").evalAsFloat()
+        ry = child.parm("ry").evalAsFloat()
+        rz = child.parm("rz").evalAsFloat()
+        sx = child.parm("sx").evalAsFloat()
+        sy = child.parm("sy").evalAsFloat()
+        sz = child.parm("sz").evalAsFloat()
+        scale = child.parm("scale").evalAsFloat()
 
-        return x, y, z
+        return tx, ty, tz, rx, ry, rz, sx, sy, sz, scale
+
 
     def set_space(self, child, set_name, child_name, version_number):
         if child.type().name() == "dcc_geo":
@@ -382,8 +381,8 @@ class Publisher:
         child.parm("version_number").eval()
 
     def clear_transform(self, child):
-        parm_scale_list = ["sx", "sy", "sz"]
-        parm_list = ["tx", "ty", "tz", "rx", "ry", "rz", "sx", "sy", "sz"]
+        parm_scale_list = ["sx", "sy", "sz", "scale"]
+        parm_list = ["tx", "ty", "tz", "rx", "ry", "rz", "sx", "sy", "sz", "scale"]
 
         for parm in parm_list:
             if parm not in parm_scale_list:
@@ -391,6 +390,39 @@ class Publisher:
             else:
                 child.parm(parm).set(1.0)
             child.parm(parm).eval()
+
+    def update_set_dressing_transform(self, setNode):
+        print("Updating set_dressing_transform....")
+        print(setNode)
+        insideNode = setNode.children()
+        setNode = insideNode[0]
+        propNodes = setNode.children()
+        print("Path to Set: " + str(setNode.path()))
+        print("Nodes inside the set: " + str(propNodes))
+        for geo in propNodes:
+            tx, ty, tz, rx, ry, rz, sx, sy, sz, scale = self.get_full_transform(geo)
+
+            inside = geo.node("inside")
+            transformNode = inside.node("set_dressing_transform")
+
+            old_tx, old_ty, old_tz, old_rx, old_ry, old_rz, old_sx, old_sy, old_sz, old_scale = self.get_full_transform(transformNode)
+            old_sx -= 1.0
+            old_sy -= 1.0
+            old_sz -= 1.0
+            old_scale -= 1.0
+
+            transformNode.parm("tx").set(tx + old_tx)
+            transformNode.parm("ty").set(ty + old_ty)
+            transformNode.parm("tz").set(tz + old_tz)
+            transformNode.parm("rx").set(rx + old_rx)
+            transformNode.parm("ry").set(ry + old_ry)
+            transformNode.parm("rz").set(rz + old_rz)
+            transformNode.parm("sx").set(sx + old_sx)
+            transformNode.parm("sy").set(sy + old_sy)
+            transformNode.parm("sz").set(sz + old_sz)
+            transformNode.parm("scale").set(scale + old_scale)
+
+            self.clear_transform(geo)
 
     def publish_shot(self):
         scene = hou.hipFile.name()
