@@ -30,12 +30,12 @@ class USD_Stager:
         #WIP version, currently testing in Houdini's python editor
         #import hou
 
-        stage = hou.node("/stage/TestNet")
+        stage = hou.node("/stage")
         obj = hou.node("/obj")
 
         #CODE TO DELETE EVERYTHING FOR TESTING PURPOSES
-        for node in stage.children():
-            node.destroy()
+        #for node in stage.children():
+        #    node.destroy()
 
 
         objObjects = obj.children()
@@ -45,98 +45,176 @@ class USD_Stager:
 
         for child in objObjects:
 
-            print("Child: " + str(child))
-            print(child.type())
+            #print("Child: " + str(child))
+            #print(child.type())
 
             if child.type().name() == "dcc_character":
+                print("Working on " + str(child))
                 name = str(child)
                 character = stage.createNode("sopimport", name)
 
-                hou.cd(child.path())
-                sopGeo = hou.node("inside/geo")
-                path = sopGeo.path()
-                character.parm("soppath").set(path)
+                pathToSop = setSopPath(child, character, True)
+                materialPaths = getMaterials(pathToSop)
 
                 material = stage.createNode("materiallibrary", name + "_Materials")
                 material.setInput(0, character)
+                setMaterialPath(child, material, True)
+
+                fillMaterials(material, materialPaths)
 
                 characters.append(material)
 
             if child.type().name() == "dcc_geo":
+                print("Working on " + str(child))
                 name = str(child)
                 geo = stage.createNode("sopimport", name)
 
-                hou.cd(child.path())
-                sopGeo = hou.node("inside/OUT")
-                path = sopGeo.path()
-                geo.parm("soppath").set(path)
+                pathToSop = setSopPath(child, geo)
+                materialPaths = getMaterials(pathToSop)
 
                 material = stage.createNode("materiallibrary", name + "_Materials")
                 material.setInput(0, geo)
+                setMaterialPath(child, material)
+
+                fillMaterials(material, materialPaths)
 
                 props.append(material)
 
 
             if child.type().name() == "dcc_set":
+                print("Working on " + str(child))
                 setName = str(child)
                 setChildren = child.children()[0].children()
                 set = []
                 for setGeo in setChildren:
+                    print("\tWorking on " + str(setGeo))
                     name = setName + "_" + str(setGeo)
                     setGeoNode = stage.createNode("sopimport", name)
 
-                    hou.cd(setGeo.path())
-                    sopGeo = hou.node("inside/OUT")
-                    path = sopGeo.path()
-                    setGeoNode.parm("soppath").set(path)
+                    pathToSop = setSopPath(setGeo, setGeoNode)
+                    materialPaths = getMaterials(pathToSop)
 
                     material = stage.createNode("materiallibrary", name + "_Materials")
                     material.setInput(0, setGeoNode)
+                    setMaterialPath(setGeo, material)
+
+                    fillMaterials(material, materialPaths)
 
                     set.append(material)
 
                 sets[setName] = set
 
-            print("")
+            #print("")
         mergeNode = stage.createNode("merge", "MERGE_ALL")
         mergeNodes = []
 
         characterMerge = stage.createNode("merge", "Character_Merge")
         mergeNodes.append(characterMerge)
-        i = 0
-        for node in characters:
-            characterMerge.setInput(i, node)
-            i+=1
+        connectNodes(characters, characterMerge)
 
         propMerge = stage.createNode("merge", "Prop_Merge")
         mergeNodes.append(propMerge)
-        i = 0
-        for node in props:
-            propMerge.setInput(i, node)
-            i+=1
+        connectNodes(props, propMerge)
 
         setMergeAll = stage.createNode("merge", "Set_Merge_ALL")
         setMergeNodes = []
         mergeNodes.append(setMergeAll)
-        print("sets: " + str(sets))
+        #print("sets: " + str(sets))
         for set in sets:
-            print(set)
+            #print(set)
             name = "Set_Merge_" + str(set)
             setMerge = stage.createNode("merge", name)
             setMergeNodes.append(setMerge)
-            i = 0
-            for node in sets[set]:
-                setMerge.setInput(i, node)
-                i+=1
+            connectNodes(sets[set], setMerge)
 
-        i = 0
-        for node in setMergeNodes:
-            setMergeAll.setInput(i, node)
-            i+=1
+        connectNodes(setMergeNodes, setMergeAll)
+        connectNodes(mergeNodes, mergeNode)
 
-        i = 0
-        for node in mergeNodes:
-            mergeNode.setInput(i, node)
-            i+=1
+        mergeNode.setDisplayFlag(True)
+        stage.layoutChildren(items=(stage.children()))
+
 
         print("\n")
+
+    def setSopPath(self, child, sopImportNode, isCharacter=False):
+
+        pathString = "inside/OUT"
+
+        if isCharacter:
+            pathString = "inside/geo/inside/OUT"
+
+        hou.cd(child.path())
+        sopGeo = hou.node(pathString)
+        path = sopGeo.path()
+
+        result = sopImportNode.parm("soppath").set(path)
+
+        return path
+
+    def setMaterialPath(self, child, materialLibrary, isCharacter=False):
+
+        pathString = "inside/material/material_network/material_network"
+
+        if isCharacter:
+            pathString = "inside/geo/inside/material/material_network/material_network"
+
+        hou.cd(child.path())
+        materialNetwork = hou.node(pathString)
+        path = materialNetwork.path()
+
+        materialLibrary.parm("matnet").set(path)
+        materialLibrary.parm("fillmaterials").pressButton()
+
+    def getMaterials(self, pathToSop):
+        sop = hou.node(pathToSop)
+        #pathAttrib = sop.geometry().findPrimAttrib("path")
+        shopAttrib = sop.geometry().findPrimAttrib("shop_materialpath")
+
+        materialPaths = {}
+
+        for prim in sop.geometry().prims():
+            pathValue = prim.attribValue("path")
+            pathValue = pathValue.replace(":", "_")
+            pathValue = pathValue[0:pathValue.rfind('/')]
+
+            if shopAttrib is not None:
+                try:
+                    shopValue = prim.attribValue("shop_materialpath")
+
+                    if pathValue not in materialPaths and shopValue is not "":
+                        materialPaths[pathValue] = shopValue
+                except:
+                    print(str(pathToSop) + " does not have any materials assigned")
+
+        return materialPaths
+
+    def fillMaterials(self, material, materialPaths):
+        materialCount = material.parm("materials").evalAsInt()
+        #print(materialCount)
+        for i in range(1, materialCount+1):
+            geoParm = "geopath" + str(i)
+            matParm = "matnode" + str(i)
+            materialVOP = material.parm(matParm).eval()
+            pos = materialVOP.find('/obj')
+            #print(pos.type())
+            materialVOP = materialVOP[pos:]
+            #print(materialVOP)
+
+            #potential for multiple geo paths so we need to first find
+            #and then concatenate the paths together
+            combinedGeoPath = ""
+            for key, value in materialPaths.items():
+                if value == materialVOP:
+                    combinedGeoPath+= key + " "
+
+            try:
+                material.parm(geoParm).set(combinedGeoPath)
+            except:
+                print("exception occurred")
+                continue
+
+    def connectNodes(self, upperNodes, lowerNode):
+        i = 0
+        for node in upperNodes:
+            lowerNode.setInput(i, node)
+            i+=1
