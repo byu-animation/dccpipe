@@ -354,18 +354,25 @@ class Publisher:
         c[2] = c_z
 
     def get_full_transform(self, child):
-        tx = child.parm("tx").evalAsFloat()
-        ty = child.parm("ty").evalAsFloat()
-        tz = child.parm("tz").evalAsFloat()
-        rx = child.parm("rx").evalAsFloat()
-        ry = child.parm("ry").evalAsFloat()
-        rz = child.parm("rz").evalAsFloat()
-        sx = child.parm("sx").evalAsFloat()
-        sy = child.parm("sy").evalAsFloat()
-        sz = child.parm("sz").evalAsFloat()
-        scale = child.parm("scale").evalAsFloat()
+        try:
+            tx = child.parm("tx").evalAsFloat()
+            ty = child.parm("ty").evalAsFloat()
+            tz = child.parm("tz").evalAsFloat()
+            rx = child.parm("rx").evalAsFloat()
+            ry = child.parm("ry").evalAsFloat()
+            rz = child.parm("rz").evalAsFloat()
+            sx = child.parm("sx").evalAsFloat()
+            sy = child.parm("sy").evalAsFloat()
+            sz = child.parm("sz").evalAsFloat()
+            scale = child.parm("scale").evalAsFloat()
 
-        return tx, ty, tz, rx, ry, rz, sx, sy, sz, scale
+            return tx, ty, tz, rx, ry, rz, sx, sy, sz, scale
+        except:
+            print("ERROR OCCURRED IN GET_FULL_TRANSFORM: " + str(child) + " had an issue with transforms")
+            return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+
+
+
 
 
     def set_space(self, child, set_name, child_name, version_number):
