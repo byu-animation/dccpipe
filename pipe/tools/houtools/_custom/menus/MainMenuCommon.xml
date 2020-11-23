@@ -223,6 +223,26 @@ publisher.publish_shot()
 		</subMenu>
 		<!-- ============================ End Publish subMenu =========================== -->
 
+		<!-- ============================ Start Stage subMenu =========================== -->
+		<subMenu id="stage_menu">
+			<label>Stage</label>
+			<!-- ============================ Start Initialize USD Stage Tool =========================== -->
+			<scriptItem id="h.initStage">
+				<label>Initialize USD Stage</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.stager import stager
+import hou
+stager = stager.Stager()
+hou.session.stager = stager
+stager.initializeStageNetwork()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Initialize USD Stage Tool =========================== -->
+		</subMenu>
+		<!-- ============================ End Stage subMenu =========================== -->
+
 		<!-- ============================ Start Utilities subMenu =========================== -->
 		<subMenu id="utils_menu">
 			<label>Utilities</label>
