@@ -160,6 +160,7 @@ class Stager:
 
         materialPaths = {}
 
+        #TODO: Find a more optimized way of getting materials?
         for prim in sop.geometry().prims():
             pathValue = prim.attribValue("path")
             pathValue = pathValue.replace(":", "_")
