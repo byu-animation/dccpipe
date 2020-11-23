@@ -16,7 +16,7 @@ from PySide2.QtCore import Signal, Slot
 
 
 '''
-USD Stager is a class dedicated to scripts that convert /obj objects into /stage
+Stager is a class dedicated to scripts that convert /obj objects into /stage
 objects so that the artists don't have to do that manually. Specifically,
 this will deal with importing SOPs from DCC nodes, and then re-attaching the
 materials to them automatically.
@@ -27,8 +27,6 @@ class Stager:
         self.select_from_list_dialog = None
 
     def initializeStageNetwork(self):
-        #WIP version, currently testing in Houdini's python editor
-        #import hou
 
         stage = hou.node("/stage")
         obj = hou.node("/obj")
@@ -45,41 +43,13 @@ class Stager:
 
         for child in objObjects:
 
-            #print("Child: " + str(child))
-            #print(child.type())
-
             if child.type().name() == "dcc_character":
-                print("Working on " + str(child))
-                name = str(child)
-                character = stage.createNode("sopimport", name)
-
-                pathToSop = setSopPath(child, character, True)
-                materialPaths = getMaterials(pathToSop)
-
-                material = stage.createNode("materiallibrary", name + "_Materials")
-                material.setInput(0, character)
-                setMaterialPath(child, material, True)
-
-                fillMaterials(material, materialPaths)
-
+                material = self.createAndFillSop(stage, child, True)
                 characters.append(material)
 
             if child.type().name() == "dcc_geo":
-                print("Working on " + str(child))
-                name = str(child)
-                geo = stage.createNode("sopimport", name)
-
-                pathToSop = setSopPath(child, geo)
-                materialPaths = getMaterials(pathToSop)
-
-                material = stage.createNode("materiallibrary", name + "_Materials")
-                material.setInput(0, geo)
-                setMaterialPath(child, material)
-
-                fillMaterials(material, materialPaths)
-
+                material = self.createAndFillSop(stage, child, False)
                 props.append(material)
-
 
             if child.type().name() == "dcc_set":
                 print("Working on " + str(child))
@@ -87,54 +57,72 @@ class Stager:
                 setChildren = child.children()[0].children()
                 set = []
                 for setGeo in setChildren:
-                    print("\tWorking on " + str(setGeo))
-                    name = setName + "_" + str(setGeo)
-                    setGeoNode = stage.createNode("sopimport", name)
-
-                    pathToSop = setSopPath(setGeo, setGeoNode)
-                    materialPaths = getMaterials(pathToSop)
-
-                    material = stage.createNode("materiallibrary", name + "_Materials")
-                    material.setInput(0, setGeoNode)
-                    setMaterialPath(setGeo, material)
-
-                    fillMaterials(material, materialPaths)
-
+                    material = self.createAndFillSop(stage, setGeo, False)
                     set.append(material)
 
                 sets[setName] = set
 
-            #print("")
-        mergeNode = stage.createNode("merge", "MERGE_ALL")
+        #connect geo nodes together
+        mergeNode = stage.createNode("merge", "MERGE_ALL_GEO")
         mergeNodes = []
 
         characterMerge = stage.createNode("merge", "Character_Merge")
         mergeNodes.append(characterMerge)
-        connectNodes(characters, characterMerge)
+        self.connectNodes(characters, characterMerge)
 
         propMerge = stage.createNode("merge", "Prop_Merge")
         mergeNodes.append(propMerge)
-        connectNodes(props, propMerge)
+        self.connectNodes(props, propMerge)
 
         setMergeAll = stage.createNode("merge", "Set_Merge_ALL")
         setMergeNodes = []
         mergeNodes.append(setMergeAll)
-        #print("sets: " + str(sets))
+
         for set in sets:
             #print(set)
             name = "Set_Merge_" + str(set)
             setMerge = stage.createNode("merge", name)
             setMergeNodes.append(setMerge)
-            connectNodes(sets[set], setMerge)
+            self.connectNodes(sets[set], setMerge)
 
-        connectNodes(setMergeNodes, setMergeAll)
-        connectNodes(mergeNodes, mergeNode)
+        self.connectNodes(setMergeNodes, setMergeAll)
+        self.connectNodes(mergeNodes, mergeNode)
 
-        mergeNode.setDisplayFlag(True)
+        #import camera
+        camera = stage.createNode("sceneimport", "camera_import")
+        camera.parm("filter").set("!!OBJ/CAMERA!!")
+        camera.parm("objects").set("*")
+        camera.setInput(0, mergeNode)
+
+        #create light merge
+        lightMerge = stage.createNode("merge", "Light_Merge")
+        lightMerge.setInput(0, camera)
+
+        #create renderman node
+        renderNode = stage.createNode("hdprman", "OUT_RENDER")
+        renderNode.setInput(0, lightMerge)
+
+        renderNode.setDisplayFlag(True)
         stage.layoutChildren(items=(stage.children()))
 
-
         print("\n")
+
+    def createAndFillSop(self, stage, child, isCharacter=False):
+        print("Working on " + str(child))
+        name = str(child)
+        sopImport = stage.createNode("sopimport", name)
+
+        pathToSop = self.setSopPath(child, sopImport, isCharacter)
+        materialPaths = self.getMaterials(pathToSop)
+
+        materialLibraryNode = stage.createNode("materiallibrary", name + "_Materials")
+        materialLibraryNode.setInput(0, sopImport)
+        self.setMaterialPath(child, materialLibraryNode, isCharacter)
+
+        self.fillMaterials(materialLibraryNode, materialPaths)
+
+        return materialLibraryNode
+
 
     def setSopPath(self, child, sopImportNode, isCharacter=False):
 
