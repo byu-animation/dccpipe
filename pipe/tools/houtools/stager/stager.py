@@ -21,7 +21,7 @@ objects so that the artists don't have to do that manually. Specifically,
 this will deal with importing SOPs from DCC nodes, and then re-attaching the
 materials to them automatically.
 '''
-class USD_Stager:
+class Stager:
 
     def __init__(self):
         self.select_from_list_dialog = None
