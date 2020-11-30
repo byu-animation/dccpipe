@@ -240,6 +240,21 @@ stager.initializeStageNetwork()
 				</scriptCode>
 			</scriptItem>
 			<!-- ============================ End Initialize USD Stage Tool =========================== -->
+
+			<!-- ============================ Start Import Asset Tool =========================== -->
+			<scriptItem id="h.importAsset">
+				<label>Import Asset to Stage</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.stager import stager
+import hou
+stager = stager.Stager()
+hou.session.stager = stager
+stager.importAssetToStage()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Import Asset Tool =========================== -->
 		</subMenu>
 		<!-- ============================ End Stage subMenu =========================== -->
 

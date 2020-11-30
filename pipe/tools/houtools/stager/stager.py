@@ -10,6 +10,8 @@ from pipe.am.project import Project
 from pipe.am.body import AssetType
 from pipe.am.environment import Environment, Department  # , Status
 
+import pipe.gui.quick_dialogs as qd
+
 from PySide2 import QtCore
 from PySide2 import QtWidgets
 from PySide2.QtCore import Signal, Slot
@@ -27,7 +29,45 @@ class Stager:
         self.select_from_list_dialog = None
 
     def initializeStageNetwork(self):
+        stage = hou.node("/stage")
+        obj = hou.node("/obj")
+        objObjects = obj.children()
+        mergeNode = self.iterateAndMergeObjects(objObjects)
 
+        #import camera
+        camera = stage.createNode("sceneimport", "camera_import")
+        camera.parm("filter").set("!!OBJ/CAMERA!!")
+        camera.parm("objects").set("*")
+        camera.setInput(0, mergeNode)
+
+        #create light merge
+        lightMerge = stage.createNode("merge", "Light_Merge")
+        lightMerge.setInput(0, camera)
+
+        #create renderman node
+        renderNode = stage.createNode("hdprman", "OUT_RENDER")
+        renderNode.setInput(0, lightMerge)
+
+        renderNode.setDisplayFlag(True)
+        stage.layoutChildren(items=(stage.children()))
+
+        print("\n")
+
+
+    def importAssetToStage(self):
+        stage = hou.node("/stage")
+        obj = hou.node("/obj")
+        selected = hou.selectedNodes()
+        if len(selected) < 1:
+            qd.error("No Nodes selected, select at least one DCC Node to import to stage. \nNote:Only DCC Nodes are supported!")
+        else:
+            mergeNode = self.iterateAndMergeObjects(selected)
+            #mergeNode.setDisplayFlag(True)
+            stage.layoutChildren(items=(stage.children()))
+            qd.info("Asset Imported Successfully!")
+
+
+    def iterateAndMergeObjects(self, objects):
         stage = hou.node("/stage")
         obj = hou.node("/obj")
 
@@ -36,12 +76,12 @@ class Stager:
         #    node.destroy()
 
 
-        objObjects = obj.children()
+        #objObjects = obj.children()
         characters = []
         props = []
         sets = {}
 
-        for child in objObjects:
+        for child in objects:
 
             if child.type().name() == "dcc_character":
                 material = self.createAndFillSop(stage, child, True)
@@ -66,46 +106,36 @@ class Stager:
         mergeNode = stage.createNode("merge", "MERGE_ALL_GEO")
         mergeNodes = []
 
-        characterMerge = stage.createNode("merge", "Character_Merge")
-        mergeNodes.append(characterMerge)
-        self.connectNodes(characters, characterMerge)
+        if len(characters) > 0:
+            characterMerge = stage.createNode("merge", "Character_Merge")
+            mergeNodes.append(characterMerge)
+            self.connectNodes(characters, characterMerge)
 
-        propMerge = stage.createNode("merge", "Prop_Merge")
-        mergeNodes.append(propMerge)
-        self.connectNodes(props, propMerge)
+        if len(props) > 0:
+            propMerge = stage.createNode("merge", "Prop_Merge")
+            mergeNodes.append(propMerge)
+            self.connectNodes(props, propMerge)
 
-        setMergeAll = stage.createNode("merge", "Set_Merge_ALL")
-        setMergeNodes = []
-        mergeNodes.append(setMergeAll)
+        if len(sets) > 0:
+            setMergeAll = stage.createNode("merge", "Set_Merge_ALL")
+            setMergeNodes = []
+            mergeNodes.append(setMergeAll)
 
-        for set in sets:
-            #print(set)
-            name = "Set_Merge_" + str(set)
-            setMerge = stage.createNode("merge", name)
-            setMergeNodes.append(setMerge)
-            self.connectNodes(sets[set], setMerge)
+            for set in sets:
+                #print(set)
+                name = "Set_Merge_" + str(set)
+                setMerge = stage.createNode("merge", name)
+                setMergeNodes.append(setMerge)
+                self.connectNodes(sets[set], setMerge)
 
-        self.connectNodes(setMergeNodes, setMergeAll)
+            self.connectNodes(setMergeNodes, setMergeAll)
+
         self.connectNodes(mergeNodes, mergeNode)
 
-        #import camera
-        camera = stage.createNode("sceneimport", "camera_import")
-        camera.parm("filter").set("!!OBJ/CAMERA!!")
-        camera.parm("objects").set("*")
-        camera.setInput(0, mergeNode)
+        return mergeNode
 
-        #create light merge
-        lightMerge = stage.createNode("merge", "Light_Merge")
-        lightMerge.setInput(0, camera)
 
-        #create renderman node
-        renderNode = stage.createNode("hdprman", "OUT_RENDER")
-        renderNode.setInput(0, lightMerge)
 
-        renderNode.setDisplayFlag(True)
-        stage.layoutChildren(items=(stage.children()))
-
-        print("\n")
 
     def createAndFillSop(self, stage, child, isCharacter=False):
         print("Working on " + str(child))
