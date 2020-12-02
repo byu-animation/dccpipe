@@ -141,6 +141,8 @@ class Stager:
         print("Working on " + str(child))
         name = str(child)
         sopImport = stage.createNode("sopimport", name)
+        sopImport.parm("enable_polygonsassubd").set(1)
+        sopImport.parm("polygonsassubd").set(1)
 
         pathToSop = self.setSopPath(child, sopImport, isCharacter)
         materialPaths = self.getMaterials(pathToSop)
