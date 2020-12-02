@@ -44,9 +44,16 @@ class Stager:
         lightMerge = stage.createNode("merge", "Light_Merge")
         lightMerge.setInput(0, camera)
 
+        #create render settings for lights
+        lightSettings = stage.createNode("rendergeometrysettings", "Light_Render_Settings")
+        lightSettings.parm("primpattern").set("{ usd_istype(0, @primpath, \"Light\") }")
+        lightSettings.parm("xn__primvarsriattributesvisibilitycamera_control_sdcckk").set("set")
+        lightSettings.parm("xn__primvarsriattributesvisibilitycamera_rzbckk").set(0)
+        lightSettings.setInput(0, lightMerge)
+
         #create renderman node
         renderNode = stage.createNode("hdprman", "OUT_RENDER")
-        renderNode.setInput(0, lightMerge)
+        renderNode.setInput(0, lightSettings)
 
         renderNode.setDisplayFlag(True)
         stage.layoutChildren(items=(stage.children()))
