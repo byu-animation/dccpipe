@@ -378,7 +378,7 @@ class AlembicExporter:
             auto_sub = "-autoSubd"
 
         # Then here is the actual Alembic Export command for Mel. For abcExport docs, run AbcExport -h in Maya
-        command = 'AbcExport -j "-frameRange %s %s -uvWrite %s -noNormals -worldSpace -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), auto_sub, roots_string, outFilePath)
+        command = 'AbcExport -j "-frameRange %s %s -writeVisibility -uvWrite %s -noNormals -worldSpace -dataFormat ogawa %s -file %s"'%(str(startFrame), str(endFrame), auto_sub, roots_string, outFilePath)
         return command
 
     def get_all_tagged_nodes(self, tag="DCC_Alembic_Export_Flag"):
