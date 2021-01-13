@@ -301,6 +301,22 @@ snapshot_tool.run()
 				</scriptCode>
 			</scriptItem>
 			<!-- ============================ End Snapshot Tool =========================== -->
+
+			<!-- ============================ Start Generate ROP Tool =========================== -->
+			<scriptItem id="h.generate_rop">
+				<label>Generate ROP</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.utils.generate_rop import GenerateROP
+import hou
+generate_rop = GenerateROP()
+hou.session.generate_rop = generate_rop
+generate_rop.go()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Generate ROP Tool =========================== -->
+
 		</subMenu>
 		<!-- ============================ End Utilities subMenu =========================== -->
 
