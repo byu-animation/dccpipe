@@ -186,6 +186,7 @@ class Publisher:
             if child.type().name() == "dcc_geo":
                 inside = child.node("inside")
                 import_node = child.node("import")
+                child.parm("Scale_Object").set(0)
             else:
                 inside = child.node("inside")
                 geo = inside.node("geo")
