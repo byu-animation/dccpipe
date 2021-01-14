@@ -33,6 +33,7 @@ class GenerateROP:
         renderNode.parm("trange").set("normal")
         renderNode.parm("ri_quickaov_z_0").set(1)
         renderNode.parm("ri_device_0").set("openexr")
+        renderNode.parm("allowmotionblur").set(1)
 
         assetDirectory = Project().get_assets_dir()
         hipName = hou.hipFile.name()
