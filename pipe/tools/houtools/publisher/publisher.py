@@ -181,12 +181,15 @@ class Publisher:
 
         print("starting to work on children\n")
         for child in children:
+            isScaled = False
             print("child: " + str(child))
             print("current set_data: " + str(set_data))
             if child.type().name() == "dcc_geo":
                 inside = child.node("inside")
                 import_node = child.node("import")
-                child.parm("Scale_Object").set(0)
+                if child.parm("Scale_Object").evalAsInt() == 1:
+                    child.parm("Scale_Object").set(0)
+                    isScaled = True
             else:
                 inside = child.node("inside")
                 geo = inside.node("geo")
@@ -271,6 +274,9 @@ class Publisher:
 
             self.clear_transform(set_transform)
             self.set_space(child, set_name, name, new_version)
+
+            if isScaled:
+                child.parm("Scale_Object").set(1)
 
 
         try:
@@ -365,12 +371,15 @@ class Publisher:
             sx = child.parm("sx").evalAsFloat()
             sy = child.parm("sy").evalAsFloat()
             sz = child.parm("sz").evalAsFloat()
+            px = child.parm("px").evalAsFloat()
+            py = child.parm("py").evalAsFloat()
+            pz = child.parm("pz").evalAsFloat()
             scale = child.parm("scale").evalAsFloat()
 
-            return tx, ty, tz, rx, ry, rz, sx, sy, sz, scale
+            return tx, ty, tz, rx, ry, rz, sx, sy, sz, px, py, pz, scale
         except:
             print("ERROR OCCURRED IN GET_FULL_TRANSFORM: " + str(child) + " had an issue with transforms")
-            return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
+            return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0
 
 
 
@@ -408,26 +417,37 @@ class Publisher:
         print("Path to Set: " + str(setNode.path()))
         print("Nodes inside the set: " + str(propNodes))
         for geo in propNodes:
-            tx, ty, tz, rx, ry, rz, sx, sy, sz, scale = self.get_full_transform(geo)
+            tx, ty, tz, rx, ry, rz, sx, sy, sz, px, py, pz, scale = self.get_full_transform(geo)
+
+            scaleValue = 1.0
+            if geo.parm("Scale_Object").evalAsInt() == 1:
+                try:
+                    scaleValue = 1.0/geo.node("Scale_object_transform").parm("scale").eval()
+                except:
+                    print("ERROR: Scale value might be zero? Cannot divide by zero")
+                    scaleValue = 1.0
 
             inside = geo.node("inside")
             transformNode = inside.node("set_dressing_transform")
 
-            old_tx, old_ty, old_tz, old_rx, old_ry, old_rz, old_sx, old_sy, old_sz, old_scale = self.get_full_transform(transformNode)
+            old_tx, old_ty, old_tz, old_rx, old_ry, old_rz, old_sx, old_sy, old_sz, old_px, old_py, old_pz, old_scale = self.get_full_transform(transformNode)
             old_sx -= 1.0
             old_sy -= 1.0
             old_sz -= 1.0
             old_scale -= 1.0
 
-            transformNode.parm("tx").set(tx + old_tx)
-            transformNode.parm("ty").set(ty + old_ty)
-            transformNode.parm("tz").set(tz + old_tz)
+            transformNode.parm("tx").set(tx*scaleValue + old_tx)
+            transformNode.parm("ty").set(ty*scaleValue + old_ty)
+            transformNode.parm("tz").set(tz*scaleValue + old_tz)
             transformNode.parm("rx").set(rx + old_rx)
             transformNode.parm("ry").set(ry + old_ry)
             transformNode.parm("rz").set(rz + old_rz)
             transformNode.parm("sx").set(sx + old_sx)
             transformNode.parm("sy").set(sy + old_sy)
             transformNode.parm("sz").set(sz + old_sz)
+            transformNode.parm("px").set(px*scaleValue + old_px)
+            transformNode.parm("py").set(py*scaleValue + old_py)
+            transformNode.parm("pz").set(pz*scaleValue + old_pz)
             transformNode.parm("scale").set(scale + old_scale)
 
             self.clear_transform(geo)
