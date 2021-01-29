@@ -30,7 +30,7 @@ def mkdir(dirpath):
 	"""
 	try:
 		os.mkdir(dirpath) # TODO: ensure correct permissions
-		os.chmod(dirpath, 0777)
+		os.chmod(dirpath, 0o777)
 	except OSError as e:
 		return False # file already exists
 	return True
@@ -38,7 +38,7 @@ def mkdir(dirpath):
 def set_permissions(path):
 	try:
 		from pipe.gui import quick_dialogs as qd
-		os.chmod(path, 0777)
+		os.chmod(path, 0o777)
 	except:
 		print("Couldn't set permissions.")
 
