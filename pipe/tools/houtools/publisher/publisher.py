@@ -1,6 +1,7 @@
 import hou
 import os
 import json
+import numpy as np
 
 from pipe.am.environment import Department
 from pipe.am.environment import Environment
@@ -162,11 +163,15 @@ class Publisher:
         '''
 
         #edit lists to only contain items that were explicitly in the set in Houdini
+        items_to_delete = []
+        items_to_delete[:] = [{'asset_name': item['asset_name'], 'version_number': item['version_number']} for item in set_data if str(item['asset_name']) not in child_names]
+        print("items deleted in set: " + str(items_to_delete))
         set_data[:] = [item for item in set_data if str(item['asset_name']) in child_names]
         items_in_set[:] = [item['asset_name'] for item in set_data if str(item['asset_name']) in child_names]
         print("new set data: " + str(set_data))
         print("new items in set: " + str(items_in_set))
 
+        self.delete_asset_json(items_to_delete, set_name)
 
         # TODO: To allow adding multiple copies of the same prop to a set in houdini, we'll want to add as many copies to the whole_set.json file
         # for child_name in child_names:
@@ -252,7 +257,7 @@ class Publisher:
             b = prop_data['b']
             c = prop_data['c']
 
-            self.update_points_by_geo(out, a, b, c)
+            self.update_points_by_geo(out, prop_data['path'], a, b, c)
 
             # put the updated coords back into prop_data
             prop_data['a'] = a
@@ -285,6 +290,7 @@ class Publisher:
         except:
             print("no nodes are in the set, cannot read from JSON")
 
+        #rewriting the whole_set json file
         outfile = open(set_file, "w")
         print("set data: ", set_data)
         updated_set_data = json.dumps(set_data)
@@ -293,30 +299,28 @@ class Publisher:
 
         qd.info("Set " + str(set_name) + " published successfully!")
 
-    def get_prim_path(self, out):
-        geo = out.geometry()
-        try:
-            path = geo.findPrimAttrib("path").strings()[0]
-            print("path: " + str(path))
-        except:
-            print("path attribute doesn't exist on object (error in get_prim_path)")
-        return path
+    def delete_asset_json(self, items_to_delete, set_name):
+        print("deleting asset")
+        set_file_dir = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache")
+        delete_dir = "backup"
+        print(set_file_dir)
+        if not os.path.isdir(os.path.join(set_file_dir, delete_dir)):
+            os.makedirs(os.path.join(set_file_dir, delete_dir))
+        for item in items_to_delete:
+            for ver_num in range(int(item['version_number']) + 1):
+                file_name = str(item['asset_name']) + '_' + str(ver_num) + '.json'
+                old_abs_path = os.path.join(set_file_dir, file_name)
+                new_abs_path = os.path.join(set_file_dir, delete_dir, file_name)
+                print('moving: ' + file_name + ' to ' + os.path.join(delete_dir, file_name))
+                print(old_abs_path)
+                print(new_abs_path)
+                #need to put this in a try catch block to avoid unnamed asset errors
+                try:
+                    os.rename(old_abs_path, new_abs_path)
+                except:
+                    print(old_abs_path + ' file doesn\t exist')
 
-    def update_points_by_geo(self, out, a, b, c):
-        print("Updating points by geo:")
-        print("Out is " + str(out))
-        print("a: " + str(a))
-        print("b: " + str(b))
-        print("c: " + str(c))
-        geo = out.geometry()
-        path = ""
-        try:
-            #path = geo.attribValue("path")
-            path = geo.findPrimAttrib("path").strings()[0]
-        except:
-            print("path attribute doesn't exist on object (error in update_points_by_geo)")
-            return
-
+    def get_path_point_starting_num(self, geo, path):
         starting_point = None
         found = False
         for point in geo.points():
@@ -327,29 +331,68 @@ class Publisher:
                     break
             if found is True:
                 break
-
         if not starting_point:
             qd.warning("Could not find the correct path for " + str(path) + ". Transform may be incorrect.")
             start_num = 0
         else:
             print("start point: ", starting_point)
             start_num = starting_point.number()
+        return start_num
 
-        point_a = geo.iterPoints()[start_num]
-        point_b = geo.iterPoints()[start_num+1]
-        point_c = geo.iterPoints()[start_num+2]
+    def get_points_from_path(self, geo, point_num, num_points = 3):
+        pointList = []
+        for i in range(num_points):
+            pointList.append(geo.iterPoints()[point_num + i])
+        return pointList;
 
-        a_x = point_a.position()[0]
-        a_y = point_a.position()[1]
-        a_z = point_a.position()[2]
-        b_x = point_b.position()[0]
-        b_y = point_b.position()[1]
-        b_z = point_b.position()[2]
-        c_x = point_c.position()[0]
-        c_y = point_c.position()[1]
-        c_z = point_c.position()[2]
+    def get_position_from_point(self, point):
+        return point.position()[0], point.position()[1], point.position()[2]
 
-        # a is the first point of this object in geo spreadsheet, b is second, c third.
+    def get_prim_path(self, out):
+        geo = out.geometry()
+        try:
+            pathList = geo.findPrimAttrib("path").strings()
+        except:
+            print("path attribute doesn't exist on object (error in update_points_by_geo)")
+            return
+        for path in pathList:
+            start_num = self.get_path_point_starting_num(geo, path)
+
+            point_a, point_b, point_c = self.get_points_from_path(geo, start_num, 3)
+
+            a_x, a_y, a_z = self.get_position_from_point(point_a)
+            b_x, b_y, b_z = self.get_position_from_point(point_b)
+            c_x, c_y, c_z = self.get_position_from_point(point_c)
+
+            c_a = np.array([c_x - a_x, c_y - a_y, c_z - a_z])
+            b_a = np.array([b_x - a_x, b_y - a_y, b_z - a_z])
+
+            c_a_norm = np.linalg.norm(c_a)
+            b_a_norm = np.linalg.norm(b_a)
+
+            if not np.array_equal(c_a/c_a_norm, b_a/b_a_norm) and not np.array_equal(c_a/c_a_norm, -1 * b_a/b_a_norm):
+                break;
+            print(path + '\'s first 3 points are in a line')
+        return path
+
+    def update_points_by_geo(self, out, path, a, b, c):
+
+        geo = out.geometry()
+        print("Updating points by geo:")
+        print("Out is " + str(out))
+        print("path: " + str(path))
+        print("a: " + str(a))
+        print("b: " + str(b))
+        print("c: " + str(c))
+
+        start_num = self.get_path_point_starting_num(geo, path)
+
+        point_a, point_b, point_c = self.get_points_from_path(geo, start_num, 3)
+
+        a_x, a_y, a_z = self.get_position_from_point(point_a)
+        b_x, b_y, b_z = self.get_position_from_point(point_b)
+        c_x, c_y, c_z = self.get_position_from_point(point_c)
+
         a[0] = a_x
         a[1] = a_y
         a[2] = a_z
@@ -380,10 +423,6 @@ class Publisher:
         except:
             print("ERROR OCCURRED IN GET_FULL_TRANSFORM: " + str(child) + " had an issue with transforms")
             return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0
-
-
-
-
 
     def set_space(self, child, set_name, child_name, version_number):
         if child.type().name() == "dcc_geo":
