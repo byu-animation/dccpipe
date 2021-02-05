@@ -118,58 +118,29 @@ class Publisher:
         #migrate transforms for all the children to set_dressing_transform
         self.update_set_dressing_transform(set)
 
-        #get set node
+        #create children list (list of houdini objects)
         print("set: ", set)
         inside = set.node("inside")
         children = inside.children()
+
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
 
-        #get set data from JSON
-        set_data = []
-        try:
-            with open(set_file) as f:
-                set_data = json.load(f)
-        except Exception as error:
-            qd.error("No valid JSON file for " + str(set_name))
-            return
-        print("SET_DATA FROM JSON: " + str(set_data))
-
-        items_in_set = []
-        for item in set_data:
-            item_name = item['asset_name']
-            item_version = item['version_number']
-            items_in_set.append(item_name)
-
-        print("Items in set from JSON: " + str(items_in_set))
-
-        #make list of props in houdini's set
-        child_names = []
-        print("Items IN HOUDINI: " + str(children))
-        print("Asset Names:")
-        for child in children:
-            child_path = child.path()
-            name = child.parm('asset_name').eval()
-            print(name)
-            child_names.append(name)
-
         '''
-        Basically the idea here is to get the set data from whole_set.json,
+        The idea here is to get the set data from whole_set.json,
         get the set data from Houdini, and then compare the two.
         Here are the possible scenarios:
             1. There are items in the JSON file that aren't in the Houdini Set
                 -remove the item from the Json file
+                -remove the item's json files
             2. There are items in the Houdini Set that aren't in the JSON file
                 -Add those to the JSON file
         '''
 
-        #edit lists to only contain items that were explicitly in the set in Houdini
         items_to_delete = []
-        items_to_delete[:] = [{'asset_name': item['asset_name'], 'version_number': item['version_number']} for item in set_data if str(item['asset_name']) not in child_names]
-        print("items deleted in set: " + str(items_to_delete))
-        set_data[:] = [item for item in set_data if str(item['asset_name']) in child_names]
-        items_in_set[:] = [item['asset_name'] for item in set_data if str(item['asset_name']) in child_names]
-        print("new set data: " + str(set_data))
-        print("new items in set: " + str(items_in_set))
+        set_data = []
+        items_in_set = []
+
+        items_to_delete, set_data, items_in_set = self.get_set_comparable_lists(children, set_file)
 
         self.delete_asset_json(items_to_delete, set_name)
 
@@ -204,6 +175,8 @@ class Publisher:
             out = inside.node("OUT")
             set_transform = inside.node("set_dressing_transform")
             current_version = child.parm("version_number").evalAsInt()
+            #need a asset number or letter (I honestly just need to name it something and have that reflected in houdini)
+            #import_number = child.parm("import_number").evalAsInt
 
             name = child.parm("asset_name").evalAsString()
 
@@ -222,6 +195,7 @@ class Publisher:
             prop_file = os.path.join(cache_dir, str(name) + "_" + str(current_version) + ".json")
             print("prop file: ", prop_file)
 
+            #will have to change items_in_set to be checked
             if name in items_in_set:
                 print("set contains asset: " + str(name))
                 try:
@@ -298,6 +272,46 @@ class Publisher:
         outfile.close()
 
         qd.info("Set " + str(set_name) + " published successfully!")
+
+    def get_set_comparable_lists(self, children, set_file):
+        set_data = []
+        try:
+            with open(set_file) as f:
+                set_data = json.load(f)
+        except Exception as error:
+            qd.error("No valid JSON file for " + str(set_name))
+            return
+        print("SET_DATA FROM JSON: " + str(set_data))
+
+
+        #create the list of asset names from the json file (list of strings)
+        items_in_set = []
+        items_in_set = [item['asset_name'] for item in set_data];
+        print("Items in set from JSON: " + str(items_in_set))
+
+        #create the list of asset names from the current houdini's set (list of strings)
+        child_names = []
+        child_names = [child.parm('asset_name').eval() for child in children]
+        print("Items IN HOUDINI: " + str(children))
+        print("Asset Names:" + str(child_names))
+
+
+        #edit lists to only contain items that were explicitly in the set in Houdini
+        #create the list of assets to delete (dictionary of asset_name and version_number)
+        items_to_delete = []
+        items_to_delete[:] = [{'asset_name': item['asset_name'], 'version_number': item['version_number']} for item in set_data if str(item['asset_name']) not in child_names]
+        print("items deleted in set: " + str(items_to_delete))
+
+        #edit set_data to include only objects (asset_name, version_number) that are still found in the set
+        #note: it won't include anything in the scene that wasn't origionally in the json file
+        set_data[:] = [item for item in set_data if str(item['asset_name']) in child_names]
+        print("new set data: " + str(set_data))
+
+        #edit doing the same thing as above except its only the asset name thats being saved this time
+        items_in_set[:] = [item['asset_name'] for item in set_data if str(item['asset_name']) in child_names]
+        print("new items in set: " + str(items_in_set))
+
+        return items_to_delete, set_data, items_in_set
 
     def delete_asset_json(self, items_to_delete, set_name):
         print("deleting asset")
@@ -660,7 +674,6 @@ class Publisher:
 
         else:
             qd.error('File does not exist', details=src)
-
 
     def publish_element(self, element, user, src, comment="None"):
         dst = element.publish(user.get_username(), src, comment)
