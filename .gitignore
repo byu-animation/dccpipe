@@ -15,6 +15,7 @@ production/
 bin/
 .pyside/
 tests/
+ribs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
