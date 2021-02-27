@@ -317,6 +317,35 @@ generate_rop.go()
 			</scriptItem>
 			<!-- ============================ End Generate ROP Tool =========================== -->
 
+			<!-- ============================ Start Backup Lighting Tool =========================== -->
+			<scriptItem id="h.backup_lighting">
+				<label>Backup Light Linking</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.utils.backup_lighting import BackupLighting
+import hou
+backup_lighting = BackupLighting()
+hou.session.backup_lighting = backup_lighting
+backup_lighting.go()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Backup Lighting Tool =========================== -->
+
+			<!-- ============================ Start Import Lighting Tool =========================== -->
+			<scriptItem id="h.import_lighting">
+				<label>Revert Light Linking to previous backup</label>
+				<scriptCode scriptType="python">
+					<![CDATA[
+from pipe.tools.houtools.utils.import_lighting import ImportLighting
+import hou
+import_lighting = ImportLighting()
+hou.session.import_lighting = import_lighting
+import_lighting.go()
+					]]>
+				</scriptCode>
+			</scriptItem>
+			<!-- ============================ End Import Lighting Tool =========================== -->
 		</subMenu>
 		<!-- ============================ End Utilities subMenu =========================== -->
 
