@@ -267,6 +267,15 @@ class Assembler:
         # Check if reference file exists
         set_file = os.path.join(Project().get_assets_dir(), set_name, "model", "main", "cache", "whole_set.json")
 
+        # backup lighting
+        path = hou.hscriptExpression("$HIP")
+        path = path[:path.find("main/") + 5] + "cache/lightlinkingFromSet.json"
+        command = "objlightlink -e " + str(path)
+
+        print("Backing up light linking to " + str(path))
+        result = hou.hscript(command)
+        print(result)
+
         # Error checking
         try:
             with open(set_file) as f:
@@ -356,6 +365,14 @@ class Assembler:
             })
 
         inside.layoutChildren()
+
+        path = hou.hscriptExpression("$HIP")
+        path = path[:path.find("main/") + 5] + "cache/lightlinkingFromSet.json"
+        command = "objlightlink -i " + str(path)
+
+        print("Importing Light Linking from " + str(path))
+        result = hou.hscript(command)
+        print(result)
 
     '''
         Cache all the contents of the set for faster cooking
