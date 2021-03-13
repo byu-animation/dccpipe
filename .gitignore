@@ -16,6 +16,7 @@ bin/
 .pyside/
 tests/
 ribs/
+geo/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
